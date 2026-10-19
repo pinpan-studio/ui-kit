@@ -93,7 +93,7 @@ type Q =
   styles: [`
     @import 'app/examples/forms/form-page';
     :host { overflow: auto; background: var(--bg); }
-    .survey { flex: 1 0 auto; min-height: 100%; display: flex; flex-direction: column; font-family: var(--font-body); color: var(--text-primary); }
+    .survey { flex: 1 1 0%; min-width: 0; min-height: 100%; display: flex; flex-direction: column; font-family: var(--font-body); color: var(--text-primary); }
     .top { display: flex; align-items: center; gap: 16px; padding: 18px clamp(16px, 4vw, 40px);
       .brand { display: flex; align-items: center; gap: 8px; font: 700 15px var(--font-heading); color: var(--text-primary); text-decoration: none; img { width: 26px; } }
       .bar { flex: 1; height: 6px; border-radius: 3px; background: var(--hover-bg); overflow: hidden; span { display: block; height: 100%; background: var(--primary-color); border-radius: 3px; transition: width .4s cubic-bezier(.2, 0, 0, 1); } }
@@ -107,13 +107,13 @@ type Q =
     @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
     .qnum { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--primary-color); mat-icon { font-size: 16px; width: 16px; height: 16px; } }
     .big-emoji { font-size: 56px; line-height: 1; }
-    .nps { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px;
+    .nps { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 6px;
       button { aspect-ratio: 1; max-height: 56px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--card-bg); font: 700 16px var(--font-heading); color: var(--text-primary); cursor: pointer; transition: transform .1s;
         &:hover { transform: translateY(-2px); border-color: var(--text-muted); }
         &.on.det { background: var(--error-color); border-color: var(--error-color); color: #fff; }
         &.on.pas { background: var(--warning-color); border-color: var(--warning-color); color: #1f2937; }
         &.on.pro { background: var(--success-color); border-color: var(--success-color); color: #fff; } }
-      @include sm { grid-template-columns: repeat(6, 1fr); } }
+      @include sm { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
     .nps-legend { display: flex; justify-content: space-between; margin-top: -8px; font-size: 12.5px; color: var(--text-muted); }
     .ratings { display: flex; flex-direction: column; gap: 4px; }
     .r-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border-color); font-size: 15px; font-weight: 500; flex-wrap: wrap; }
