@@ -19,8 +19,8 @@ app-select {
   background: var(--mat-sys-surface-container-high, var(--hover-bg, #f8fafc));
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: var(--r-m, 12px);
-  padding: 0 12px;
-  gap: 8px;
+  padding: 0 var(--space-3);
+  gap: var(--space-2);
   box-sizing: border-box;
   cursor: pointer;
   outline: none;
@@ -121,8 +121,8 @@ app-select {
   max-height: min(380px, calc(100vh - 48px));
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.24), 0 4px 12px -4px rgba(15, 23, 42, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-4);
   overflow: hidden;
   animation: pq-fs-in 0.12s ease-out;
   z-index: 1000;
@@ -132,8 +132,8 @@ app-select {
 .pq-fs-search {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
   border-bottom: 1px solid var(--border-color, #eef2f7);
   flex-shrink: 0;
 
@@ -188,7 +188,7 @@ app-select {
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 6px;
+  padding: var(--space-2);
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -196,19 +196,19 @@ app-select {
 
   &::-webkit-scrollbar-thumb {
     background: var(--border-color, #cbd5e1);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
   }
 }
 
 .pq-fs-opt {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   width: 100%;
   text-align: left;
-  padding: 8px 10px;
+  padding: var(--space-2) var(--space-3);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
@@ -255,8 +255,8 @@ app-select {
   .pq-fs-opt-count {
     flex-shrink: 0;
     min-width: 20px;
-    padding: 1px 6px;
-    border-radius: 100px;
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-full);
     background: var(--mat-sys-surface-container-high, #eef2f7);
     color: var(--text-secondary, #64748b);
     font-size: 11px;
@@ -295,8 +295,8 @@ app-select {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 24px 16px;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
   color: var(--text-muted, #94a3b8);
   font-size: 12px;
   text-align: center;
@@ -313,9 +313,9 @@ app-select {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   width: 100%;
-  padding: 10px;
+  padding: var(--space-3);
   border: none;
   border-top: 1px solid var(--border-color, #eef2f7);
   background: transparent;

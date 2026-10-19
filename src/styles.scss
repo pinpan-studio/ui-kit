@@ -251,7 +251,7 @@ body {
       padding: 0 !important;
       border-radius: var(--r-l, 16px) !important;
       overflow: hidden;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+      box-shadow: var(--elevation-5);
     }
   }
 }
@@ -346,7 +346,7 @@ body {
 
 .mat-padding {
   display: block;
-  padding: 10px 10px;
+  padding: var(--space-3) var(--space-3);
 }
 
 .mat-padding-small {
@@ -359,13 +359,13 @@ body {
      {
     
     width: 75%;
-    border-radius: 3px;
+    border-radius: var(--radius-xs);
     
     text-align: center;
 }
 */
 .logo {
-  margin: 0px 16px;
+  margin: 0px var(--space-4);
 }
 
 .button-search {
@@ -380,7 +380,7 @@ body {
   min-width: 200px;
   border: 1px solid #d7d7d7;
   background: #fff;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 
 mat-drawer {
@@ -408,8 +408,8 @@ mat-drawer {
 }
 
 mat-panel-title span {
-  padding: 2px 8px;
-  margin-left: 8px;
+  padding: 2px var(--space-2);
+  margin-left: var(--space-2);
 }
 
 .mat-drawer-container[_ngcontent-c0] {
@@ -420,9 +420,9 @@ mat-panel-title span {
 /* tabStyleDefault*/
 
 .mat-button-rounded {
-  //border-radius: 20px 0px 20px 0px !important;
-  border-radius: 20px !important;
-  padding: 0px 14px 0px 8px !important;
+  //border-radius: var(--radius-xl) 0px var(--radius-xl) 0px !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 0px var(--space-4) 0px var(--space-2) !important;
 }
 
 /*Ligne en dessous de textfield*/
@@ -438,7 +438,7 @@ mat-panel-title span {
 /**/
 .q-editor {
   background: #f9f9f9;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .q-editor .ql-toolbar.ql-snow {
@@ -482,31 +482,31 @@ mat-drawer {
 .container {
   width: 100%;
   max-width: 351px;
-  padding: 20px;
+  padding: var(--space-5);
   box-sizing: border-box;
 }
 
 .map {
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
 }
 
 .card-margin-right {
-  margin-right: 20px;
+  margin-right: var(--space-5);
 
 }
 
 .container-margin-top-bottom {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
 .slider-width {
   width: calc(96% - 31px);
-  margin: 0px 20px;
+  margin: 0px var(--space-5);
 }
 
 .span {
-  padding: 10px;
+  padding: var(--space-3);
   display: block;
 }
 
@@ -517,7 +517,7 @@ mat-drawer {
 
 .inscription-form .bloc-input {
   //background: rgb(247, 247, 247);
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
 .mat-form-field-appearance-fill .mat-form-field-ripple {
@@ -561,23 +561,45 @@ mat-drawer {
   --sidebar-width: 272px;
   --header-height: 68px;
 
-  /* Échelle d'espacement */
-  --space-xs: 4px;
-  --space-s: 8px;
-  --space-m: 16px;
-  --space-l: 24px;
-  --space-xl: 32px;
-  --space-xxl: 48px;
-  /* Alias historiques (utilisés dans les pages de modules existantes) */
+  /* ===== Design tokens : échelle unique (base 4px) ===== */
+  /* Espacements */
+  --space-0: 0;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  /* Alias historiques (ne pas supprimer) */
+  --space-xs: var(--space-1);
+  --space-s: var(--space-2);
+  --space-m: var(--space-4);
+  --space-l: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-xxl: var(--space-12);
   --space-sm: var(--space-m);
   --space-md: var(--space-l);
   --space-lg: var(--space-xl);
 
-  /* Échelle de rayons */
-  --r-s: 4px;
-  --r-m: 12px;
-  --r-l: 24px;
-  --r-full: 9999px;
+  /* Rayons */
+  --radius-none: 0;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  /* Alias historiques */
+  --r-s: var(--radius-xs);
+  --r-m: var(--radius-md);
+  --r-l: var(--radius-2xl);
+  --r-full: var(--radius-full);
   --radius-card: var(--r-l);
   --radius-input: var(--r-m);
   --radius-button: var(--r-full);
@@ -617,9 +639,13 @@ mat-drawer {
   --hover-bg: #f3f4f6;
   --table-header-bg: #f8fafc;
 
-  /* Ombres */
+  /* Élévations (0–5) */
+  --elevation-0: none;
   --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --elevation-2: 0 4px 8px -2px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
   --elevation-3: 0 10px 20px -3px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+  --elevation-4: 0 16px 32px -6px rgba(0, 0, 0, 0.12), 0 6px 12px -4px rgba(0, 0, 0, 0.06);
+  --elevation-5: 0 24px 48px -12px rgba(0, 0, 0, 0.18), 0 10px 20px -6px rgba(0, 0, 0, 0.08);
 }
 
 .dark-theme,
@@ -651,7 +677,10 @@ mat-drawer {
   --table-header-bg: #1f2937;
 
   --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elevation-2: 0 4px 8px -2px rgba(0, 0, 0, 0.45), 0 2px 4px -1px rgba(0, 0, 0, 0.35);
   --elevation-3: 0 10px 20px -3px rgba(0, 0, 0, 0.5), 0 4px 8px -2px rgba(0, 0, 0, 0.4);
+  --elevation-4: 0 16px 32px -6px rgba(0, 0, 0, 0.55), 0 6px 12px -4px rgba(0, 0, 0, 0.45);
+  --elevation-5: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 10px 20px -6px rgba(0, 0, 0, 0.5);
 }
 
 // Typographie Grid & Styles Globaux
@@ -860,7 +889,7 @@ mat-card {
   padding: 3px;
   font-size: 10px;
   color: white;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   position: relative;
   top: -12px;
   right: 0px;
@@ -940,7 +969,7 @@ html {
 .alert-client {
   border: 1px dotted #fff;
   background: var(--error-color);
-  padding: 20px;
+  padding: var(--space-5);
   color: #fff;
   text-align: center;
 }
@@ -1002,7 +1031,7 @@ body {
 }
 
 .stick-blue {
-  padding: 4px 13px;
+  padding: var(--space-1) 13px;
   background: var(--primary-color-light);
   width: 34%;
   color: var(--primary-color);
@@ -1026,7 +1055,7 @@ body {
 }
 
 .stick-red {
-  padding: 4px 13px;
+  padding: var(--space-1) 13px;
   background: var(--error-color-light);
   width: 34%;
   color: var(--error-color-text);
@@ -1050,7 +1079,7 @@ body {
 }
 
 .stick-grey {
-  padding: 4px 13px;
+  padding: var(--space-1) 13px;
   background: var(--hover-bg);
   width: 34%;
   color: var(--text-secondary);
@@ -1074,7 +1103,7 @@ body {
 }
 
 .stick-green {
-  padding: 4px 13px;
+  padding: var(--space-1) 13px;
   background: var(--success-color-light);
   width: 34%;
   color: var(--success-color-text);
@@ -1098,7 +1127,7 @@ body {
 }
 
 .stick-orange {
-  padding: 4px 13px;
+  padding: var(--space-1) 13px;
   background: var(--warning-color-light);
   width: 34%;
   color: var(--warning-color-text);
@@ -1142,7 +1171,7 @@ body {
 
 .ck-editor__editable {
   border: 1px solid #e0e0e0 !important;
-  border-radius: 4px !important;
+  border-radius: var(--radius-xs) !important;
   height: 145px;
 }
 
@@ -1180,7 +1209,7 @@ body {
 .timeline-event {
   background-color: #fff;
   border: 2px solid #3498db;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 
 /* Style pour le texte des événements */
@@ -1308,11 +1337,11 @@ app-workspace {
 // Global Chart Tab Toggles
 .chart-tab-toggles {
   background-color: var(--background-default, #f8fafc);
-  padding: 4px;
-  border-radius: 8px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: row;
-  gap: 6px;
+  gap: var(--space-2);
   align-items: center;
 
   @media (max-width: 600px) {
@@ -1326,12 +1355,12 @@ app-workspace {
 .tab-toggle-btn {
   border: none;
   background: transparent;
-  padding: 6px 12px;
+  padding: var(--space-2) var(--space-3);
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary, #475569);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease-in-out;
   font-family: inherit;
   white-space: nowrap;
@@ -1365,7 +1394,7 @@ app-workspace {
     &.active {
       background-color: var(--card-bg, #1f2937) !important;
       color: var(--primary-color, #a78bfa) !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+      box-shadow: var(--elevation-1) !important;
     }
   }
 
@@ -1381,10 +1410,10 @@ app-workspace {
 
   .metric-card {
     background: var(--card-bg, #1f2937) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    box-shadow: var(--elevation-2) !important;
 
     &:hover {
-      box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+      box-shadow: var(--elevation-3) !important;
     }
   }
 
@@ -1433,7 +1462,7 @@ app-workspace {
   .page-title-area {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
 
     h1 {
       font-size: 22px !important;
@@ -1473,8 +1502,8 @@ app-workspace {
 .m3-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--r-m);
   font-size: 11px;
   font-weight: 700;
@@ -1542,7 +1571,7 @@ app-workspace {
   background: var(--mat-sys-surface-container-high, var(--hover-bg));
   border-radius: var(--r-full, 100px) !important;
   border: 1px solid var(--border-color);
-  padding: 4px;
+  padding: var(--space-1);
   gap: 0;
   height: 44px;
   box-sizing: border-box;
@@ -1561,8 +1590,8 @@ app-workspace {
     align-items: center;
     flex: 1;
     min-width: 150px;
-    padding: 0 8px 0 12px;
-    gap: 8px;
+    padding: 0 var(--space-2) 0 var(--space-3);
+    gap: var(--space-2);
     height: 36px;
 
     .search-icon { color: var(--mat-sys-on-surface-variant, var(--text-secondary)); font-size: 20px; width: 20px; height: 20px; }
@@ -1610,7 +1639,7 @@ app-workspace {
     width: 1px;
     height: 20px;
     background: var(--border-color);
-    margin: 0 8px;
+    margin: 0 var(--space-2);
     flex-shrink: 0;
   }
 
@@ -1631,15 +1660,15 @@ app-workspace {
   .search-bar-actions {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-left: 8px;
-    margin-right: 4px;
+    gap: var(--space-2);
+    margin-left: var(--space-2);
+    margin-right: var(--space-1);
     flex-shrink: 0;
 
     .desktop-actions {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--space-2);
     }
 
     .mobile-actions {
@@ -1652,14 +1681,14 @@ app-workspace {
       font-family: 'Outfit', sans-serif !important;
       font-weight: 600 !important;
       font-size: 13px !important;
-      padding: 0 16px !important;
+      padding: 0 var(--space-4) !important;
       min-width: unset !important;
 
       mat-icon {
         font-size: 18px !important;
         width: 18px !important;
         height: 18px !important;
-        margin-right: 4px !important;
+        margin-right: var(--space-1) !important;
         margin-left: 0 !important;
       }
     }
@@ -1672,7 +1701,7 @@ app-workspace {
     box-shadow: none !important;
     padding: 0 !important;
     height: auto !important;
-    gap: 8px !important;
+    gap: var(--space-2) !important;
 
     .search-input-wrapper {
       background: var(--mat-sys-surface-container-high, var(--hover-bg));
@@ -1681,7 +1710,7 @@ app-workspace {
       height: 44px;
       width: 100%;
       flex: none;
-      padding: 0 16px;
+      padding: 0 var(--space-4);
     }
 
     .divider { display: none; }
@@ -1696,14 +1725,14 @@ app-workspace {
         height: 44px !important;
         width: 100% !important;
         justify-content: space-between !important;
-        padding: 0 16px !important;
+        padding: 0 var(--space-4) !important;
       }
     }
 
     .period-filter-group {
       width: 100%;
       justify-content: center;
-      gap: 4px;
+      gap: var(--space-1);
     }
 
     .search-bar-actions {
@@ -1732,22 +1761,22 @@ app-workspace {
 .m3-filter-toggle {
   display: flex;
   background: var(--mat-sys-surface-container-high, var(--hover-bg));
-  padding: 4px;
-  border-radius: 100px;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
   border: 1px solid var(--border);
-  gap: 4px;
+  gap: var(--space-1);
   align-items: center;
   width: fit-content;
   overflow-y: hidden !important;
 
   button, .mat-mdc-button {
-    border-radius: 100px !important;
+    border-radius: var(--radius-full) !important;
     font-family: 'Outfit', sans-serif !important;
     font-weight: 600 !important;
     font-size: 13px !important;
     color: var(--mat-sys-on-surface-variant, var(--text-secondary)) !important;
     height: 36px !important;
-    padding: 0 16px !important;
+    padding: 0 var(--space-4) !important;
     min-width: unset !important;
     background: transparent;
     border: none;
@@ -1760,11 +1789,11 @@ app-workspace {
     &.active {
       background: var(--mat-sys-primary, var(--primary-color)) !important;
       color: var(--mat-sys-on-primary, #fff) !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: var(--elevation-2) !important;
     }
 
     mat-icon {
-      margin-right: 4px;
+      margin-right: var(--space-1);
       font-size: 18px;
       width: 18px;
       height: 18px;
@@ -1775,7 +1804,7 @@ app-workspace {
     width: 100%;
     button, .mat-mdc-button {
       flex: 1;
-      padding: 0 8px !important;
+      padding: 0 var(--space-2) !important;
       font-size: 12px !important;
       span { display: inline-block !important; }
     }
@@ -1788,11 +1817,11 @@ app-workspace {
 .mat-timepicker-panel,
 .m3-dropdown-menu,
 .app-autocomplete-panel {
-  border-radius: 14px !important;
+  border-radius: var(--radius-lg) !important;
   background: var(--card-bg, #ffffff) !important;
   border: 1px solid var(--border-color, #e2e8f0) !important;
-  box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.24), 0 4px 12px -4px rgba(15, 23, 42, 0.12) !important;
-  padding: 6px !important;
+  box-shadow: var(--elevation-4) !important;
+  padding: var(--space-2) !important;
   max-height: min(380px, calc(100vh - 48px)) !important;
   overflow: hidden auto !important;
 
@@ -1801,15 +1830,15 @@ app-workspace {
   }
   &::-webkit-scrollbar-thumb {
     background: var(--border-color, #cbd5e1);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
   }
 
   .mat-mdc-option {
     min-height: 38px !important;
     height: 38px !important;
-    border-radius: 8px !important;
+    border-radius: var(--radius-sm) !important;
     margin-bottom: 2px !important;
-    padding: 0 10px !important;
+    padding: 0 var(--space-3) !important;
     font-family: 'Inter', sans-serif !important;
     font-size: 13px !important;
     color: var(--text-primary, #0f172a) !important;
@@ -1844,7 +1873,7 @@ app-workspace {
   .mat-mdc-menu-item {
     height: 38px !important;
     min-height: 38px !important;
-    border-radius: 8px !important;
+    border-radius: var(--radius-sm) !important;
     margin-bottom: 2px !important;
     font-family: 'Inter', sans-serif !important;
     font-size: 13px !important;
@@ -1860,7 +1889,7 @@ app-workspace {
     }
 
     // Libellé + compteur « (12) » séparés par une espace, compteur discret
-    .option-label { margin-right: 4px; }
+    .option-label { margin-right: var(--space-1); }
 
     .option-count {
       margin-left: auto;
@@ -1888,7 +1917,7 @@ app-workspace {
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 
   .field-label {
     font-size: 12px;
@@ -1903,8 +1932,8 @@ app-workspace {
     background: var(--mat-sys-surface-container-high, var(--hover-bg));
     border: 1px solid var(--border-color);
     border-radius: var(--r-m);
-    padding: 0 12px;
-    gap: 8px;
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
     transition: all 0.2s ease;
 
     input, textarea, select {
@@ -1953,7 +1982,7 @@ app-workspace {
 
     &.textarea-box {
       height: auto;
-      padding: 10px 12px;
+      padding: var(--space-3) var(--space-3);
       align-items: flex-start;
 
       textarea { resize: vertical; min-height: 40px; line-height: 1.4; padding-top: 2px; }
@@ -1961,7 +1990,7 @@ app-workspace {
 
     // mat-select : même typo que le déclencheur de app-searchable-select
     &.select-box {
-      padding: 0 8px 0 12px;
+      padding: 0 var(--space-2) 0 var(--space-3);
       mat-select {
         width: 100%;
         --mat-select-trigger-text-font: 'Inter', sans-serif;
@@ -1985,14 +2014,14 @@ app-workspace {
   display: block;
   font-size: 11px;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .field-error {
   display: block;
   font-size: 11px;
   color: var(--error-color);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 // ─── Dialogs (coins arrondis, sans toucher aux largeurs déjà

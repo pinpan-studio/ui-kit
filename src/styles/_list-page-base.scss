@@ -10,7 +10,7 @@
 }
 
 .page-container {
-  padding: 24px;
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -21,7 +21,7 @@
 
 // ── Header ──────────────────────────────────────────────────────────────────
 .page-header {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 
   .breadcrumb-label {
     font-size: 0.725rem;
@@ -32,7 +32,7 @@
   }
 
   .page-title {
-    margin: 4px 0 0 0;
+    margin: var(--space-1) 0 0 0;
     font-size: 1.65rem;
     font-weight: 800;
     color: var(--text-primary, #0f172a);
@@ -47,11 +47,11 @@
   align-items: center;
   background-color: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 12px;
-  padding: 0 12px;
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
   height: 42px;
   transition: all 0.2s ease-in-out;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--elevation-1);
   flex: 1;
   min-width: 220px;
 
@@ -62,7 +62,7 @@
 
   .search-icon {
     color: var(--text-muted, #64748b);
-    margin-right: 8px;
+    margin-right: var(--space-2);
     font-size: 20px;
     width: 20px;
     height: 20px;
@@ -123,7 +123,7 @@
 }
 
 .create-btn {
-  border-radius: 10px !important;
+  border-radius: var(--radius-md) !important;
   font-weight: 600 !important;
   height: 42px !important;
   font-size: 0.875rem !important;
@@ -135,12 +135,12 @@
 .filter-chips-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .filter-chip {
-  border-radius: 20px !important;
+  border-radius: var(--radius-xl) !important;
   border-color: var(--border-color, #cbd5e1) !important;
   color: var(--text-secondary, #475569) !important;
   font-size: 0.8rem !important;
@@ -150,8 +150,8 @@
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 14px !important;
+  gap: var(--space-1);
+  padding: 0 var(--space-4) !important;
 
   mat-icon.chip-icon {
     font-size: 15px;
@@ -177,16 +177,16 @@
   justify-content: center;
   height: 300px;
   background-color: var(--card-bg, #ffffff);
-  border-radius: 16px;
-  margin-top: 8px;
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-2);
 }
 
 // ── Table Card ────────────────────────────────────────────────────────────────
 .table-card {
-  border-radius: 16px !important;
+  border-radius: var(--radius-lg) !important;
   overflow: hidden;
   background: var(--card-bg, #ffffff);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: var(--elevation-1) !important;
 
   table.mat-mdc-table,
   table.mat-table {
@@ -230,7 +230,7 @@
 
 // ── Cards Grid ────────────────────────────────────────────────────────────────
 .cards-grid {
-  margin-top: 4px;
+  margin-top: var(--space-1);
   width: 100%;
 }
 
@@ -240,15 +240,13 @@
 
 // ── Entity Card ───────────────────────────────────────────────────────────────
 .entity-card {
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
-    0 2px 4px -1px rgba(0, 0, 0, 0.02),
-    0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--elevation-2);
   background-color: var(--card-bg, #ffffff);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 16px;
+  padding: var(--space-4);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -256,9 +254,7 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08),
-      0 4px 6px -2px rgba(0, 0, 0, 0.03),
-      0 0 0 1px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--elevation-3);
   }
 }
 
@@ -270,7 +266,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--elevation-1);
   flex-shrink: 0;
 
   mat-icon {
@@ -294,9 +290,9 @@
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 9999px;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
   font-size: 0.725rem;
   font-weight: 700;
   letter-spacing: 0.015em;
@@ -346,7 +342,7 @@
       width: 16px;
       height: 16px;
       color: var(--text-muted, #94a3b8);
-      margin-right: 8px;
+      margin-right: var(--space-2);
       flex-shrink: 0;
     }
 
@@ -363,7 +359,7 @@
 
 // ── Card Actions Row ──────────────────────────────────────────────────────────
 .card-actions-row {
-  padding: 8px 0 0 0 !important;
+  padding: var(--space-2) 0 0 0 !important;
   margin-top: auto;
   border-top: 1px solid var(--border-color, #f1f5f9);
 
@@ -372,7 +368,7 @@
   }
 
   .detail-btn {
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
     font-size: 0.8rem;
   }
@@ -388,15 +384,15 @@
   padding: 64px 0;
   text-align: center;
   background-color: var(--card-bg, #ffffff);
-  border-radius: 16px;
-  margin-top: 8px;
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-2);
 
   .empty-icon {
     font-size: 48px;
     width: 48px;
     height: 48px;
     color: #cbd5e1;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-4);
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -406,7 +402,7 @@
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-primary, #1e293b);
-    margin: 0 0 8px 0;
+    margin: 0 0 var(--space-2) 0;
   }
 
   .empty-desc {
@@ -432,11 +428,11 @@
 }
 
 // ── Status Mat-Chips ──────────────────────────────────────────────────────────
-::ng-deep .chip-active   .mdc-evolution-chip__text-label { color: #10b981 !important; background: rgba(16,185,129,0.1);  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-::ng-deep .chip-inactive .mdc-evolution-chip__text-label { color: #94a3b8 !important; background: rgba(148,163,184,0.1); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-::ng-deep .chip-primary  .mdc-evolution-chip__text-label { color: #4f46e5 !important; background: rgba(79,70,229,0.1);   padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-::ng-deep .chip-warning  .mdc-evolution-chip__text-label { color: #f59e0b !important; background: rgba(245,158,11,0.1);  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-::ng-deep .chip-error    .mdc-evolution-chip__text-label { color: #ef4444 !important; background: rgba(239,68,68,0.1);   padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+::ng-deep .chip-active   .mdc-evolution-chip__text-label { color: #10b981 !important; background: rgba(16,185,129,0.1);  padding: var(--space-1) var(--space-3); border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; }
+::ng-deep .chip-inactive .mdc-evolution-chip__text-label { color: #94a3b8 !important; background: rgba(148,163,184,0.1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; }
+::ng-deep .chip-primary  .mdc-evolution-chip__text-label { color: #4f46e5 !important; background: rgba(79,70,229,0.1);   padding: var(--space-1) var(--space-3); border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; }
+::ng-deep .chip-warning  .mdc-evolution-chip__text-label { color: #f59e0b !important; background: rgba(245,158,11,0.1);  padding: var(--space-1) var(--space-3); border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; }
+::ng-deep .chip-error    .mdc-evolution-chip__text-label { color: #ef4444 !important; background: rgba(239,68,68,0.1);   padding: var(--space-1) var(--space-3); border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; }
 
 // Dark mode: plus besoin de bloc dédié — tous les styles ci-dessus lisent déjà
 // var(--card-bg)/var(--border-color)/var(--text-primary), qui sont redéfinis

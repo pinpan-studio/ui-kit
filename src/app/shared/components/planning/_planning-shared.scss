@@ -1,7 +1,7 @@
 // Éléments visuels communs aux vues de planification (flat, thème clair / sombre via jetons).
 .pl-pill {
-  display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; line-height: 1.5;
-  padding: 1px 8px; border-radius: var(--r-full);
+  display: inline-flex; align-items: center; gap: var(--space-1); font-size: 11px; font-weight: 600; line-height: 1.5;
+  padding: 1px var(--space-2); border-radius: var(--r-full);
   color: var(--tone, var(--primary-color));
   background: color-mix(in srgb, var(--tone, var(--primary-color)) 14%, transparent);
 }
@@ -32,20 +32,20 @@
 .pl-segmented {
   display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-full); background: var(--mat-sys-surface-container, var(--hover-bg));
   button {
-    border: none; background: transparent; cursor: pointer; padding: 5px 12px; border-radius: var(--r-full);
+    border: none; background: transparent; cursor: pointer; padding: 5px var(--space-3); border-radius: var(--r-full);
     font: inherit; font-size: 12px; font-weight: 600; color: var(--text-secondary);
     &:hover:not(.active) { color: var(--text-primary); }
     &.active { background: var(--card-bg); color: var(--primary-color); }
   }
 }
 .pl-text-btn {
-  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: none; border-radius: var(--r-full); cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-2); height: 32px; padding: 0 var(--space-3); border: none; border-radius: var(--r-full); cursor: pointer;
   background: var(--mat-sys-surface-container, var(--hover-bg)); color: var(--text-primary); font: inherit; font-size: 12px; font-weight: 600;
   mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--primary-color); }
   &:hover { background: var(--hover-bg); }
 }
 .pl-empty {
-  display: flex; align-items: center; justify-content: center; min-height: 80px; padding: 16px; text-align: center;
+  display: flex; align-items: center; justify-content: center; min-height: 80px; padding: var(--space-4); text-align: center;
   font-size: 12px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: var(--r-m);
 }
-.pl-stack { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.pl-stack { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }

@@ -2,18 +2,18 @@
 
 :host { display: block; min-width: 0; }
 
-.fb { position: relative; display: flex; flex-direction: column; gap: 16px; min-height: 240px; }
+.fb { position: relative; display: flex; flex-direction: column; gap: var(--space-4); min-height: 240px; }
 
 // ─── Barre : fil d'Ariane, recherche, tri, vue ─────────────────
-.fb-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fb-bar { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .crumbs { display: flex; align-items: center; flex-wrap: wrap; min-width: 0; font-size: var(--fs-body);
-  button { border: 0; background: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; font: 500 var(--fs-body) var(--font-body); color: var(--text-secondary);
+  button { border: 0; background: none; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); cursor: pointer; font: 500 var(--fs-body) var(--font-body); color: var(--text-secondary);
     &:hover { background: var(--hover-bg); color: var(--text-primary); }
     &.cur { color: var(--text-primary); font-weight: 600; } }
   .cur { font-weight: 600; color: var(--text-primary); }
   mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--text-muted); } }
 .spacer { flex: 1; }
-.searchbox { display: flex; align-items: center; gap: 8px; width: 240px; height: 36px; padding: 0 10px; box-sizing: border-box; border-radius: 8px;
+.searchbox { display: flex; align-items: center; gap: var(--space-2); width: 240px; height: 36px; padding: 0 var(--space-3); box-sizing: border-box; border-radius: var(--radius-sm);
   border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--text-muted);
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
   input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text-primary); font: var(--fs-body-sm) var(--font-body); }
@@ -23,29 +23,29 @@
 .group-label { margin-bottom: -6px; font: 600 var(--fs-overline) / 1.4 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
 
 // ─── Dossiers ──────────────────────────────────────────────────
-.folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.folder { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--mat-sys-surface-container-high, var(--hover-bg));
+.folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3); }
+.folder { display: flex; align-items: center; gap: var(--space-3); height: 52px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-md); background: var(--mat-sys-surface-container-high, var(--hover-bg));
   font: inherit; color: var(--text-primary); cursor: pointer; text-align: left; user-select: none; transition: border-color .15s, background .15s;
   .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); font-weight: 500; }
   .badge-ic { font-size: 16px; width: 16px; height: 16px; color: var(--text-muted); }
   &:hover { background: var(--mat-sys-surface-container-highest, var(--hover-bg)); } }
 
 // ─── Grille de fichiers ────────────────────────────────────────
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px;
-  @include sm { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } }
-.tile { position: relative; display: flex; flex-direction: column; padding: 0; border: 0; border-radius: 10px; overflow: hidden;
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--space-3);
+  @include sm { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); } }
+.tile { position: relative; display: flex; flex-direction: column; padding: 0; border: 0; border-radius: var(--radius-md); overflow: hidden;
   background: var(--card-bg); font: inherit; color: inherit; cursor: pointer; text-align: left; user-select: none; transition: border-color .15s;
   &:hover { background: var(--mat-sys-surface-container-highest, var(--hover-bg)); }
   .thumb { position: relative; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; background: var(--hover-bg); border-bottom: 0;
     img { width: 100%; height: 100%; object-fit: cover; }
     img.ic { width: 48px; height: 48px; object-fit: contain; }
     .play { position: absolute; font-size: 36px; width: 36px; height: 36px; color: var(--text-secondary); opacity: .85; } }
-  .meta { display: flex; flex-direction: column; gap: 1px; padding: 10px 12px 12px; min-width: 0;
+  .meta { display: flex; flex-direction: column; gap: 1px; padding: var(--space-3) var(--space-3) var(--space-3); min-width: 0;
     .nm { font-size: var(--fs-body-sm); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     small { font-size: var(--fs-caption); color: var(--text-muted); font-variant-numeric: tabular-nums; } }
   .star { position: absolute; right: 8px; bottom: 12px; font-size: 16px; width: 16px; height: 16px; color: var(--warning-color); }
   .check { position: absolute; top: 8px; left: 8px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    border: 2px solid #fff; background: rgba(15, 23, 42, .25); box-shadow: 0 0 0 1px rgba(15, 23, 42, .15);
+    border: 2px solid #fff; background: rgba(15, 23, 42, .25); box-shadow: var(--elevation-1);
     mat-icon { font-size: 14px; width: 14px; height: 14px; color: #fff; opacity: 0; }
     &.on { background: var(--primary-color); border-color: var(--primary-color); mat-icon { opacity: 1; } } } }
 
@@ -54,20 +54,20 @@
 .tile.off { cursor: not-allowed; opacity: .4; }
 
 // ─── Liste ─────────────────────────────────────────────────────
-.table-wrap { overflow-x: auto; border: 0; border-radius: 10px; background: var(--mat-sys-surface-container-high, var(--hover-bg)); }
+.table-wrap { overflow-x: auto; border: 0; border-radius: var(--radius-md); background: var(--mat-sys-surface-container-high, var(--hover-bg)); }
 .list { width: 100%; border-collapse: collapse; font-size: var(--fs-body-sm);
-  th { padding: 10px 14px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); background: var(--table-header-bg, var(--hover-bg));
+  th { padding: var(--space-3) var(--space-4); text-align: left; white-space: nowrap; cursor: pointer; user-select: none; border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); background: var(--table-header-bg, var(--hover-bg));
     font: 600 var(--fs-overline) / 1.4 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted);
     mat-icon { font-size: 14px; width: 14px; height: 14px; vertical-align: -2px; margin-left: 2px; }
     &.hide-sm { cursor: default; } }
-  td { padding: 8px 14px; border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); white-space: nowrap; }
+  td { padding: var(--space-2) var(--space-4); border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); white-space: nowrap; }
   tr:last-child td { border-bottom: 0; }
   tbody tr { cursor: pointer; user-select: none; &:hover td { background: var(--hover-bg); } &.sel td { background: color-mix(in srgb, var(--primary-color) 8%, var(--card-bg)); } &.off { opacity: .4; cursor: not-allowed; } }
   .c-name { width: 55%; }
-  .nm-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .nm-cell { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
   .nm { overflow: hidden; text-overflow: ellipsis; font-weight: 500; color: var(--text-primary); }
   .fi { font-size: 22px; width: 22px; height: 22px; flex-shrink: 0; }
-  .th { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 4px; object-fit: cover; &.ic { object-fit: contain; border-radius: 0; } }
+  .th { width: 28px; height: 28px; flex: 0 0 28px; border-radius: var(--radius-xs); object-fit: cover; &.ic { object-fit: contain; border-radius: 0; } }
   .star { font-size: 15px; width: 15px; height: 15px; color: var(--warning-color); }
   .shared { font-size: 15px; width: 15px; height: 15px; color: var(--text-muted); }
   .muted { color: var(--text-muted); font-variant-numeric: tabular-nums; }
@@ -75,6 +75,6 @@
   @include mobile { .hide-sm { display: none; } } }
 
 // ─── Glisser-déposer ───────────────────────────────────────────
-.drop { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border-radius: 12px;
+.drop { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); border-radius: var(--radius-md);
   border: 2px dashed var(--primary-color); background: color-mix(in srgb, var(--primary-color) 8%, var(--bg)); color: var(--primary-color); font-weight: 600; pointer-events: none;
   mat-icon { font-size: 40px; width: 40px; height: 40px; } }
