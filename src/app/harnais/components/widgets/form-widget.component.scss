@@ -1,0 +1,108 @@
+:host { display: block; padding: 0 16px; }
+
+.desc { margin: 0 0 16px; font-size: var(--hz-body); color: var(--text-secondary); line-height: 1.6; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 14px;
+  @media (max-width: 599.98px) { grid-template-columns: 1fr; }
+}
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; &.wide { grid-column: 1 / -1; } }
+.wide { grid-column: 1 / -1; }
+
+// Champs Material compacts, à l'échelle du module
+mat-form-field {
+  width: 100%;
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
+  --mat-form-field-filled-with-label-container-padding-top: 10px;
+  --mat-form-field-container-text-size: var(--hz-body);
+  --mat-form-field-outlined-label-text-size: var(--hz-body);
+  --mat-select-trigger-text-size: var(--hz-body);
+  --mat-form-field-subscript-text-size: var(--hz-meta);
+  --mat-form-field-outlined-container-shape: 10px;
+  mat-icon[matPrefix] { font-size: 18px; width: 18px; height: 18px; padding: 0 4px 0 10px; color: var(--text-muted); }
+}
+
+.label {
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-size: var(--hz-ui); font-weight: 600; color: var(--text-secondary);
+  strong { font-weight: 700; color: var(--primary-color); font-variant-numeric: tabular-nums; }
+}
+
+.segmented {
+  display: flex; padding: 3px; border-radius: 11px; background: var(--hover-bg); gap: 2px;
+  button {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 34px; border: 0; border-radius: 8px; cursor: pointer; background: transparent;
+    font: inherit; font-size: var(--hz-ui); font-weight: 600; color: var(--text-secondary);
+    mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    &.on { background: var(--card-bg); color: var(--primary-color); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12); }
+  }
+}
+
+.radios { display: flex; flex-wrap: wrap; gap: 4px 12px; --mat-radio-label-text-size: var(--hz-body); margin-left: -8px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 30px; padding: 0 12px 0 8px; border-radius: 99px; cursor: pointer;
+  border: 1px solid var(--border-color); background: transparent;
+  font: inherit; font-size: var(--hz-ui); font-weight: 500; color: var(--text-secondary);
+  mat-icon { font-size: 15px; width: 15px; height: 15px; }
+  &:hover { border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border-color)); }
+  &.on { background: var(--primary-color-light); border-color: color-mix(in srgb, var(--primary-color) 35%, transparent); color: var(--primary-color); font-weight: 600; }
+}
+
+.slider { width: 100%; margin: 0; }
+
+.stars {
+  display: flex; gap: 2px;
+  button {
+    border: 0; background: transparent; cursor: pointer; padding: 2px; color: var(--text-muted);
+    mat-icon { font-size: 26px; width: 26px; height: 26px; transition: transform 0.12s ease; }
+    &.on { color: #f59e0b; }
+    &:hover mat-icon { transform: scale(1.15); }
+  }
+}
+
+mat-checkbox { --mat-checkbox-label-text-size: var(--hz-body); margin-left: -8px; }
+
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 12px; border-radius: 10px; background: var(--hover-bg);
+}
+.toggle-label { display: flex; flex-direction: column; font-size: var(--hz-body); font-weight: 500; color: var(--text-primary);
+  small { font-size: var(--hz-meta); color: var(--text-muted); font-weight: 400; } }
+
+.field.invalid .label { color: var(--error-color); }
+
+.actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding-top: 14px; margin-top: 2px; border-top: 1px solid var(--border-color);
+  button { font-size: var(--hz-ui); }
+  button mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 6px; }
+}
+
+// ─── Récapitulatif ─────────────────────────────────────────────
+.summary {
+  margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 16px;
+  @media (max-width: 599.98px) { grid-template-columns: 1fr; }
+}
+.row { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px dashed var(--border-color); min-width: 0; }
+dt { font-size: var(--hz-micro); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+dd { margin: 0; font-size: var(--hz-body); color: var(--text-primary); overflow-wrap: anywhere; }
+.sent {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+  font-size: var(--hz-meta); font-weight: 600; color: var(--success-color-text, var(--success-color));
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+// ─── Champs avancés du kit ─────────────────────────────────────
+.req { font-style: normal; color: var(--error-color); margin-left: 2px; }
+.label:has(.req) { justify-content: flex-start; }
+.hint { font-size: var(--hz-meta); color: var(--text-muted); }
+.err { font-size: var(--hz-meta); color: var(--error-color); }
+.mat-error-hint { color: var(--error-color); }
+.field.invalid ::ng-deep .field-box { border-color: var(--error-color); }

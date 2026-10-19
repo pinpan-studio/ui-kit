@@ -1,0 +1,24 @@
+@use '../../tokens' as hz;
+
+// La modale vit dans l'overlay CDK : elle redéclare l'échelle typographique du module.
+:host { @include hz.tokens; display: flex; flex-direction: column; max-height: 86vh; font-size: var(--hz-body); }
+
+.head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 16px 14px 24px; border-bottom: 1px solid var(--border-color);
+}
+.icon {
+  width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tertiary-color-light); color: var(--tertiary-color);
+  mat-icon { font-size: 20px; width: 20px; height: 20px; }
+}
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column;
+  h2 { margin: 0; font-family: 'Outfit', sans-serif; font-size: 16px !important; font-weight: 700; color: var(--text-primary); }
+  span { font-size: var(--hz-meta); color: var(--text-muted); } }
+
+.body {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 20px 24px !important; max-height: none;
+}
+.actions { padding: 10px 16px !important; border-top: 1px solid var(--border-color); button { font-size: var(--hz-ui); } }

@@ -1,0 +1,68 @@
+<div class="user-settings-drawer">
+  <div class="sidenav-header">
+    <div class="header-icon-box">
+      <mat-icon>manage_accounts</mat-icon>
+    </div>
+    <div class="header-text">
+      <span class="app-title">Paramètres du compte</span>
+      <span class="app-subtitle">Profil & sécurité</span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button class="action-icon-btn" (click)="close()" matTooltip="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <ng-scrollbar class="settings-scrollbar" visibility="hover">
+    <div class="sidenav-menu-wrapper">
+      <div class="menu-section">
+        <div class="section-header active-section">
+          <mat-icon class="section-icon">person</mat-icon>
+          <span class="section-title">Gestion de profil</span>
+        </div>
+        <div class="section-items">
+          <button type="button" class="menu-item-btn" [class.active]="mode === '_PROFIL_'" (click)="selectMode('_PROFIL_')">
+            <div class="item-icon-box">
+              <mat-icon>badge</mat-icon>
+            </div>
+            <div class="item-content">
+              <span class="item-label">Paramètres personnels</span>
+              <span class="item-sub">Modifiez vos données personnelles</span>
+            </div>
+            <mat-icon class="item-arrow">chevron_right</mat-icon>
+          </button>
+
+          <button type="button" class="menu-item-btn" [class.active]="mode === '_RESET_PASSWORD_'" (click)="selectMode('_RESET_PASSWORD_')">
+            <div class="item-icon-box">
+              <mat-icon>lock_reset</mat-icon>
+            </div>
+            <div class="item-content">
+              <span class="item-label">Mot de passe</span>
+              <span class="item-sub">Changez votre mot de passe</span>
+            </div>
+            <mat-icon class="item-arrow">chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">power_settings_new</mat-icon>
+          <span class="section-title">Connexion</span>
+        </div>
+        <div class="section-items">
+          <button type="button" class="menu-item-btn danger-item" (click)="selectMode('_DISCONNECT_')">
+            <div class="item-icon-box danger">
+              <mat-icon>logout</mat-icon>
+            </div>
+            <div class="item-content">
+              <span class="item-label">Déconnexion</span>
+              <span class="item-sub">Fermer la session en cours</span>
+            </div>
+            <mat-icon class="item-arrow">chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-scrollbar>
+</div>

@@ -1,0 +1,136 @@
+// Carte Leaflet flat (encapsulation désactivée : Leaflet génère son DOM hors Angular).
+// Contrôles, popups et barres d'outils (Leaflet Draw, Geoman) suivent les jetons du thème clair / sombre.
+
+app-map { display: block; min-width: 0; }
+
+.kit-map {
+  position: relative; width: 100%; border-radius: var(--r-m); overflow: hidden;
+  border: 1px solid var(--border-color); background: var(--hover-bg); isolation: isolate;
+}
+.kit-map__canvas { position: absolute; inset: 0; background: var(--hover-bg); font-family: 'Inter', sans-serif; }
+.kit-map--static .kit-map__canvas { cursor: default; }
+// Fonds clairs assombris en mode sombre (OSM, Voyager, Relief)
+.kit-map--dim .leaflet-tile-pane { filter: brightness(0.72) contrast(1.08) saturate(0.85); }
+
+// ─── Sélecteur de fond ─────────────────────────────────────────────────────
+.kit-map__switch {
+  position: absolute; z-index: 800; left: 50%; bottom: 12px; transform: translateX(-50%);
+  display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-full); background: var(--card-bg); max-width: calc(100% - 24px); overflow-x: auto;
+  button {
+    border: none; background: transparent; cursor: pointer; padding: 5px 12px; border-radius: var(--r-full); white-space: nowrap;
+    font: inherit; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    &:hover:not(.active) { color: var(--text-primary); }
+    &.active { background: var(--primary-color); color: #fff; }
+  }
+}
+.kit-map__overlay { position: absolute; z-index: 800; right: 12px; bottom: 28px; pointer-events: none; > * { pointer-events: auto; } }
+
+// ─── États ────────────────────────────────────────────────────────────────
+.kit-map__state {
+  position: absolute; inset: 0; z-index: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 24px; text-align: center;
+  background: color-mix(in srgb, var(--card-bg) 88%, transparent); color: var(--text-secondary); font-size: 13px;
+  &.soft { background: color-mix(in srgb, var(--card-bg) 70%, transparent); }
+  mat-icon { font-size: 36px; width: 36px; height: 36px; color: var(--text-muted); }
+  strong { font-family: 'Outfit', sans-serif; font-size: 16px; color: var(--text-primary); }
+  button { margin-top: 6px; border: none; border-radius: var(--r-full); padding: 7px 16px; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; background: var(--primary-color); color: #fff; }
+}
+.kit-map__spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--primary-color-light); border-top-color: var(--primary-color); animation: kit-map-spin .8s linear infinite; }
+@keyframes kit-map-spin { to { transform: rotate(360deg); } }
+
+// ─── Contrôles Leaflet (zoom, échelle, attribution) ───────────────────────
+.kit-map {
+  .leaflet-bar { border: none !important; box-shadow: none !important; border-radius: 10px; overflow: hidden; background: var(--card-bg); }
+  .leaflet-bar a, .leaflet-bar a:hover {
+    width: 32px; height: 32px; line-height: 32px; border: none !important; background-color: var(--card-bg); color: var(--text-secondary);
+  }
+  .leaflet-bar a:hover { background-color: var(--hover-bg); color: var(--text-primary); }
+  .leaflet-bar a + a { border-top: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent) !important; }
+  .leaflet-bar a.leaflet-disabled { color: var(--text-muted); background-color: var(--card-bg); opacity: .6; }
+  .leaflet-control-zoom a { font-size: 18px; font-weight: 500; }
+  .leaflet-control-attribution {
+    background: color-mix(in srgb, var(--card-bg) 80%, transparent) !important; color: var(--text-muted); font-size: 10px; padding: 1px 6px; border-top-left-radius: 6px;
+    a { color: var(--text-secondary); }
+  }
+  .leaflet-control-scale-line { border: 1.5px solid var(--text-secondary); border-top: none; background: color-mix(in srgb, var(--card-bg) 80%, transparent); color: var(--text-secondary); font-size: 10px; }
+  .leaflet-container a.leaflet-popup-close-button { color: var(--text-muted); }
+  .leaflet-container { background: var(--hover-bg); }
+}
+
+// ─── Marqueurs flat ───────────────────────────────────────────────────────
+.kit-pin-wrap { background: none !important; border: none !important; }
+.kit-pin {
+  position: relative; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--pin); color: #fff; outline: 2px solid var(--card-bg); transition: transform .15s ease;
+  .material-icons { font-size: 18px; }
+  &:hover { transform: scale(1.08); }
+}
+.kit-pin__heading {
+  position: absolute; inset: -9px; pointer-events: none;
+  &::before { content: ''; position: absolute; top: 0; left: 50%; margin-left: -5px; border: 5px solid transparent; border-bottom: 7px solid var(--pin); border-top: none; }
+}
+.kit-pin--pulse::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--pin); opacity: .45; z-index: -1; animation: kit-pin-pulse 1.8s ease-out infinite;
+}
+@keyframes kit-pin-pulse { from { transform: scale(1); opacity: .45; } to { transform: scale(2.2); opacity: 0; } }
+.kit-cluster {
+  display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12.5px; font-weight: 700; color: #fff;
+  background: var(--primary-color); outline: 6px solid color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+.kit-dot { display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--card-bg); border: 3px solid var(--pin); box-sizing: border-box; &--end { background: var(--pin); } }
+
+// ─── Popups & infobulles ──────────────────────────────────────────────────
+.kit-popup {
+  .leaflet-popup-content-wrapper { border-radius: 12px; background: var(--card-bg); color: var(--text-primary); box-shadow: none; border: 1px solid var(--border-color); }
+  .leaflet-popup-content { margin: 10px 14px; font-family: 'Inter', sans-serif; }
+  .leaflet-popup-tip { background: var(--card-bg); box-shadow: none; border: 1px solid var(--border-color); }
+  .leaflet-popup-tip-container { margin-top: -1px; }
+}
+.kit-popup__body { display: flex; flex-direction: column; gap: 2px; strong { font-size: 13px; font-weight: 600; } span { font-size: 12px; color: var(--text-secondary); } }
+.leaflet-tooltip.kit-tooltip {
+  border: none; border-radius: 6px; box-shadow: none; padding: 3px 8px; font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600;
+  background: var(--text-primary); color: var(--card-bg);
+  &::before { display: none; }
+}
+
+// ─── Barre d'outils Leaflet Draw ──────────────────────────────────────────
+.kit-map {
+  .leaflet-draw-section { margin-bottom: 8px; }
+  .leaflet-draw-toolbar { margin-top: 0; }
+  .leaflet-draw-toolbar a { background-color: var(--card-bg); }
+  .leaflet-draw-toolbar a:hover { background-color: var(--hover-bg); }
+  .leaflet-draw-actions a {
+    background: var(--text-primary); color: var(--card-bg); border: none; font-family: 'Inter', sans-serif; font-size: 11.5px; height: 32px; line-height: 32px;
+    &:hover { background: var(--primary-color); color: #fff; }
+  }
+  .leaflet-draw-actions li:first-child a { border-radius: 0; }
+  .leaflet-draw-actions li:last-child a { border-radius: 0 8px 8px 0; }
+  .leaflet-draw-tooltip { background: var(--text-primary); color: var(--card-bg); border: none; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 11px; visibility: visible;
+    &::before { border-right-color: var(--text-primary); } }
+  .leaflet-draw-tooltip-subtext { color: color-mix(in srgb, var(--card-bg) 75%, transparent); }
+  .leaflet-edit-marker-selected { background: transparent; border: 2px dashed var(--primary-color); }
+  .leaflet-div-icon.leaflet-editing-icon { border-radius: 50%; border: 2px solid var(--primary-color); background: var(--card-bg); }
+}
+
+// ─── Barre d'outils Geoman ────────────────────────────────────────────────
+.kit-map {
+  .leaflet-pm-toolbar .button-container a.leaflet-buttons-control-button { background-color: var(--card-bg); border: none; }
+  .leaflet-pm-toolbar .button-container a.leaflet-buttons-control-button:hover { background-color: var(--hover-bg); }
+  .leaflet-pm-toolbar .button-container.active a.leaflet-buttons-control-button { background-color: var(--primary-color-light); }
+  .leaflet-pm-toolbar.leaflet-bar { margin-bottom: 8px; }
+  .leaflet-pm-toolbar .leaflet-pm-actions-container .leaflet-pm-action {
+    background-color: var(--text-primary); color: var(--card-bg); border: none; font-family: 'Inter', sans-serif; font-size: 11.5px;
+    &:hover { background-color: var(--primary-color); color: #fff; }
+  }
+  .leaflet-pm-toolbar .leaflet-pm-actions-container .leaflet-pm-action:last-child { border-radius: 0 8px 8px 0; }
+  .marker-icon { background: var(--card-bg); border: 2px solid var(--primary-color); box-shadow: none; }
+  .marker-icon-middle { opacity: .6; }
+}
+
+// ─── Mode sombre : icônes des barres d'outils (sprites / SVG sombres) ──────
+.dark .kit-map, .dark-theme .kit-map {
+  .leaflet-pm-toolbar .control-icon { filter: invert(1) brightness(.9); }
+  // Sprite Leaflet Draw sombre sur fond clair : on inverse le bouton entier et on part d'un fond
+  // dont l'inverse donne la surface sombre (#1f2937).
+  .leaflet-draw-toolbar a { background-color: #e0d7c8; filter: invert(1); }
+  .leaflet-draw-toolbar a:hover { background-color: #ccc4b5; }
+}

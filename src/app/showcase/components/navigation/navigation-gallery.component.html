@@ -1,0 +1,299 @@
+<kit-doc-page title="Navigation" icon="explore"
+  subtitle="Éléments de navigation du shell (sidecar rail + sous-navigation, barre d'outils, drawer droit), en-têtes de page, onglets, fil d'Ariane, pagination, stepper et menus."
+  [toc]="toc">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <kit-section id="header" title="Header (toolbar du shell)" source="layouts/app-shell · .shell-toolbar"
+    description="Barre supérieure sticky de 68px : bascule du menu, titre de page dérivé de la route, actions globales (thème, tâches du jour, notifications, paramètres, compte).">
+    <kit-demo label="Desktop" [flush]="true" [code]="code.header">
+      <mat-toolbar class="shell-toolbar demo-toolbar">
+        <button mat-icon-button><mat-icon>menu_open</mat-icon></button>
+        <span class="page-title">Clients</span>
+        <span class="spacer"></span>
+        <button mat-icon-button matTooltip="Changer de thème"><mat-icon>dark_mode</mat-icon></button>
+        <button mat-icon-button matTooltip="Mes tâches du jour"><mat-icon matBadge="7" matBadgeColor="primary">checklist</mat-icon></button>
+        <button mat-icon-button matTooltip="Notifications"><mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon></button>
+        <button mat-icon-button matTooltip="Paramètres"><mat-icon>settings</mat-icon></button>
+        <button mat-icon-button class="avatar-btn"><div class="avatar">JK</div></button>
+      </mat-toolbar>
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Déconnecté" [flush]="true">
+        <mat-toolbar class="shell-toolbar demo-toolbar">
+          <button mat-icon-button><mat-icon>menu</mat-icon></button>
+          <span class="page-title">Referentiel unique</span>
+          <span class="spacer"></span>
+          <button mat-icon-button><mat-icon>dark_mode</mat-icon></button>
+          <button mat-raised-button color="primary" class="signin-btn"><mat-icon>login</mat-icon><span>Connexion</span></button>
+        </mat-toolbar>
+      </kit-demo>
+      <kit-demo label="Mobile (titre masqué)" [flush]="true">
+        <mat-toolbar class="shell-toolbar demo-toolbar mobile">
+          <button mat-icon-button><mat-icon>menu</mat-icon></button>
+          <span class="spacer"></span>
+          <button mat-icon-button><mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon></button>
+          <button mat-icon-button class="avatar-btn"><div class="avatar">JK</div></button>
+        </mat-toolbar>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <kit-section id="sidebar" title="Sidebar" source="sidecar du shell (rail + sous-navigation) · drawer droit"
+    description="Le sidecar réunit le rail d'icônes et la sous-navigation : replié par défaut, un clic sur une icône l'active et déploie une seconde colonne avec les sous-menus du module (re-cliquer ou chevron pour replier). Le drawer droit porte le compte, les notifications et les tâches." [cols]="2">
+    <kit-demo label="Sidecar (rail + sous-navigation)" hint="cliquez une icône" [code]="code.sidecar" [muted]="true">
+      <div class="demo-sidecar" [class.open]="!!sidecarModule()">
+        <div class="sidecar-rail">
+          <div class="sidenav-header"><img src="assets/logo.png" class="brand-logo" alt="" /></div>
+          <div class="nav-rail">
+            @for (item of sidecarRail; track item._id) {
+              <button type="button" class="nav-rail-item" [class.active]="sidecarOpen() === item._id"
+                (click)="toggleSidecar(item._id)" [matTooltip]="item.libelle" matTooltipPosition="right"
+                [attr.aria-expanded]="sidecarOpen() === item._id">
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </button>
+            }
+          </div>
+          <div class="user-avatar-btn"><div class="avatar">JK</div></div>
+        </div>
+        <div class="sidecar-panel" [attr.aria-hidden]="!sidecarModule()">
+          @if (sidecarModule(); as module) {
+            <div class="sidenav-header">
+              <div class="header-icon-box"><mat-icon>{{ module.icon }}</mat-icon></div>
+              <span class="app-title">{{ module.libelle }}</span>
+              <button mat-icon-button class="close-drawer-btn" matTooltip="Masquer le menu" (click)="sidecarOpen.set(null)"><mat-icon>chevron_left</mat-icon></button>
+            </div>
+            <div class="sidenav-menu-wrapper">
+              @for (section of sidecarSections(); track section.title) {
+                <div class="menu-section">
+                  <div class="section-header active-section"><mat-icon class="section-icon">{{ section.icon }}</mat-icon><span class="section-title">{{ section.title }}</span></div>
+                  <div class="section-items">
+                    @for (sub of section.items; track sub._id) {
+                      <button type="button" class="menu-item" [class.active]="sidecarItem() === sub._id" (click)="sidecarItem.set(sub._id)"><mat-icon class="item-icon">{{ sub.icon }}</mat-icon><span class="item-label">{{ sub.libelle }}</span></button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Drawer droit (compte)" [muted]="true">
+      <div class="demo-right-drawer">
+        <div class="sidenav-inner">
+          <div class="rd-header">
+            <div class="header-icon-box"><mat-icon>manage_accounts</mat-icon></div>
+            <div class="header-text"><span class="app-title">Paramètres du compte</span><span class="app-subtitle">Profil & sécurité</span></div>
+            <span class="spacer"></span>
+            <button mat-icon-button><mat-icon>close</mat-icon></button>
+          </div>
+          <div class="rd-items">
+            <div class="rd-item active"><div class="item-icon-box"><mat-icon>badge</mat-icon></div><div class="item-content"><span class="item-label">Paramètres personnels</span><span class="item-sub">Modifiez vos données personnelles</span></div><mat-icon class="item-arrow">chevron_right</mat-icon></div>
+            <div class="rd-item"><div class="item-icon-box"><mat-icon>lock_reset</mat-icon></div><div class="item-content"><span class="item-label">Mot de passe</span><span class="item-sub">Changez votre mot de passe</span></div><mat-icon class="item-arrow">chevron_right</mat-icon></div>
+            <div class="rd-item danger"><div class="item-icon-box"><mat-icon>logout</mat-icon></div><div class="item-content"><span class="item-label">Déconnexion</span><span class="item-sub">Fermer la session en cours</span></div><mat-icon class="item-arrow">chevron_right</mat-icon></div>
+          </div>
+        </div>
+      </div>
+      <span class="caption">Version réelle : ouvrez l'application et cliquez sur l'avatar.</span>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ NAVBAR / PAGE HEADER ═══════════════ -->
+  <kit-section id="navbar" title="Navbar / en-tête de page" source=".page-header · .page-title-area · .title-row · .page-actions"
+    description="Chaque page commence par cet en-tête : bouton de bascule du menu du module, titre Outfit 22px + sous-titre, actions à droite (wrap automatique en mobile).">
+    <kit-demo label="En-tête de liste" [code]="code.pageHeader">
+      <div class="page-header demo-page-header">
+        <div class="page-title-area">
+          <div class="title-row">
+            <button mat-icon-button class="drawer-toggle-btn" matTooltip="Afficher/masquer le menu"><mat-icon>menu</mat-icon></button>
+            <div>
+              <h1>Registre des Produits</h1>
+              <p>Catalogue des offres : tarifs d'installation, d'abonnement et de désinstallation — 24 produit(s)</p>
+            </div>
+          </div>
+        </div>
+        <div class="page-actions">
+          <button mat-icon-button class="refresh-btn" matTooltip="Rafraîchir"><mat-icon>refresh</mat-icon></button>
+          <button mat-raised-button color="primary" class="create-btn"><mat-icon>add</mat-icon> Nouveau Produit</button>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="En-tête de fiche (retour + statut)">
+      <div class="page-header demo-page-header">
+        <div class="page-title-area">
+          <div class="title-row">
+            <button mat-icon-button><mat-icon>arrow_back</mat-icon></button>
+            <div>
+              <div class="breadcrumb">Clients / Fiche client</div>
+              <h1>Bolloré Logistics CI <span class="m3-badge success">Actif</span></h1>
+              <p>CLI-1043 · Abidjan, Plateau · client depuis mars 2024</p>
+            </div>
+          </div>
+        </div>
+        <div class="page-actions">
+          <button mat-stroked-button><mat-icon>edit</mat-icon> Modifier</button>
+          <button mat-flat-button color="primary"><mat-icon>add</mat-icon> Nouveau contrat</button>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ TABS ═══════════════ -->
+  <kit-section id="tabs" title="Tabs" source="mat-tab-group · .chart-tab-toggles · onglets pilule" [cols]="2">
+    <kit-demo label="mat-tab-group" [hint]="'onglet ' + (tabIndex + 1)">
+      <mat-tab-group [(selectedIndex)]="tabIndex" animationDuration="200ms">
+        <mat-tab><ng-template mat-tab-label><mat-icon class="tab-icon">info</mat-icon> Informations</ng-template>
+          <p class="tab-body">Raison sociale, contacts, adresse de facturation et gestionnaire attitré.</p></mat-tab>
+        <mat-tab><ng-template mat-tab-label><mat-icon class="tab-icon">directions_car</mat-icon> Véhicules <span class="tab-count">42</span></ng-template>
+          <p class="tab-body">Liste des véhicules équipés et état des balises.</p></mat-tab>
+        <mat-tab><ng-template mat-tab-label><mat-icon class="tab-icon">receipt_long</mat-icon> Factures</ng-template>
+          <p class="tab-body">Historique de facturation et encaissements.</p></mat-tab>
+        <mat-tab label="Archives" [disabled]="true"></mat-tab>
+      </mat-tab-group>
+    </kit-demo>
+    <kit-demo label="Onglets pilule (segmentés)">
+      <div class="chart-tab-toggles">
+        @for (t of [{ k: 'infos', l: 'Informations' }, { k: 'contrats', l: 'Contrats' }, { k: 'factures', l: 'Factures' }, { k: 'historique', l: 'Historique' }]; track t.k) {
+          <button class="tab-toggle-btn" [class.active]="pillTab() === t.k" (click)="pillTab.set(t.k)">{{ t.l }}</button>
+        }
+      </div>
+      <p class="tab-body">Contenu de l'onglet « {{ pillTab() }} ».</p>
+    </kit-demo>
+    <kit-demo label="Onglets étirés (header)">
+      <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="center">
+        <mat-tab label="Aujourd'hui"></mat-tab><mat-tab label="En retard"></mat-tab><mat-tab label="À valider"></mat-tab>
+      </mat-tab-group>
+    </kit-demo>
+    <kit-demo label="Liens de navigation (mat-tab-nav-bar)">
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        <a mat-tab-link [active]="pillTab() === 'infos'" (click)="pillTab.set('infos')">Vue d'ensemble</a>
+        <a mat-tab-link [active]="pillTab() === 'contrats'" (click)="pillTab.set('contrats')">Backlog</a>
+        <a mat-tab-link [active]="pillTab() === 'factures'" (click)="pillTab.set('factures')">Analytics</a>
+      </nav>
+      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+  <kit-section id="breadcrumb" title="Breadcrumb" source=".breadcrumb (clients/contrats, factures, intervention/equipe-technique)" [cols]="2">
+    <kit-demo label="Sur-titre majuscule (original)" [code]="code.breadcrumb">
+      <div class="breadcrumb">SC REGISTRY / CONTRATS</div>
+      <h1 class="demo-h1">Contrat CTR-2026-0042</h1>
+    </kit-demo>
+    <kit-demo label="Fil d'Ariane cliquable">
+      <nav class="crumbs" aria-label="Fil d'Ariane">
+        <a href="#" (click)="$event.preventDefault()"><mat-icon>home</mat-icon></a>
+        <mat-icon class="sep">chevron_right</mat-icon>
+        <a href="#" (click)="$event.preventDefault()">Clients</a>
+        <mat-icon class="sep">chevron_right</mat-icon>
+        <a href="#" (click)="$event.preventDefault()">Bolloré Logistics CI</a>
+        <mat-icon class="sep">chevron_right</mat-icon>
+        <span class="current">Contrat CTR-2026-0042</span>
+      </nav>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ PAGINATION ═══════════════ -->
+  <kit-section id="pagination" title="Pagination" source="app-paginator (shared) · mat-paginator"
+    description="app-paginator est utilisé par 43 écrans : taille de page, plage, première/précédente/numéros avec ellipses/suivante/dernière.">
+    <kit-demo label="Plusieurs pages" [hint]="'page ' + page() + ' · ' + pageSize() + '/page'" [code]="code.paginator">
+      <app-paginator [total]="total" [page]="page()" [itemPerPage]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]"
+        (pageChange)="page.set($event)" (pageSizeChange)="pageSize.set($event); page.set(1)" />
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Peu de pages">
+        <app-paginator [total]="42" [page]="smallPage()" [itemPerPage]="20" (pageChange)="smallPage.set($event)" />
+      </kit-demo>
+      <kit-demo label="Vide">
+        <app-paginator [total]="0" [page]="1" [itemPerPage]="20" />
+      </kit-demo>
+    </div>
+    <kit-demo label="mat-paginator (Material)">
+      <mat-paginator [length]="1284" [pageSize]="25" [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons aria-label="Pagination"></mat-paginator>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ STEPPER ═══════════════ -->
+  <kit-section id="stepper" title="Stepper" source="mat-stepper (formulaires client, mission, rôle de facturation, paiement…)">
+    <kit-demo label="Horizontal (linéaire, validation)">
+      <mat-stepper [linear]="true" #stepper>
+        <mat-step [stepControl]="stepForm1" label="Client">
+          <form [formGroup]="stepForm1" class="step-body">
+            <div class="form-field"><label class="field-label">Client *</label>
+              <div class="field-box"><mat-icon>business</mat-icon><input formControlName="client" /></div></div>
+            <div class="step-actions"><button mat-flat-button color="primary" matStepperNext>Suivant</button></div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="stepForm2" label="Période">
+          <form [formGroup]="stepForm2" class="step-body">
+            <div class="form-field"><label class="field-label">Période *</label>
+              <div class="field-box"><mat-icon>event</mat-icon><input formControlName="periode" placeholder="Ex : Octobre 2026" /></div>
+              @if (stepForm2.invalid && stepForm2.touched) { <span class="field-error">La période est requise</span> }</div>
+            <div class="step-actions"><button mat-button matStepperPrevious>Retour</button><button mat-flat-button color="primary" matStepperNext (click)="stepForm2.markAllAsTouched()">Suivant</button></div>
+          </form>
+        </mat-step>
+        <mat-step label="Récapitulatif">
+          <div class="step-body">
+            <p>Client : <strong>{{ stepForm1.value.client }}</strong> — Période : <strong>{{ stepForm2.value.periode }}</strong></p>
+            <div class="step-actions"><button mat-button matStepperPrevious>Retour</button><button mat-button (click)="stepper.reset()">Recommencer</button><button mat-flat-button color="primary">Générer</button></div>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Vertical">
+        <mat-stepper orientation="vertical">
+          <mat-step label="Informations générales" state="done" [completed]="true"><p class="tab-body">Nom, type, description.</p><button mat-button matStepperNext>Suivant</button></mat-step>
+          <mat-step label="Permissions"><p class="tab-body">Arbre des droits par module.</p><button mat-button matStepperNext>Suivant</button></mat-step>
+          <mat-step label="Membres"><p class="tab-body">Utilisateurs rattachés.</p></mat-step>
+        </mat-stepper>
+      </kit-demo>
+      <kit-demo label="Indicateur d'étapes (wizard compact)">
+        <div class="steps-indicator">
+          @for (s of ['Sélection', 'Paramètres', 'Aperçu', 'Génération']; track s; let i = $index) {
+            <div class="step" [class.done]="i < 2" [class.current]="i === 2">
+              <span class="dot">@if (i < 2) { <mat-icon>check</mat-icon> } @else { {{ i + 1 }} }</span>
+              <span class="lbl">{{ s }}</span>
+            </div>
+            @if (i < 3) { <span class="bar" [class.done]="i < 2"></span> }
+          }
+        </div>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ MENU ═══════════════ -->
+  <kit-section id="menu" title="Menu" source="mat-menu (panel m3-dropdown-menu) · .menu-danger" [cols]="3">
+    <kit-demo label="Actions de ligne">
+      <button mat-icon-button class="action-icon-btn" [matMenuTriggerFor]="rowMenu"><mat-icon>more_vert</mat-icon></button>
+      <mat-menu #rowMenu="matMenu" xPosition="before">
+        <button mat-menu-item><mat-icon>visibility</mat-icon><span>Voir la fiche</span></button>
+        <button mat-menu-item><mat-icon>edit</mat-icon><span>Modifier</span></button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="menu-danger"><mat-icon>delete</mat-icon><span>Supprimer</span></button>
+      </mat-menu>
+    </kit-demo>
+    <kit-demo label="Sous-menu">
+      <button mat-stroked-button [matMenuTriggerFor]="mainMenu"><mat-icon>swap_horiz</mat-icon> Changer le statut</button>
+      <mat-menu #mainMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="statusMenu"><mat-icon>flag</mat-icon><span>Statut</span></button>
+        <button mat-menu-item [matMenuTriggerFor]="assignMenu"><mat-icon>person</mat-icon><span>Affecter à</span></button>
+      </mat-menu>
+      <mat-menu #statusMenu="matMenu">
+        <button mat-menu-item>En cours</button><button mat-menu-item>Résolue</button><button mat-menu-item>Clôturée</button>
+      </mat-menu>
+      <mat-menu #assignMenu="matMenu">
+        <button mat-menu-item>Koffi N’Guessan</button><button mat-menu-item>Aminata Diallo</button>
+      </mat-menu>
+    </kit-demo>
+    <kit-demo label="Menu avec compteurs" hint=".option-label / .option-count">
+      <button mat-stroked-button [matMenuTriggerFor]="countMenu"><mat-icon>filter_list</mat-icon> Statut</button>
+      <mat-menu #countMenu="matMenu" class="m3-dropdown-menu">
+        <button mat-menu-item class="active"><span class="option-label">Tous</span><span class="option-count">48</span></button>
+        <button mat-menu-item><span class="option-label">Actifs</span><span class="option-count">31</span></button>
+        <button mat-menu-item><span class="option-label">Suspendus</span><span class="option-count">5</span></button>
+      </mat-menu>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

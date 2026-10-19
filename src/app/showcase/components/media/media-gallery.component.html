@@ -1,0 +1,225 @@
+<kit-doc-page title="Médias" icon="perm_media"
+  subtitle="Lecture et aperçu de fichiers sans aucune dépendance : vidéo aux contrôles maison, YouTube en mode façade, audio à forme d'onde, PDF, visionneuse universelle, carrousel et recadrage d'image. Tous les médias de démonstration sont générés localement (PDF, WAV, images canvas, vidéo MediaRecorder)."
+  [toc]="toc">
+
+  <!-- ═══════════════════════ VIDÉO ═══════════════════════ -->
+  <kit-section id="video" title="Lecteur vidéo" source="app-video-player (shared/components/media)"
+    description="Contrôles au thème du kit au-dessus d'un <video> natif : tampon, aperçu du temps au survol, volume, vitesse, sous-titres WebVTT, image dans l'image et plein écran. Raccourcis : Espace/K, J/L (±10 s), ←/→ (±5 s), ↑/↓, M, F, C." [cols]="2">
+    <kit-demo label="Avec sous-titres" hint="vidéo enregistrée depuis un canvas" [code]="code.video">
+      @switch (videoState()) {
+        @case ('loading') { <div class="gen-state"><mat-spinner diameter="28" /><span>Génération de la vidéo de démonstration…</span></div> }
+        @case ('unsupported') { <app-video-player [src]="null" emptyLabel="Ce navigateur ne sait pas enregistrer de vidéo depuis un canvas : choisissez un fichier local." /> }
+        @default { <app-video-player [src]="videoUrl()" title="Trajet CI-4521-AB" [tracks]="subtitles" /> }
+      }
+    </kit-demo>
+    <kit-demo label="Fichier local" hint="aucun envoi : URL blob">
+      <app-video-player [src]="localVideo()" poster="assets/bg.jpg" />
+      <div class="row demo-actions">
+        <button mat-stroked-button (click)="pickVideo()"><mat-icon>video_file</mat-icon>Choisir une vidéo</button>
+        @if (localVideo()) { <button mat-button (click)="localVideo.set(null)">Retirer</button> }
+      </div>
+    </kit-demo>
+    <kit-demo label="États">
+      <div class="grid-2">
+        <app-video-player [src]="null" />
+        <app-video-player src="data:video/mp4;base64,AAAA" />
+      </div>
+      <span class="caption">Vide · Format non lisible</span>
+    </kit-demo>
+    <kit-demo label="Format vertical (9:16)">
+      <div class="vertical">
+        @if (videoUrl()) { <app-video-player [src]="videoUrl()" aspectRatio="9 / 16" [loop]="true" /> }
+        @else { <app-video-player [src]="null" aspectRatio="9 / 16" /> }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ YOUTUBE ═══════════════════════ -->
+  <kit-section id="youtube" title="Lecteur YouTube" source="app-youtube-player (shared/components/media)"
+    description="Mode « façade » : seule la miniature est affichée ; l'iframe youtube-nocookie n'est chargée qu'au clic (page plus légère, pas de cookie avant interaction). Accepte une URL (watch, youtu.be, shorts, embed) ou un identifiant. Seul composant du kit à contacter un service externe, et uniquement à la demande." [cols]="2">
+    <kit-demo label="Façade (par défaut)" [code]="code.youtube">
+      <app-youtube-player [video]="ytVideos[0].id" [title]="ytVideos[0].title" [duration]="ytVideos[0].duration" />
+    </kit-demo>
+    <kit-demo label="Contrôles externes + événements" hint="API postMessage de l'embed">
+      <app-youtube-player [video]="ytVideos[1].id" [title]="ytVideos[1].title" [duration]="ytVideos[1].duration" [controls]="true" [start]="60"
+        (stateChange)="logYt($event === 'playing' ? 'lecture' : $event === 'paused' ? 'pause' : 'terminée')" />
+      @if (ytEvents().length) { <ul class="event-log">@for (e of ytEvents(); track e) { <li>{{ e }}</li> }</ul> }
+    </kit-demo>
+    <kit-demo label="Depuis une URL saisie">
+      <div class="form-field">
+        <label class="field-label">URL YouTube</label>
+        <div class="field-box"><mat-icon>smart_display</mat-icon><input [(ngModel)]="ytInput" (keydown.enter)="loadYt()" placeholder="https://youtu.be/…" />
+          <button mat-icon-button type="button" (click)="loadYt()"><mat-icon>arrow_forward</mat-icon></button></div>
+      </div>
+      <app-youtube-player class="mt" [video]="ytCurrent()" />
+    </kit-demo>
+    <kit-demo label="Liste de vidéos (tutoriels)">
+      <div class="yt-list">
+        @for (v of ytVideos; track v.id) {
+          <app-youtube-player [video]="v.id" [title]="v.title" [duration]="v.duration" />
+        }
+        <app-youtube-player video="lien-invalide" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ AUDIO ═══════════════════════ -->
+  <kit-section id="audio" title="Lecteur audio" source="app-audio-player (shared/components/media)"
+    description="Forme d'onde calculée localement (Web Audio) et cliquable pour se positionner ; ←/→ au clavier. Trois variantes : carte, note vocale compacte et playlist avec enchaînement automatique." [cols]="2">
+    <kit-demo label="Par défaut" [code]="code.audio">
+      <app-audio-player [tracks]="[tracks[0]]" />
+    </kit-demo>
+    <kit-demo label="Note vocale (compact)" hint="variant=&quot;compact&quot;">
+      <div class="chat">
+        <div class="bubble in"><span>Bonjour, le véhicule CI-4521-AB ne remonte plus depuis ce matin.</span></div>
+        <app-audio-player [tracks]="voice" variant="compact" />
+        <div class="bubble in"><span>Je passe au dépôt vers 15 h.</span></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Playlist" hint="variant=&quot;playlist&quot;">
+      <app-audio-player [tracks]="tracks" variant="playlist" />
+    </kit-demo>
+    <kit-demo label="Vide">
+      <app-audio-player [tracks]="[]" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ PDF ═══════════════════════ -->
+  <kit-section id="pdf" title="Lecteur PDF" source="app-pdf-viewer (shared/components/media)"
+    description="Rendu par le moteur PDF natif du navigateur, piloté par une barre d'outils maison : sommaire des pages, saisie de page, zoom, impression, téléchargement, plein écran. Sur les navigateurs sans lecteur intégré (mobiles), affiche un repli « Ouvrir / Télécharger ».">
+    <kit-demo label="Document multi-pages" hint="PDF de 4 pages généré en TypeScript" [code]="code.pdf" [flush]="true">
+      <app-pdf-viewer [src]="pdfUrl" [blob]="pdfBlob" name="contrat-cadre-2026.pdf" height="640px" />
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Fichier local">
+        <app-pdf-viewer [src]="localPdf()?.url ?? null" [blob]="localPdf()?.blob ?? null" [name]="localPdf()?.name ?? 'document.pdf'" height="380px" />
+        <div class="row demo-actions"><button mat-stroked-button (click)="pickPdf()"><mat-icon>upload_file</mat-icon>Choisir un PDF</button></div>
+      </kit-demo>
+      <kit-demo label="Vide">
+        <app-pdf-viewer [src]="null" name="Aucun document" height="380px" />
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ VISIONNEUSE ═══════════════════════ -->
+  <kit-section id="viewer" title="Visionneuse de fichiers" source="FileViewerService.open(files, index)"
+    description="Une seule modale plein écran pour tous les types : image (zoom molette / double-clic, glisser, rotation), PDF, vidéo, audio, texte, sinon « aperçu indisponible » avec téléchargement. Navigation ←/→ et bandeau de vignettes. Se combine avec app-file-upload.">
+    <kit-demo label="Pièces jointes" [code]="code.viewer">
+      <div class="attachments">
+        @for (f of files(); track f.url; let i = $index) {
+          <button type="button" class="attachment" (click)="openViewer(i)">
+            @if (f.type?.startsWith('image/')) { <img [src]="f.url" alt="" /> } @else { <span class="att-icon" [attr.data-kind]="icon(f)"><mat-icon>{{ icon(f) }}</mat-icon></span> }
+            <span class="att-meta"><strong>{{ f.name }}</strong><span>{{ fmtBytes(f.size ?? 0) }}</span></span>
+          </button>
+        }
+        <button type="button" class="attachment add" (click)="addFiles()"><mat-icon>add</mat-icon><span>Ouvrir des fichiers locaux</span></button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ CARROUSEL ═══════════════════════ -->
+  <kit-section id="carousel" title="Carrousel" source="app-carousel (shared/components/media)"
+    description="Images ou contenu libre via <ng-template #slide let-item>. Défilement automatique (pause au survol, onglet masqué ou bouton), boucle, glisser au doigt / à la souris, clavier ←/→, points ou vignettes, plusieurs éléments visibles." [cols]="2">
+    <kit-demo label="Autoplay + points" hint="[autoplay]=&quot;4000&quot;" [code]="code.carousel">
+      <app-carousel [items]="slides" [autoplay]="4000" />
+    </kit-demo>
+    <kit-demo label="Galerie à vignettes" hint="indicators=&quot;thumbs&quot;">
+      <app-carousel [items]="slides" indicators="thumbs" [loop]="false" />
+    </kit-demo>
+    <kit-demo label="Plusieurs éléments + contenu libre" hint="[perView]=&quot;3&quot;" [code]="code.carouselTpl">
+      <app-carousel [items]="cards" [perView]="3" [loop]="false">
+        <ng-template #slide let-item>
+          <div class="product" [attr.data-tone]="item.tone">
+            <mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><span>{{ item.price }}</span>
+          </div>
+        </ng-template>
+      </app-carousel>
+    </kit-demo>
+    <kit-demo label="Bannière (format large)">
+      <app-carousel [items]="slides.slice(1, 4)" aspectRatio="21 / 7" [arrows]="false" [autoplay]="3000" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ GALERIE D'IMAGES ═══════════════════════ -->
+  <kit-section id="image-gallery" title="Galerie d'images" source="app-image-gallery (shared/components/media)"
+    description="Trois dispositions : grille régulière (vignettes recadrées), lignes justifiées (proportions respectées, hauteur de ligne homogène, recalculée à la largeur) et masonry. Filtres par catégorie, légende au survol, sélection multiple (case à cocher ou Ctrl/⌘+clic), « Afficher plus », ouverture dans la visionneuse plein écran (zoom, rotation, ←/→).">
+    <kit-demo label="Lignes justifiées + filtres + sélection" hint="changez la disposition en haut à droite" [code]="code.imageGallery">
+      <app-image-gallery [images]="gallery" layout="justified" [rowHeight]="190" filters switcher selectable [pageSize]="10" (selectionChange)="selectedImages.set($event)">
+        <button mat-stroked-button selectionActions><mat-icon>download</mat-icon>Télécharger ({{ selectedImages().length }})</button>
+        <button mat-stroked-button selectionActions><mat-icon>delete_outline</mat-icon>Supprimer</button>
+      </app-image-gallery>
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Grille carrée" hint="layout=&quot;grid&quot;">
+        <app-image-gallery [images]="gallery.slice(0, 8)" layout="grid" [minWidth]="120" [gap]="6" />
+      </kit-demo>
+      <kit-demo label="Grille 16:9" hint="[aspectRatio]=&quot;'16 / 9'&quot;">
+        <app-image-gallery [images]="gallery.slice(4, 10)" layout="grid" [minWidth]="160" aspectRatio="16 / 9" [gap]="10" />
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ GALERIE VIDÉO ═══════════════════════ -->
+  <kit-section id="video-gallery" title="Galerie vidéo" source="app-video-gallery (shared/components/media)"
+    description="Vidéos locales (miniature extraite automatiquement de la vidéo) et YouTube (mode façade) mélangées. Mode grille : lecture dans une modale avec précédent / suivant. Mode cinéma : grand lecteur et playlist « À suivre », enchaînement automatique à la fin d'une vidéo locale.">
+    @if (videoGenerating()) { <div class="gen-inline"><mat-spinner diameter="18" />Génération des vidéos de démonstration…</div> }
+    <kit-demo label="Mode cinéma + playlist" hint="layout=&quot;theater&quot;" [code]="code.videoGallery">
+      <app-video-gallery [videos]="videoItems()" layout="theater" filters />
+    </kit-demo>
+    <kit-demo label="Mode grille" hint="clic → lecture en modale">
+      <app-video-gallery [videos]="videoItems()" layout="grid" [minCardWidth]="220" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MASONRY ═══════════════════════ -->
+  <kit-section id="masonry" title="Grille masonry" source="app-masonry-grid (shared/components/media)"
+    description="Cartes de hauteurs différentes empilées sans trous, en gardant l'ordre de lecture gauche → droite. Contenu libre via <ng-template #item>, colonnes responsives (largeur minimale) ou nombre fixe ; les hauteurs sont remesurées automatiquement (chargement d'images, redimensionnement).">
+    <kit-demo label="Cartes d'activité" [code]="code.masonry">
+      <div class="row mason-ctrl">
+        <span class="muted">Colonnes :</span>
+        <mat-button-toggle-group [value]="masonryCols()" (change)="masonryCols.set($event.value)">
+          <mat-button-toggle [value]="null">Auto</mat-button-toggle><mat-button-toggle [value]="2">2</mat-button-toggle>
+          <mat-button-toggle [value]="3">3</mat-button-toggle><mat-button-toggle [value]="4">4</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <app-masonry-grid [items]="masonryNotes" [minColumnWidth]="230" [columns]="masonryCols()">
+        <ng-template #item let-n>
+          <article class="mnote" [attr.data-tone]="n.tone">
+            <header><span class="mn-ic"><mat-icon>{{ n.icon }}</mat-icon></span><strong>{{ n.t }}</strong></header>
+            <p>{{ n.d }}</p>
+            @if (n.tags.length) { <footer>@for (t of n.tags; track t) { <span>{{ t }}</span> }</footer> }
+          </article>
+        </ng-template>
+      </app-masonry-grid>
+    </kit-demo>
+    <kit-demo label="Images (proportions d'origine)">
+      <app-masonry-grid [items]="masonryImages" [minColumnWidth]="180" [gap]="10">
+        <ng-template #item let-img let-i="index">
+          <figure class="mimg" (click)="openMasonry(i)">
+            <img [src]="img.url" [alt]="img.title" [style.aspect-ratio]="img.width + ' / ' + img.height" loading="lazy" />
+            <figcaption>{{ img.title }}</figcaption>
+          </figure>
+        </ng-template>
+      </app-masonry-grid>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ RECADRAGE ═══════════════════════ -->
+  <kit-section id="cropper" title="Recadrage d'image / avatar" source="app-image-cropper (shared/components/media)"
+    description="Recadrage 100 % local sur canvas : glisser pour cadrer, molette ou curseur pour zoomer, rotation par 90°. Cadre rond pour les avatars ou rectangulaire au ratio voulu. Complète le champ « Photo » d'app-file-upload." [cols]="2">
+    <kit-demo label="Avatar (cadre rond)" [code]="code.cropper">
+      <app-image-cropper [src]="cropSrc()" [round]="true" (cropped)="avatar.set($event)" (cancel)="avatar.set(null)" />
+      <div class="crop-result">
+        <div class="avatar-preview lg">@if (avatar()) { <img [src]="avatar()" alt="" /> } @else { <mat-icon>person</mat-icon> }</div>
+        <div class="avatar-preview">@if (avatar()) { <img [src]="avatar()" alt="" /> } @else { <mat-icon>person</mat-icon> }</div>
+        <div class="avatar-preview sm">@if (avatar()) { <img [src]="avatar()" alt="" /> } @else { <mat-icon>person</mat-icon> }</div>
+        <span class="spacer"></span>
+        <button mat-stroked-button (click)="pickCrop()"><mat-icon>image</mat-icon>Autre image</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Bannière 16:9" hint="[aspect]=&quot;16/9&quot;">
+      <app-image-cropper [src]="cropSrc()" [aspect]="16 / 9" [frameSize]="300" [outputWidth]="1280" format="image/jpeg" (cropped)="banner.set($event)" (cancel)="banner.set(null)" />
+      @if (banner()) { <img class="banner-result" [src]="banner()" alt="Bannière recadrée" /> }
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

@@ -1,0 +1,41 @@
+<div class="toolbar">
+  <button type="button" class="ghost" (click)="expandAll()"><mat-icon>unfold_more</mat-icon>Déplier</button>
+  <button type="button" class="ghost" (click)="collapseAll()"><mat-icon>unfold_less</mat-icon>Replier</button>
+  @if (selectable()) { <span class="count">{{ count() }} / {{ total() }} sélectionné(s)</span> }
+</div>
+
+<mat-tree #tree [dataSource]="nodes()" [childrenAccessor]="childrenAccessor" class="tree" [class.mono]="mono()">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="22">
+    <span class="spacer"></span>
+    @if (selectable()) {
+      <mat-checkbox [checked]="checked(node)" [disabled]="!!answered()" (change)="toggle(node)"></mat-checkbox>
+    }
+    @if (node.icon) { <mat-icon class="ic leaf">{{ node.icon }}</mat-icon> }
+    <span class="label">{{ node.label }}</span>
+    @if (node.badge) { <span class="m3-badge {{ node.badge.tone ?? 'neutral' }}">{{ node.badge.label }}</span> }
+    @if (node.meta) { <span class="meta">{{ node.meta }}</span> }
+  </mat-tree-node>
+
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding matTreeNodePaddingIndent="22" isExpandable [cdkTreeNodeTypeaheadLabel]="node.label">
+    <button type="button" class="twist" matTreeNodeToggle [attr.aria-label]="'Basculer ' + node.label">
+      <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+    </button>
+    @if (selectable()) {
+      <mat-checkbox [checked]="checked(node)" [indeterminate]="partial(node)" [disabled]="!!answered()" (change)="toggle(node)"></mat-checkbox>
+    }
+    <mat-icon class="ic">{{ node.icon ?? (tree.isExpanded(node) ? 'folder_open' : 'folder') }}</mat-icon>
+    <span class="label strong">{{ node.label }}</span>
+    @if (node.badge) { <span class="m3-badge {{ node.badge.tone ?? 'neutral' }}">{{ node.badge.label }}</span> }
+    <span class="meta">{{ node.meta ?? node.children.length }}</span>
+  </mat-tree-node>
+</mat-tree>
+
+@if (selectable()) {
+  <div class="foot">
+    @if (answered()) {
+      <span class="sent"><mat-icon>check_circle</mat-icon>Sélection envoyée</span>
+    } @else {
+      <button mat-flat-button color="primary" [disabled]="!count()" (click)="submit()"><mat-icon>send</mat-icon>{{ submitLabel() }}</button>
+    }
+  </div>
+}

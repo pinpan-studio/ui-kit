@@ -1,0 +1,33 @@
+<div class="google-auth-modal">
+  <div class="brand">
+    <img src="assets/logo.png" class="brand-logo" alt="SC Storage" />
+  </div>
+
+  <div class="intro">
+    <h2 class="intro-title">Connexion requise</h2>
+    <p class="intro-text">Connectez-vous avec votre compte Google pour accéder au référentiel unique.</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="auth-error">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="signinWithGoogle()" [disabled]="progress.loading">
+      <mat-icon>login</mat-icon>
+      Se connecter avec Google
+    </button>
+  </div>
+
+  <!-- Overlay de Connexion -->
+  @if (progress.loading) {
+    <div class="mat-overlay-spinner">
+      <mat-spinner diameter="48"></mat-spinner>
+      <div class="mat-body-2 progress-label">{{ progress.label }}</div>
+    </div>
+  }
+  <!-- Fin Overlay -->
+</div>

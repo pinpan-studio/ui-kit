@@ -1,0 +1,207 @@
+<kit-doc-page title="Boutons" icon="smart_button"
+  subtitle="Boutons Angular Material M3 tels qu'utilisés dans le projet (mat-flat-button primaire majoritaire, mat-raised-button « create-btn » des en-têtes de liste, mat-stroked-button, bouton warn) et classes maison (refresh-btn, action-icon-btn, detail-btn, toggles segmentés)."
+  [toc]="toc">
+
+  <kit-section id="variants" title="Variantes" source="mat-flat-button · mat-stroked-button · mat-button · color=&quot;warn&quot;"
+    description="Correspondance : Primary = mat-flat-button primaire ; Secondary = mat-stroked-button primaire ; Outline = mat-stroked-button neutre ; Ghost = mat-button ; Danger = warn. « Success » est une variante dérivée des jetons --success-color (pas de bouton vert dédié dans l'original).">
+    <kit-demo label="Toutes les variantes" [code]="code.variants">
+      <div class="row lg">
+        <button mat-flat-button color="primary">Primary</button>
+        <button mat-raised-button color="primary">Raised</button>
+        <button mat-stroked-button color="primary">Secondary</button>
+        <button mat-stroked-button>Outline</button>
+        <button mat-button color="primary">Ghost</button>
+        <button mat-flat-button color="warn">Danger</button>
+        <button mat-stroked-button color="warn">Danger outline</button>
+        <button mat-flat-button class="btn-success">Success</button>
+        <button mat-flat-button color="accent">Tertiary</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Avec icône (Icon + Text)">
+      <div class="row lg">
+        <button mat-flat-button color="primary"><mat-icon>save</mat-icon> Enregistrer</button>
+        <button mat-stroked-button color="primary"><mat-icon>edit</mat-icon> Modifier</button>
+        <button mat-stroked-button><mat-icon>file_download</mat-icon> Exporter</button>
+        <button mat-button color="primary"><mat-icon>visibility</mat-icon> Voir</button>
+        <button mat-stroked-button color="warn"><mat-icon>delete</mat-icon> Supprimer</button>
+        <button mat-flat-button class="btn-success"><mat-icon>check_circle</mat-icon> Valider</button>
+        <button mat-button color="primary" class="detail-btn">Fiche produit <mat-icon iconPositionEnd>arrow_forward</mat-icon></button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="states" title="États" description="Disabled, loading (spinner intégré, cliquable pour simuler), focus clavier." [cols]="2">
+    <kit-demo label="Disabled">
+      <div class="row">
+        <button mat-flat-button color="primary" disabled>Primary</button>
+        <button mat-stroked-button disabled>Outline</button>
+        <button mat-button disabled>Ghost</button>
+        <button mat-icon-button disabled><mat-icon>delete</mat-icon></button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Loading" hint="cliquez" [code]="code.loading">
+      <div class="row">
+        <button mat-flat-button color="primary" [disabled]="loading() === 'save'" (click)="simulate('save')">
+          @if (loading() === 'save') { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>save</mat-icon> }
+          <span>{{ loading() === 'save' ? 'Enregistrement…' : 'Enregistrer' }}</span>
+        </button>
+        <button mat-stroked-button color="primary" [disabled]="loading() === 'sync'" (click)="simulate('sync')">
+          <mat-icon [class.spin]="loading() === 'sync'">sync</mat-icon> Synchroniser
+        </button>
+        <button mat-icon-button class="refresh-btn" (click)="simulate('refresh')" matTooltip="Rafraîchir">
+          <mat-icon [class.spin]="loading() === 'refresh'">refresh</mat-icon>
+        </button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Pleine largeur (dialogs, auth)">
+      <div class="col">
+        <button mat-flat-button color="primary" class="w-100">Accepter et Continuer</button>
+        <button mat-stroked-button color="primary" class="w-100 mat-button-rounded">Connectez-vous par e-mail</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Connexion Google">
+      <button mat-raised-button color="primary"><mat-icon>login</mat-icon> Se connecter avec Google</button>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="icon" title="Icon buttons" source=".action-icon-btn · .refresh-btn · mat-icon-button" [cols]="3">
+    <kit-demo label="Icon button" [code]="code.icon">
+      <div class="row">
+        <button mat-icon-button matTooltip="Modifier"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="primary" matTooltip="Ajouter"><mat-icon>add_circle</mat-icon></button>
+        <button mat-icon-button color="warn" matTooltip="Supprimer"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button class="action-icon-btn" matTooltip="Options"><mat-icon>more_vert</mat-icon></button>
+      </div>
+    </kit-demo>
+    <kit-demo label="refresh-btn / view-toggle-btn">
+      <div class="row">
+        <button mat-icon-button class="refresh-btn" matTooltip="Rafraîchir"><mat-icon>refresh</mat-icon></button>
+        <button mat-icon-button class="refresh-btn" matTooltip="Filtres"><mat-icon>tune</mat-icon></button>
+        <button mat-icon-button class="refresh-btn" matTooltip="Exporter"><mat-icon>file_download</mat-icon></button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Toolbar (shell)">
+      <div class="row toolbar-like">
+        <button mat-icon-button><mat-icon>menu</mat-icon></button>
+        <span class="spacer"></span>
+        <button mat-icon-button><mat-icon>dark_mode</mat-icon></button>
+        <button mat-icon-button><mat-icon matBadge="7" matBadgeColor="primary">checklist</mat-icon></button>
+        <button mat-icon-button><mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon></button>
+        <button mat-icon-button class="avatar-btn"><div class="avatar">JK</div></button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="header" title="Actions de page" source=".page-actions · .create-btn · app-view-mode-toggle"
+    description="Groupe d'actions en haut à droite des pages liste : bascule cartes/liste, rafraîchir, créer, suppression groupée.">
+    <kit-demo label="En-tête de liste" [code]="code.header">
+      <div class="page-actions">
+        <app-view-mode-toggle [(mode)]="viewMode" />
+        <button mat-icon-button class="refresh-btn" matTooltip="Rafraîchir"><mat-icon>refresh</mat-icon></button>
+        <button mat-raised-button color="primary" class="create-btn"><mat-icon>add</mat-icon> Nouveau produit</button>
+        <button mat-stroked-button color="warn"><mat-icon>delete</mat-icon> (3)</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="En-tête de fiche (détail)">
+      <div class="row">
+        <button mat-icon-button><mat-icon>arrow_back</mat-icon></button>
+        <span class="spacer"></span>
+        <button mat-stroked-button><mat-icon>edit</mat-icon> Modifier</button>
+        <button mat-stroked-button color="warn"><mat-icon>delete</mat-icon> Supprimer</button>
+        <button mat-flat-button color="primary"><mat-icon>send</mat-icon> Envoyer</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="segmented" title="Segmentés & toggles" source=".m3-filter-toggle · .chart-tab-toggles · mat-button-toggle-group" [cols]="3">
+    <kit-demo label="m3-filter-toggle" [code]="code.segmented">
+      <div class="m3-filter-toggle">
+        <button type="button" [class.active]="period === 'month'" (click)="period = 'month'">Mois</button>
+        <button type="button" [class.active]="period === 'quarter'" (click)="period = 'quarter'">Trimestre</button>
+        <button type="button" [class.active]="period === 'year'" (click)="period = 'year'">Année</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="chart-tab-toggles">
+      <div class="chart-tab-toggles">
+        <button class="tab-toggle-btn" [class.active]="tab === 'mois'" (click)="tab = 'mois'">Mois</button>
+        <button class="tab-toggle-btn" [class.active]="tab === 'trim'" (click)="tab = 'trim'">Trimestre</button>
+        <button class="tab-toggle-btn" [class.active]="tab === 'annee'" (click)="tab = 'annee'">Année</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="app-view-mode-toggle">
+      <app-view-mode-toggle [(mode)]="viewMode" />
+      <span class="caption">mode = {{ viewMode }}</span>
+    </kit-demo>
+    <kit-demo label="Chips de filtre" hint=".filter-chip">
+      <div class="filter-chips-row demo-chips">
+        <button class="filter-chip active">Tous <span class="chip-count">48</span></button>
+        <button class="filter-chip success">Actifs <span class="chip-count">31</span></button>
+        <button class="filter-chip warning">Planifiés <span class="chip-count">6</span></button>
+        <button class="filter-chip danger">Désinstallés <span class="chip-count">4</span></button>
+      </div>
+    </kit-demo>
+    <kit-demo label="mat-button-toggle-group">
+      <mat-button-toggle-group value="day">
+        <mat-button-toggle value="day">Jour</mat-button-toggle>
+        <mat-button-toggle value="week">Semaine</mat-button-toggle>
+        <mat-button-toggle value="month">Mois</mat-button-toggle>
+      </mat-button-toggle-group>
+    </kit-demo>
+    <kit-demo label="Lien d'action (.line-action)">
+      <span class="line-action">Voir l'historique</span>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="menu" title="Menu & split" source="mat-menu · .menu-danger" [cols]="2">
+    <kit-demo label="Bouton menu" [code]="code.menu">
+      <button mat-stroked-button [matMenuTriggerFor]="exportMenu"><mat-icon>file_download</mat-icon> Exporter <mat-icon iconPositionEnd>expand_more</mat-icon></button>
+      <mat-menu #exportMenu="matMenu" xPosition="before">
+        <button mat-menu-item><mat-icon>table_view</mat-icon><span>Excel</span></button>
+        <button mat-menu-item><mat-icon>picture_as_pdf</mat-icon><span>PDF</span></button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="menu-danger"><mat-icon>delete</mat-icon><span>Supprimer</span></button>
+      </mat-menu>
+    </kit-demo>
+    <kit-demo label="Split button">
+      <div class="split">
+        <button mat-flat-button color="primary" class="split-main"><mat-icon>send</mat-icon> Envoyer</button>
+        <button mat-flat-button color="primary" class="split-toggle" [matMenuTriggerFor]="splitMenu"><mat-icon>arrow_drop_down</mat-icon></button>
+      </div>
+      <mat-menu #splitMenu="matMenu" xPosition="before">
+        <button mat-menu-item><mat-icon>schedule_send</mat-icon><span>Programmer l'envoi</span></button>
+        <button mat-menu-item><mat-icon>drafts</mat-icon><span>Enregistrer en brouillon</span></button>
+      </mat-menu>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="fab" title="FAB" source="mat-fab · mat-mini-fab" description="Non utilisés dans les écrans d'origine ; fournis pour compléter le kit avec le thème M3 du projet." [cols]="2">
+    <kit-demo label="FAB">
+      <div class="row lg">
+        <button mat-fab color="primary" aria-label="Ajouter"><mat-icon>add</mat-icon></button>
+        <button mat-mini-fab color="primary" aria-label="Modifier"><mat-icon>edit</mat-icon></button>
+        <button mat-fab extended color="primary"><mat-icon>add</mat-icon> Nouvelle mission</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Bouton d'action principale (shell)" hint=".action-main-btn">
+      <button mat-stroked-button class="action-main-btn"><mat-icon>bolt</mat-icon><span>Action rapide</span></button>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="sizes" title="Tailles & formes" description="Hauteurs : standard 40px, create-btn 42px, compact 32px ; rayons : pilule (radius-button), 10px (create-btn), arrondi complet (mat-button-rounded)." [cols]="2">
+    <kit-demo label="Hauteurs">
+      <div class="row">
+        <button mat-flat-button color="primary" class="btn-compact">Compact</button>
+        <button mat-flat-button color="primary">Standard</button>
+        <button mat-raised-button color="primary" class="create-btn">create-btn</button>
+        <button mat-flat-button color="primary" class="btn-large">Large</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Formes">
+      <div class="row">
+        <button mat-flat-button color="primary">Pilule (M3)</button>
+        <button mat-raised-button color="primary" class="create-btn">Rayon 10px</button>
+        <button mat-stroked-button color="primary" class="mat-button-rounded">mat-button-rounded</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

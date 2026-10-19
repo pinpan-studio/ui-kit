@@ -1,0 +1,98 @@
+<mat-sidenav-container class="harnais" [hasBackdrop]="compact() || narrow()">
+
+  <!-- ── Historique des conversations ── -->
+  <mat-sidenav class="pane-left" [mode]="compact() ? 'over' : 'side'" [opened]="leftOpen()" (closedStart)="leftOpen.set(false)">
+    <div class="pane">
+      <app-harnais-conversation-list
+        [conversations]="store.conversations()" [activeId]="id() ?? null"
+        (select)="open($event)" (create)="newConversation()"
+        (togglePin)="store.togglePin($event)" (remove)="remove($event)"
+        (collapse)="leftOpen.set(false)" />
+    </div>
+  </mat-sidenav>
+
+  <!-- ── Artefact / contexte / tâches ── -->
+  <mat-sidenav class="pane-right" position="end" [mode]="narrow() ? 'over' : 'side'" [opened]="rightOpen()" (closedStart)="rightOpen.set(false)">
+    <div class="pane">
+      <app-harnais-side-panel
+        [artifacts]="artifacts()" [(artifactId)]="artifactId" [(tab)]="panelTab"
+        (close)="rightOpen.set(false)" (copy)="copy($event)" />
+    </div>
+  </mat-sidenav>
+
+  <!-- ── Fil de conversation ── -->
+  <mat-sidenav-content class="center">
+    <header class="topbar">
+      @if (!leftOpen()) {
+        <button mat-icon-button class="icon-btn" matTooltip="Afficher l'historique" (click)="leftOpen.set(true)"><mat-icon>menu</mat-icon></button>
+        <button mat-icon-button class="icon-btn" matTooltip="Nouvelle conversation (⌘K)" (click)="newConversation()"><mat-icon>rate_review</mat-icon></button>
+      }
+      <div class="conv-title">
+        @if (active(); as conv) {
+          <h1>{{ conv.title }}</h1>
+          @if (conv.project) { <span class="project"><mat-icon>folder</mat-icon>{{ conv.project }}</span> }
+        } @else {
+          <h1>Nouvelle conversation</h1>
+        }
+      </div>
+      <span class="spacer"></span>
+      @if (active()) {
+        <button mat-stroked-button class="share-btn" (click)="copy('https://harnais.example/c/' + active()!.id)"><mat-icon>ios_share</mat-icon><span>Partager</span></button>
+      }
+      <button mat-icon-button class="icon-btn" [class.on]="rightOpen()" matTooltip="Artefacts, contexte et tâches" (click)="rightOpen.set(!rightOpen())">
+        <mat-icon>view_sidebar</mat-icon>
+      </button>
+      <span class="topbar-sep"></span>
+      <button mat-icon-button class="icon-btn" (click)="theme.toggle()" matTooltip="Changer de thème">
+        <mat-icon>{{ theme.mode() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      </button>
+      <app-theme-picker />
+      <a mat-icon-button class="icon-btn" routerLink="/ui-showcase" matTooltip="Retour au catalogue UI Kit"><mat-icon>widgets</mat-icon></a>
+    </header>
+
+    @if (messages().length) {
+      <div class="thread" #thread>
+        <div class="column">
+          @for (m of messages(); track m.id) {
+            <app-harnais-message
+              [message]="m" [artifacts]="artifacts()" [last]="m.id === lastAssistantId() && !generating()"
+              (openArtifact)="openArtifact($event)" (copy)="copy($event)"
+              [busy]="generating()"
+              (feedback)="store.feedback(active()!.id, m.id, $event)" (retry)="store.retry(active()!.id)"
+              (formSubmit)="store.submitForm(active()!.id, m.id, $event.index, $event.values)"
+              (choose)="store.choose(active()!.id, m.id, $event.index, $event.option)" />
+          }
+        </div>
+      </div>
+
+      <div class="dock">
+        <div class="column">
+          <app-harnais-composer
+            [models]="models" [modelId]="modelId()" (modelIdChange)="setModel($event)"
+            [generating]="generating()" placeholder="Répondre…"
+            (send)="send($event)" (stop)="store.stop()" />
+          <p class="disclaimer">Les réponses sont simulées localement — démonstration statique du UI Kit.</p>
+        </div>
+      </div>
+    } @else {
+      <!-- Accueil : salutation, saisie centrée, suggestions -->
+      <div class="welcome" #thread>
+        <div class="column">
+          <div class="hello">
+            <span class="spark"><mat-icon>auto_awesome</mat-icon></span>
+            <h2>{{ greeting }}, {{ firstName }}</h2>
+          </div>
+          <app-harnais-composer
+            [models]="models" [modelId]="modelId()" (modelIdChange)="setModel($event)"
+            [generating]="generating()" placeholder="Comment puis-je vous aider aujourd'hui ?"
+            (send)="send($event)" (stop)="store.stop()" />
+          <div class="suggestions">
+            @for (s of suggestions; track s.label) {
+              <button type="button" class="suggestion" (click)="suggest(s.prompt)"><mat-icon>{{ s.icon }}</mat-icon>{{ s.label }}</button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </mat-sidenav-content>
+</mat-sidenav-container>

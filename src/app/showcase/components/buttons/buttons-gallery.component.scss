@@ -1,0 +1,87 @@
+@import 'styles/list-page-base';
+@import '../gallery-shared';
+
+:host { display: block; }
+
+// Variante "success" dérivée des jetons (aucun équivalent direct dans l'original).
+.btn-success {
+  --mdc-filled-button-container-color: var(--success-color);
+  --mat-button-filled-container-color: var(--success-color);
+  --mdc-filled-button-label-text-color: #fff;
+  --mat-button-filled-label-text-color: #fff;
+}
+
+// Tailles : mêmes jetons pour toutes les variantes (forme et arrondi inchangés).
+.btn-compact {
+  --mat-button-filled-container-height: 32px; --mat-button-filled-horizontal-padding: 14px; --mat-button-filled-label-text-size: 12px;
+  --mat-button-protected-container-height: 32px; --mat-button-protected-horizontal-padding: 14px; --mat-button-protected-label-text-size: 12px;
+  --mat-button-outlined-container-height: 32px; --mat-button-outlined-horizontal-padding: 14px; --mat-button-outlined-label-text-size: 12px;
+  --mat-button-text-container-height: 32px; --mat-button-text-horizontal-padding: 14px; --mat-button-text-label-text-size: 12px;
+}
+.btn-large {
+  --mat-button-filled-container-height: 48px; --mat-button-filled-horizontal-padding: 28px; --mat-button-filled-label-text-size: 15px;
+  --mat-button-protected-container-height: 48px; --mat-button-protected-horizontal-padding: 28px; --mat-button-protected-label-text-size: 15px;
+  --mat-button-outlined-container-height: 48px; --mat-button-outlined-horizontal-padding: 28px; --mat-button-outlined-label-text-size: 15px;
+  --mat-button-text-container-height: 48px; --mat-button-text-horizontal-padding: 28px; --mat-button-text-label-text-size: 15px;
+}
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+mat-spinner { display: inline-block; margin-right: 8px; vertical-align: middle; }
+
+.toolbar-like {
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: var(--r-m);
+  background: var(--bg);
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-color); color: #fff; font-size: 12px; font-weight: 700;
+  }
+}
+
+// Reproduction des chips de filtre (clients/client-detail.component.scss)
+.demo-chips { margin-bottom: 0; }
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--r-full);
+  border: 0;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  .chip-count { font-size: 11px; padding: 0 6px; border-radius: 99px; background: var(--hover-bg); }
+  &.active { background: var(--primary-color-light); border-color: var(--primary-color); color: var(--primary-color); }
+  &.success .chip-count { background: var(--success-color-light); color: var(--success-color-text); }
+  &.warning .chip-count { background: var(--warning-color-light); color: var(--warning-color-text); }
+  &.danger .chip-count { background: var(--error-color-light); color: var(--error-color-text); }
+}
+
+.split {
+  display: inline-flex;
+  // Coins intérieurs droits : priment sur l'arrondi global des boutons (styles.scss).
+  .split-main {
+    --mat-button-filled-container-shape: var(--radius-button) 0 0 var(--radius-button);
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+  .split-toggle {
+    min-width: 40px;
+    --mat-button-filled-horizontal-padding: 0;
+    --mat-button-filled-container-shape: 0 var(--radius-button) var(--radius-button) 0;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
+    > .mat-icon { margin: 0; }
+  }
+}
+
+.action-main-btn { border-radius: var(--radius-button); }

@@ -1,0 +1,56 @@
+<div class="vg" [class.theater]="layout() === 'theater'">
+  @if (filters() && categories().length) {
+    <div class="vg-chips" role="tablist">
+      <button type="button" role="tab" [class.on]="!category()" (click)="category.set(null)">Toutes</button>
+      @for (c of categories(); track c) { <button type="button" role="tab" [class.on]="category() === c" (click)="category.set(c)">{{ c }}</button> }
+    </div>
+  }
+
+  @if (layout() === 'theater') {
+    <div class="vg-theater">
+      <div class="vg-main">
+        @if (current(); as v) {
+          @if (v.youtube) { <app-youtube-player [video]="v.youtube" [title]="v.title" [duration]="v.duration ?? ''" /> }
+          @else { <app-video-player [src]="v.src ?? null" [poster]="thumb(v) ?? ''" [title]="v.title" [autoplay]="autoplayNext() && started()" (ended)="onEnded()" /> }
+          <div class="vg-now">
+            <strong>{{ v.title }}</strong>
+            <span>@if (v.author) { {{ v.author }} · }{{ v.meta || v.category }}</span>
+            @if (v.description) { <p>{{ v.description }}</p> }
+          </div>
+        } @else { <div class="vg-empty"><mat-icon>video_library</mat-icon>Aucune vidéo</div> }
+      </div>
+      <aside class="vg-list" aria-label="Playlist">
+        <div class="vg-list-head"><strong>À suivre</strong><span>{{ filtered().length }} vidéo(s)</span></div>
+        @for (v of filtered(); track v.id; let i = $index) {
+          <button type="button" class="vg-item" [class.active]="v.id === current()?.id" (click)="select(v)">
+            <span class="vg-num">@if (v.id === current()?.id) { <mat-icon>equalizer</mat-icon> } @else { {{ i + 1 }} }</span>
+            <span class="vg-thumb sm">
+              @if (thumb(v); as t) { <img [src]="t" alt="" loading="lazy" /> } @else { <mat-icon>movie</mat-icon> }
+              @if (v.duration) { <em>{{ v.duration }}</em> }
+            </span>
+            <span class="vg-text"><strong>{{ v.title }}</strong><span>{{ v.author || v.category }}</span></span>
+          </button>
+        }
+      </aside>
+    </div>
+  } @else {
+    <div class="vg-grid" [style.grid-template-columns]="'repeat(auto-fill, minmax(min(100%, ' + minCardWidth() + 'px), 1fr))'">
+      @for (v of filtered(); track v.id) {
+        <button type="button" class="vg-card" (click)="select(v)" [attr.aria-label]="'Lire : ' + v.title">
+          <span class="vg-thumb">
+            @if (thumb(v); as t) { <img [src]="t" alt="" loading="lazy" /> } @else { <span class="vg-ph"><mat-icon>movie</mat-icon></span> }
+            <span class="vg-play"><mat-icon>play_arrow</mat-icon></span>
+            @if (v.duration) { <em>{{ v.duration }}</em> }
+            @if (v.youtube) { <span class="vg-src"><mat-icon>smart_display</mat-icon>YouTube</span> }
+          </span>
+          <span class="vg-text">
+            <strong>{{ v.title }}</strong>
+            <span>@if (v.author) { {{ v.author }} }@if (v.author && (v.meta || v.category)) { · }{{ v.meta || v.category }}</span>
+          </span>
+        </button>
+      } @empty {
+        <div class="vg-empty"><mat-icon>video_library</mat-icon>Aucune vidéo dans cette catégorie.</div>
+      }
+    </div>
+  }
+</div>

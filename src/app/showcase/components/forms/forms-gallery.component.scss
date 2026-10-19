@@ -1,0 +1,118 @@
+@import 'styles/breakpoints';
+@import 'styles/entity-list';
+@import '../gallery-shared';
+
+// États de démonstration complémentaires au motif .field-box global
+// (le projet d'origine affiche les erreurs via .field-error sous le champ).
+.form-field .field-box {
+  &.is-focused {
+    background: var(--card-bg);
+    border-color: var(--mat-sys-primary, var(--primary-color));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary, var(--primary-color)) 15%, transparent);
+  }
+  &.is-readonly { background: transparent; border-style: dashed; }
+  &.field-invalid {
+    border-color: var(--error-color);
+    &:focus-within { box-shadow: 0 0 0 3px var(--error-color-light); }
+    > mat-icon { color: var(--error-color); }
+  }
+  &.field-valid {
+    border-color: var(--success-color);
+    > mat-icon { color: var(--success-color-text, var(--success-color)); }
+  }
+  .state-icon.ok { color: var(--success-color) !important; }
+  .unit { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  select { appearance: auto; }
+}
+
+.req { color: var(--error-color); }
+.field-hint.right { text-align: right; }
+
+.inline-cal { max-width: 320px; padding: 0 !important; box-shadow: none !important; border: 0 !important; }
+
+// Libellé des chips un peu plus petit
+.form-chips { --mat-chip-label-text-size: 12px; --mdc-chip-label-text-size: 12px; }
+
+.stack { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.stack.indent { padding-left: 28px; gap: 0; }
+
+.choice-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  @include mobile { grid-template-columns: 1fr; }
+
+  .choice-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 14px;
+    border-radius: var(--r-m);
+    border: 0;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    mat-icon { color: var(--text-secondary); }
+    span { font-size: 12px; color: var(--text-muted); }
+    &:hover { border-color: var(--primary-color); }
+    &.active {
+      border-color: var(--primary-color);
+      background: var(--primary-color-light);
+      box-shadow: 0 0 0 1px var(--primary-color) inset;
+      mat-icon, strong { color: var(--primary-color); }
+    }
+  }
+}
+
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 16px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--r-l);
+  background: var(--hover-bg);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  mat-icon { font-size: 36px; width: 36px; height: 36px; color: var(--primary-color); }
+  span { font-size: 12px; color: var(--text-muted); }
+  &:hover { border-color: var(--primary-color); background: var(--primary-color-light); }
+}
+
+.result-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--space-m);
+  .more { font-size: 12px; color: var(--text-muted); align-self: center; }
+}
+
+.toolbar-search-filters { margin-bottom: 0; }
+
+.validation-form {
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: var(--space-l);
+    padding-top: var(--space-m);
+    border-top: 0;
+    flex-wrap: wrap;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warning-color-text);
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+    &.ok { color: var(--success-color-text); }
+  }
+}

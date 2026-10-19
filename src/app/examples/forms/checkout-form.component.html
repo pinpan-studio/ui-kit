@@ -1,0 +1,117 @@
+<ex-app-shell nav="topnav" title="Commande">
+  <ol class="steps" aria-label="Étapes">
+    @for (s of steps; track s; let i = $index) {
+      <li [class.done]="i === 0 || state() === 'done'" [class.on]="(i === 1 && state() !== 'done') || (i === 2 && state() === 'done')">
+        <span class="dot">@if (i === 0 || (state() === 'done' && i < 2)) { <mat-icon>check</mat-icon> } @else { {{ i + 1 }} }</span>{{ s }}
+      </li>
+    }
+  </ol>
+
+  @if (state() === 'done') {
+    <section class="card done">
+      <app-result status="success" icon="check" title="Commande confirmée">
+        <p class="result-text">Commande <code>CMD-2026-10482</code> · {{ total() | number: '1.0-0' }} FCFA payés via {{ payLabel() }}. Un SMS de suivi a été envoyé au {{ m.phone }}.</p>
+        <div class="track"><app-qr-code value="https://scstorage.ci/suivi/CMD-2026-10482" [size]="120" caption="Suivi de livraison" /></div>
+        <div actions><button mat-flat-button color="primary" (click)="state.set('form')">Retour à la boutique</button></div>
+      </app-result>
+    </section>
+  } @else {
+    <div class="layout">
+      <form class="main" (ngSubmit)="placeOrder()">
+        <section class="card section">
+          <h2><span class="num">1</span>Coordonnées</h2>
+          <div class="row-2">
+            <div class="form-field"><label class="field-label">E-mail</label><div class="field-box"><mat-icon>mail</mat-icon><input name="email" type="email" [(ngModel)]="m.email" autocomplete="email" /></div></div>
+            <div class="form-field"><label class="field-label">Téléphone</label><div class="field-box"><span class="prefix">+225</span><input name="phone" type="tel" [(ngModel)]="m.phone" autocomplete="tel-national" /></div><span class="help">Pour le livreur et le suivi par SMS.</span></div>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2><span class="num">2</span>Livraison</h2>
+          <div class="row-2">
+            <div class="form-field"><label class="field-label">Destinataire</label><div class="field-box"><mat-icon>person</mat-icon><input name="name" [(ngModel)]="m.name" autocomplete="name" /></div></div>
+            <div class="form-field"><label class="field-label">Ville</label>
+              <div class="field-box select-box"><mat-icon>location_city</mat-icon>
+                <mat-select name="city" [(ngModel)]="m.city" panelClass="m3-dropdown-menu">@for (c of ['Abidjan', 'Bouaké', 'San Pedro', 'Yamoussoukro']; track c) { <mat-option [value]="c">{{ c }}</mat-option> }</mat-select>
+              </div></div>
+          </div>
+          <div class="form-field"><label class="field-label">Adresse</label><div class="field-box"><mat-icon>home</mat-icon><input name="address" [(ngModel)]="m.address" autocomplete="street-address" /></div></div>
+          <div class="form-field"><label class="field-label">Indications pour le livreur <span class="help">(facultatif)</span></label><div class="field-box textarea-box"><textarea name="notes" rows="2" [(ngModel)]="m.notes" placeholder="Portail bleu, à côté de la pharmacie…"></textarea></div></div>
+          <div class="choices" role="radiogroup" aria-label="Mode de livraison">
+            @for (s of shippings; track s.id) {
+              <button type="button" role="radio" class="choice" [class.on]="shipping === s.id" [attr.aria-checked]="shipping === s.id" (click)="shipping = s.id">
+                <span class="c-ic"><mat-icon>{{ s.icon }}</mat-icon></span>
+                <span class="c-txt"><strong>{{ s.label }}</strong><small>{{ s.hint }}</small><b class="price">{{ s.price ? (s.price | number: '1.0-0') + ' FCFA' : 'Gratuit' }}</b></span>
+                <span class="mark"></span>
+              </button>
+            }
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2><span class="num">3</span>Paiement</h2>
+          <div class="choices pays" role="radiogroup" aria-label="Moyen de paiement">
+            @for (p of pays; track p.id) {
+              <button type="button" role="radio" class="choice" [class.on]="pay() === p.id" [attr.aria-checked]="pay() === p.id" (click)="pay.set(p.id)">
+                <span class="c-ic brand" [style.background]="p.color">{{ p.mark }}</span>
+                <span class="c-txt"><strong>{{ p.label }}</strong><small>{{ p.hint }}</small></span>
+                <span class="mark"></span>
+              </button>
+            }
+          </div>
+          @if (pay() === 'card') {
+            <div class="card-fields">
+              <div class="form-field"><label class="field-label">Numéro de carte</label><div class="field-box"><mat-icon>credit_card</mat-icon><input name="card" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" [ngModel]="m.card" (ngModelChange)="formatCard($event)" /></div></div>
+              <div class="row-2">
+                <div class="form-field"><label class="field-label">Expiration</label><div class="field-box"><input name="exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / AA" [ngModel]="m.exp" (ngModelChange)="formatExp($event)" /></div></div>
+                <div class="form-field"><label class="field-label">Cryptogramme</label><div class="field-box"><input name="cvc" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" [(ngModel)]="m.cvc" /><mat-icon matTooltip="3 chiffres au dos de la carte">help_outline</mat-icon></div></div>
+              </div>
+            </div>
+          } @else {
+            <div class="form-field"><label class="field-label">Numéro {{ payLabel() }}</label><div class="field-box"><span class="prefix">+225</span><input name="momo" type="tel" [(ngModel)]="m.momo" /></div>
+              <span class="help">Vous recevrez une demande de confirmation sur ce numéro. Gardez votre téléphone à portée de main.</span></div>
+          }
+          <mat-checkbox name="same" [(ngModel)]="m.sameBilling" color="primary">Adresse de facturation identique</mat-checkbox>
+          <mat-checkbox name="save" [(ngModel)]="m.save" color="primary">Enregistrer ces informations pour mes prochaines commandes</mat-checkbox>
+        </section>
+
+        <button mat-flat-button color="primary" type="submit" class="pay-btn" [disabled]="state() === 'waiting' || !items().length">
+          @if (state() === 'waiting') { <mat-spinner diameter="18" /> } @else { <ng-container>Payer {{ total() | number: '1.0-0' }} FCFA</ng-container> }
+        </button>
+        @if (state() === 'waiting' && pay() !== 'card') {
+          <div class="waiting card"><mat-icon>smartphone</mat-icon><span><strong>Confirmez le paiement sur votre téléphone</strong><small>Saisissez votre code secret dans la fenêtre qui s’affiche (+225 {{ m.momo }}).</small></span></div>
+        }
+      </form>
+
+      <aside class="summary card" [class.open]="summaryOpen()">
+        <button type="button" class="sum-toggle" (click)="summaryOpen.set(!summaryOpen())">
+          <mat-icon>shopping_bag</mat-icon>{{ summaryOpen() ? 'Masquer' : 'Afficher' }} le récapitulatif ({{ count() }})<span class="spacer"></span><strong>{{ total() | number: '1.0-0' }} F</strong>
+        </button>
+        <div class="sum-body">
+          <h2>Récapitulatif</h2>
+          @for (it of items(); track it.name; let i = $index) {
+            <div class="item">
+              <span class="thumb" [style.--h]="it.hue"><mat-icon>{{ it.icon }}</mat-icon></span>
+              <span class="it-txt"><strong>{{ it.name }}</strong><small>{{ it.variant }}</small>
+                <app-number-stepper compact [min]="0" [max]="9" [ngModel]="it.qty" (ngModelChange)="setQty(i, $event)" /></span>
+              <span class="it-price">{{ it.price * it.qty | number: '1.0-0' }} F<button type="button" (click)="remove(i)" aria-label="Retirer"><mat-icon>delete_outline</mat-icon></button></span>
+            </div>
+          }
+          <div class="promo">
+            <div class="field-box"><mat-icon>sell</mat-icon><input [(ngModel)]="promo" placeholder="Code promo (AKWABA10)" (keydown.enter)="applyPromo()" /></div>
+            <button mat-stroked-button (click)="applyPromo()">Appliquer</button>
+          </div>
+          @if (promoMsg() === 'ok') { <span class="promo-ok"><mat-icon>check_circle</mat-icon>Code AKWABA10 : −10 %</span> }
+          @if (promoMsg() === 'ko') { <span class="err"><mat-icon>error</mat-icon>Code inconnu ou expiré.</span> }
+          <dl class="totals">
+            <dt>Sous-total</dt><dd>{{ subtotal() | number: '1.0-0' }} F</dd>
+            @if (discount()) { <dt>Remise</dt><dd class="disc">− {{ discount() | number: '1.0-0' }} F</dd> }
+            <dt>Livraison</dt><dd>{{ shippingPrice() ? (shippingPrice() | number: '1.0-0') + ' F' : 'Gratuite' }}</dd>
+            <dt class="tot">Total TTC</dt><dd class="tot">{{ total() | number: '1.0-0' }} FCFA</dd>
+          </dl>
+          <p class="secure"><mat-icon>verified_user</mat-icon>Paiement sécurisé · retours gratuits sous 14 jours</p>
+        </div>
+      </aside>
+    </div>
+  }
+</ex-app-shell>

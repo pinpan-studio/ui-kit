@@ -1,0 +1,15 @@
+// Échelle typographique du module Harnais.
+// Incluse sur l'hôte du module et sur les éléments rendus dans l'overlay CDK (menus, modales),
+// qui n'héritent pas des variables de l'hôte.
+@mixin tokens {
+  --hz-micro: 10.5px;   // sur-titres en capitales, badges
+  --hz-meta: 11px;      // métadonnées, heures, chemins
+  --hz-ui: 12px;        // libellés, boutons, onglets
+  --hz-body: 12.5px;    // listes, titres d'éléments
+  --hz-read: 13.5px;    // texte de lecture (messages, saisie)
+  --hz-code: 11.5px;
+  --hz-title: 13px;     // titre de conversation
+  --hz-brand: 15px;
+  --hz-stat: 20px;      // chiffres clés (comme les h2 du catalogue)
+  --hz-display: clamp(22px, 2.4vw, 28px); // salutation (comme les h1 du catalogue)
+}

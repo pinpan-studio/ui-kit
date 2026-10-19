@@ -1,0 +1,307 @@
+<div [class]="'auth layout-' + layout() + ' screen-' + screen()">
+  @switch (layout()) {
+    @case ('centered') {
+      <div class="decor" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+      <main class="panel card">
+        <ng-container *ngTemplateOutlet="brand" />
+        <ng-container *ngTemplateOutlet="form" />
+      </main>
+      <ng-container *ngTemplateOutlet="legal" />
+    }
+    @case ('split-right') {
+      <aside class="visual">
+        <ng-container *ngTemplateOutlet="brand; context: { light: true }" />
+        <div class="pitch">
+          <h2>Pilotez toute votre activité depuis un seul espace.</h2>
+          <p>Clients, facturation, stocks et planning réunis dans une interface claire, sur ordinateur comme sur mobile.</p>
+          <ul>
+            <li><mat-icon>bolt</mat-icon>Mise en route en 5 minutes</li>
+            <li><mat-icon>shield</mat-icon>Données chiffrées et sauvegardées</li>
+            <li><mat-icon>devices</mat-icon>Accessible partout, même hors ligne</li>
+          </ul>
+        </div>
+        <div class="float-card fc-1"><mat-icon>trending_up</mat-icon><div><strong>+18 %</strong><span>Encaissements</span></div></div>
+        <div class="float-card fc-2"><span class="avatars"><i>AK</i><i>MT</i><i>FD</i></span><div><strong>2 400+</strong><span>équipes actives</span></div></div>
+      </aside>
+      <main class="panel side">
+        <ng-container *ngTemplateOutlet="brand; context: { compact: true }" />
+        <ng-container *ngTemplateOutlet="form" />
+        <ng-container *ngTemplateOutlet="legal" />
+      </main>
+    }
+    @case ('split-left') {
+      <main class="panel side">
+        <ng-container *ngTemplateOutlet="brand" />
+        <ng-container *ngTemplateOutlet="form" />
+        <ng-container *ngTemplateOutlet="legal" />
+      </main>
+      <aside class="visual testimonial">
+        <div class="grid-deco" aria-hidden="true"></div>
+        <figure>
+          <mat-icon class="quote">format_quote</mat-icon>
+          <blockquote>Nous avons divisé par deux le temps passé sur la facturation. L’équipe terrain met à jour le planning depuis son téléphone.</blockquote>
+          <figcaption><span class="ava">AK</span><span><strong>Aya Koné</strong><small>Directrice des opérations, Sotra Logistique</small></span></figcaption>
+        </figure>
+        <div class="stats">
+          <div><strong>98 %</strong><span>de satisfaction</span></div>
+          <div><strong>4,9/5</strong><span>sur 1 200 avis</span></div>
+          <div><strong>24/7</strong><span>support local</span></div>
+        </div>
+      </aside>
+    }
+    @case ('image') {
+      <div class="photo" aria-hidden="true"></div>
+      <div class="caption">
+        <ng-container *ngTemplateOutlet="brand; context: { light: true }" />
+        <p>Entrepôt de Vridi · Abidjan</p>
+      </div>
+      <main class="panel glass">
+        <ng-container *ngTemplateOutlet="form" />
+      </main>
+    }
+    @case ('minimal') {
+      <header class="topline">
+        <ng-container *ngTemplateOutlet="brand; context: { compact: true }" />
+        <span class="spacer"></span>
+        <a class="link" routerLink="/examples/auth/register">Créer un compte</a>
+      </header>
+      <main class="panel bare">
+        <ng-container *ngTemplateOutlet="form" />
+      </main>
+      <ng-container *ngTemplateOutlet="legal" />
+    }
+  }
+</div>
+
+<!-- ═══ Marque ═══ -->
+<ng-template #brand let-light="light" let-compact="compact">
+  <div class="brand" [class.light]="light" [class.compact]="compact">
+    <img [src]="light ? 'assets/logo-white.png' : 'assets/logo.png'" alt="" />
+    <span>SC Storage</span>
+  </div>
+</ng-template>
+
+<ng-template #legal>
+  <footer class="legal">© {{ year }} SC Storage · <a href="#" (click)="$event.preventDefault()">Confidentialité</a> · <a href="#" (click)="$event.preventDefault()">Conditions</a></footer>
+</ng-template>
+
+<!-- ═══ Formulaires ═══ -->
+<ng-template #form>
+  <div class="form">
+    @if (done()) {
+      <div class="success">
+        <span class="ok"><mat-icon>{{ screen() === 'forgot' ? 'mark_email_read' : 'check' }}</mat-icon></span>
+        @switch (screen()) {
+          @case ('forgot') { <h1>Vérifiez votre boîte mail</h1><p>Un lien de réinitialisation a été envoyé à <strong>{{ email }}</strong>. Il expire dans 30 minutes.</p> }
+          @case ('register') { <h1>Compte créé</h1><p>Bienvenue {{ reg.firstName }} ! Un e-mail de confirmation a été envoyé à <strong>{{ reg.email }}</strong>.</p> }
+          @default {
+            <h1>Connexion réussie</h1>
+            @if (ssoUsed(); as p) { <p class="via"><ex-provider-icon [provider]="p" /> Connecté avec {{ providers[p].label }}@if (screen() === 'accounts') { · {{ email }} }</p> }
+            <p>Redirection vers votre espace… (démonstration statique, aucune session n’est ouverte).</p>
+          }
+        }
+        <button mat-flat-button color="primary" class="submit" (click)="reset()"><mat-icon>replay</mat-icon>Recommencer la démo</button>
+      </div>
+    } @else {
+      @switch (screen()) {
+
+        @case ('login') {
+          <div class="head">
+            <h1>{{ layout() === 'minimal' ? 'Connexion' : 'Bon retour !' }}</h1>
+            <p>Connectez-vous pour accéder à votre espace.</p>
+          </div>
+          @if (sso()?.top) { <ng-container *ngTemplateOutlet="ssoTpl" /><div class="divider"><span>ou avec votre e-mail</span></div> }
+          <form (ngSubmit)="login()" class="fields">
+            <div class="form-field">
+              <label class="field-label" for="email">Adresse e-mail</label>
+              <div class="field-box"><mat-icon>mail</mat-icon><input id="email" name="email" type="email" autocomplete="username" [(ngModel)]="email" placeholder="nom@entreprise.ci" /></div>
+            </div>
+            <div class="form-field">
+              <div class="label-row"><label class="field-label" for="pwd">Mot de passe</label><a routerLink="/examples/auth/forgot" class="link small">Mot de passe oublié ?</a></div>
+              <div class="field-box"><mat-icon>lock</mat-icon>
+                <input id="pwd" name="password" [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="password" placeholder="Essayez « demo »" />
+                <button mat-icon-button type="button" (click)="showPassword.set(!showPassword())" [attr.aria-label]="showPassword() ? 'Masquer' : 'Afficher'"><mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+              </div>
+            </div>
+            <mat-checkbox name="remember" [(ngModel)]="remember" color="primary">Rester connecté</mat-checkbox>
+            <ng-container *ngTemplateOutlet="errorTpl" />
+            <button mat-flat-button color="primary" class="submit" type="submit" [disabled]="busy()">
+              @if (busy()) { <mat-spinner diameter="18" /> } @else { Se connecter }
+            </button>
+          </form>
+          @if (sso() && !sso()!.top) { <div class="divider"><span>{{ sso()!.style === 'icons' ? 'ou continuer avec' : 'ou' }}</span></div><ng-container *ngTemplateOutlet="ssoTpl" /> }
+          <p class="alt">Pas encore de compte ? <a routerLink="/examples/auth/register" class="link">Créer un compte</a></p>
+        }
+
+        @case ('register') {
+          <div class="head">
+            <h1>Créer votre compte</h1>
+            <p>Essai gratuit de 30 jours, sans carte bancaire.</p>
+          </div>
+          @if (step() === 0 && sso()) { <ng-container *ngTemplateOutlet="ssoTpl; context: { verb: 'S’inscrire avec' }" /><div class="divider"><span>ou avec votre e-mail</span></div> }
+          <ol class="stepper">
+            @for (s of steps; track s; let i = $index) {
+              <li [class.on]="i === step()" [class.done]="i < step()">
+                <span class="dot">@if (i < step()) { <mat-icon>check</mat-icon> } @else { {{ i + 1 }} }</span><span class="lbl">{{ s }}</span>
+              </li>
+            }
+          </ol>
+          <form (ngSubmit)="nextStep()" class="fields">
+            @switch (step()) {
+              @case (0) {
+                <div class="row-2">
+                  <div class="form-field"><label class="field-label">Prénom</label><div class="field-box"><input name="fn" [(ngModel)]="reg.firstName" placeholder="Jean" /></div></div>
+                  <div class="form-field"><label class="field-label">Nom</label><div class="field-box"><input name="ln" [(ngModel)]="reg.lastName" placeholder="Kouassi" /></div></div>
+                </div>
+                <div class="form-field"><label class="field-label">E-mail professionnel</label><div class="field-box"><mat-icon>mail</mat-icon><input name="em" type="email" [(ngModel)]="reg.email" placeholder="nom@entreprise.ci" /></div></div>
+              }
+              @case (1) {
+                <div class="form-field"><label class="field-label">Mot de passe</label><app-password-field name="pw" [(ngModel)]="reg.password" generator showRulesEmpty /></div>
+              }
+              @case (2) {
+                <div class="form-field"><label class="field-label">Organisation</label><div class="field-box"><mat-icon>business</mat-icon><input name="co" [(ngModel)]="reg.company" placeholder="Ex : Sotra Logistique" /></div></div>
+                <div class="form-field"><label class="field-label">Taille de l’équipe</label>
+                  <div class="sizes">
+                    @for (s of ['1-10', '11-50', '51-200', '200+']; track s) {
+                      <button type="button" [class.on]="reg.size === s" (click)="reg.size = s">{{ s }}</button>
+                    }
+                  </div>
+                </div>
+                <mat-checkbox name="terms" [(ngModel)]="reg.terms" color="primary">J’accepte les <a href="#" class="link" (click)="$event.preventDefault()">conditions d’utilisation</a></mat-checkbox>
+              }
+            }
+            <ng-container *ngTemplateOutlet="errorTpl" />
+            <div class="actions">
+              @if (step() > 0) { <button mat-stroked-button type="button" (click)="step.set(step() - 1); error.set('')">Retour</button> }
+              <button mat-flat-button color="primary" class="submit grow" type="submit" [disabled]="busy()">
+                @if (busy()) { <mat-spinner diameter="18" /> } @else { {{ step() < steps.length - 1 ? 'Continuer' : 'Créer mon compte' }} }
+              </button>
+            </div>
+          </form>
+          <p class="alt">Déjà inscrit ? <a routerLink="/examples/auth/split-right" class="link">Se connecter</a></p>
+        }
+
+        @case ('forgot') {
+          <span class="hero-icon"><mat-icon>key</mat-icon></span>
+          <div class="head center">
+            <h1>Mot de passe oublié ?</h1>
+            <p>Saisissez votre adresse e-mail, nous vous enverrons un lien pour en choisir un nouveau.</p>
+          </div>
+          <form (ngSubmit)="forgot()" class="fields">
+            <div class="form-field"><label class="field-label">Adresse e-mail</label><div class="field-box"><mat-icon>mail</mat-icon><input name="email" type="email" [(ngModel)]="email" /></div></div>
+            <ng-container *ngTemplateOutlet="errorTpl" />
+            <button mat-flat-button color="primary" class="submit" type="submit" [disabled]="busy()">
+              @if (busy()) { <mat-spinner diameter="18" /> } @else { Envoyer le lien }
+            </button>
+          </form>
+          <a routerLink="/examples/auth/centered" class="back-link"><mat-icon>arrow_back</mat-icon>Retour à la connexion</a>
+        }
+
+        @case ('otp') {
+          <span class="hero-icon"><mat-icon>sms</mat-icon></span>
+          <div class="head center">
+            <h1>Vérification en deux étapes</h1>
+            <p>Saisissez le code à 6 chiffres envoyé au <strong>+225 07 •• •• 56</strong>. (Code de démo : 123456)</p>
+          </div>
+          <div class="otp-wrap">
+            <app-otp-input [length]="6" [(ngModel)]="code" (completed)="verify($event)" [invalid]="otpState() === 'error'" [success]="otpState() === 'success'" />
+          </div>
+          @if (otpState() === 'error') { <p class="error center"><mat-icon>error</mat-icon>Code incorrect, réessayez.</p> }
+          <button mat-flat-button color="primary" class="submit" (click)="verify()" [disabled]="busy() || code.length < 6">
+            @if (busy()) { <mat-spinner diameter="18" /> } @else { Vérifier }
+          </button>
+          <p class="alt center">
+            @if (resendIn() > 0) { Renvoyer le code dans <strong>{{ resendIn() }} s</strong> }
+            @else { Code non reçu ? <button type="button" class="link btn-link" (click)="resend()">Renvoyer</button> }
+          </p>
+        }
+
+        @case ('social') {
+          <div class="head center">
+            <h1>Bienvenue</h1>
+            <p>Connectez-vous en un clic avec un compte que vous utilisez déjà.</p>
+          </div>
+          <ng-container *ngTemplateOutlet="ssoTpl" />
+          <p class="fineprint">En continuant, vous acceptez les <a href="#" class="link" (click)="$event.preventDefault()">conditions d’utilisation</a> et la <a href="#" class="link" (click)="$event.preventDefault()">politique de confidentialité</a>.</p>
+          <div class="divider"><span>ou</span></div>
+          <a routerLink="/examples/auth/centered" class="email-link"><mat-icon>mail</mat-icon>Continuer avec une adresse e-mail</a>
+        }
+
+        @case ('accounts') {
+          <div class="chooser">
+            <div class="ch-head">
+              <ex-provider-icon provider="google" class="big" />
+              <h1>Choisissez un compte</h1>
+              <p>pour continuer vers <strong>SC Storage</strong></p>
+            </div>
+            <ul class="acc-list">
+              @for (a of accounts; track a.mail) {
+                <li><button type="button" (click)="pickAccount(a.mail)" [disabled]="!!ssoBusy()">
+                  <span class="ava" [style.background]="a.color">JK</span>
+                  <span class="grow"><strong>{{ a.name }}</strong><small>{{ a.mail }}</small></span>
+                  @if (a.work) { <span class="m3-badge info">Pro</span> }
+                  @if (ssoBusy() && email === a.mail) { <mat-spinner diameter="18" /> }
+                </button></li>
+              }
+              <li><button type="button"><span class="ava ghost"><mat-icon>person_add</mat-icon></span><span class="grow"><strong>Utiliser un autre compte</strong></span></button></li>
+            </ul>
+            <p class="fineprint">Pour continuer, Google partagera votre nom, votre adresse e-mail et votre photo de profil avec SC Storage.</p>
+          </div>
+        }
+
+        @case ('lock') {
+          <div class="lock-user">
+            <span class="ava big">{{ initials }}</span>
+            <h1>{{ user.fullname }}</h1>
+            <p>{{ user.mail }}</p>
+            <span class="m3-badge warning"><mat-icon>lock_clock</mat-icon>Session verrouillée</span>
+          </div>
+          <form (ngSubmit)="unlock()" class="fields">
+            <div class="field-box"><mat-icon>lock</mat-icon>
+              <input name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" placeholder="Mot de passe" autocomplete="current-password" />
+              <button mat-icon-button type="button" (click)="showPassword.set(!showPassword())"><mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+            </div>
+            <ng-container *ngTemplateOutlet="errorTpl" />
+            <button mat-flat-button color="primary" class="submit" type="submit" [disabled]="busy()">
+              @if (busy()) { <mat-spinner diameter="18" /> } @else { <ng-container>Déverrouiller</ng-container> }
+            </button>
+          </form>
+          <p class="alt center">Pas vous ? <a routerLink="/examples/auth/image" class="link">Changer de compte</a></p>
+        }
+      }
+    }
+  </div>
+</ng-template>
+
+<ng-template #errorTpl>
+  @if (error()) { <p class="error" role="alert"><mat-icon>error</mat-icon>{{ error() }}</p> }
+</ng-template>
+
+<ng-template #ssoTpl let-verbCtx="verb">
+  @if (sso(); as cfg) {
+    @let verb = verbCtx ?? cfg.verb;
+    <div [class]="'sso sso--' + cfg.style + ' n-' + cfg.providers.length">
+      @for (p of cfg.providers; track p) {
+        @switch (cfg.style) {
+          @case ('icons') {
+            <button type="button" class="sso-ic" (click)="social(p)" [attr.aria-label]="'Continuer avec ' + providers[p].label" [matTooltip]="providers[p].label" [class]="'sso-ic p-' + p">
+              @if (ssoBusy() === p) { <mat-spinner diameter="18" /> } @else { <ex-provider-icon [provider]="p" /> }
+            </button>
+          }
+          @case ('brand') {
+            <button type="button" [class]="'sso-brand p-' + p" (click)="social(p)">
+              @if (ssoBusy() === p) { <mat-spinner diameter="18" /> } @else { <ex-provider-icon [provider]="p" [mono]="p !== 'google' && p !== 'microsoft'" /> }
+              <span>{{ verb ? verb + ' ' : '' }}{{ providers[p].label }}</span>
+            </button>
+          }
+          @default {
+            <button mat-stroked-button type="button" [class]="'sso-btn p-' + p" (click)="social(p)">
+              @if (ssoBusy() === p) { <mat-spinner diameter="18" /> } @else { <ex-provider-icon [provider]="p" /> }
+              <span>{{ verb ? verb + ' ' : '' }}{{ providers[p].label }}</span>
+            </button>
+          }
+        }
+      }
+    </div>
+  }
+</ng-template>

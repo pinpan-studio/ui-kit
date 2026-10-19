@@ -1,0 +1,113 @@
+<div class="head">
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" [class.on]="tab() === 'artifact'" [attr.aria-selected]="tab() === 'artifact'" (click)="tab.set('artifact')"><mat-icon>data_object</mat-icon>Artefact</button>
+    <button type="button" role="tab" [class.on]="tab() === 'context'" [attr.aria-selected]="tab() === 'context'" (click)="tab.set('context')"><mat-icon>folder_open</mat-icon>Contexte</button>
+    <button type="button" role="tab" [class.on]="tab() === 'tasks'" [attr.aria-selected]="tab() === 'tasks'" (click)="tab.set('tasks')"><mat-icon>checklist</mat-icon>Tâches</button>
+  </div>
+  <button mat-icon-button class="icon-btn" matTooltip="Fermer le panneau" (click)="close.emit()"><mat-icon>close</mat-icon></button>
+</div>
+
+<div class="body">
+  @switch (tab()) {
+    @case ('artifact') {
+      @if (artifact(); as art) {
+        <div class="art-bar">
+          <div class="art-id">
+            <span class="art-icon"><mat-icon>{{ art.kind === 'code' ? 'data_object' : 'article' }}</mat-icon></span>
+            <div class="art-text">
+              @if (artifacts().length > 1) {
+                <button type="button" class="art-switch" [matMenuTriggerFor]="artMenu">{{ art.title }}<mat-icon>expand_more</mat-icon></button>
+              } @else {
+                <span class="art-title">{{ art.title }}</span>
+              }
+              <span class="art-sub">Version {{ art.version }} · {{ art.lang }}</span>
+            </div>
+          </div>
+          <div class="segmented">
+            <button type="button" [class.on]="view() === 'code'" (click)="view.set('code')">Code</button>
+            <button type="button" [class.on]="view() === 'preview'" (click)="view.set('preview')">Aperçu</button>
+          </div>
+        </div>
+
+        @if (view() === 'code') {
+          <div class="code">
+            <pre><code>@for (l of lines(); track $index) {<span class="ln">{{ $index + 1 }}</span><span class="lc">{{ l }}</span>
+}</code></pre>
+          </div>
+        } @else if (art.kind === 'code') {
+          <!-- Aperçu interactif simplifié du composant -->
+          <div class="preview">
+            <div class="pv-frame">
+              <div class="pv-rail">
+                @for (icon of previewRail; track icon; let i = $index) {
+                  <span class="pv-ic" [class.on]="i === 4"><mat-icon>{{ icon }}</mat-icon></span>
+                }
+              </div>
+              <div class="pv-panel">
+                <div class="pv-head"><span class="pv-box"><mat-icon>build</mat-icon></span>Intervention</div>
+                <span class="pv-item on">Tableau de bord</span>
+                <span class="pv-item">Missions</span>
+                <span class="pv-item">Interventions programmées</span>
+                <span class="pv-item">Équipe technique</span>
+              </div>
+            </div>
+            <p class="pv-caption">Rendu du Sidecar ouvert sur le module « Intervention ».</p>
+          </div>
+        } @else {
+          <article class="doc">{{ art.content }}</article>
+        }
+
+        <div class="art-actions">
+          <button mat-stroked-button (click)="copy.emit(art.content)"><mat-icon>content_copy</mat-icon>Copier</button>
+          <span class="spacer"></span>
+          <button mat-flat-button color="primary" (click)="download(art)"><mat-icon>download</mat-icon>Télécharger</button>
+        </div>
+
+        <mat-menu #artMenu="matMenu" class="harnais-menu">
+          @for (a of artifacts(); track a.id) {
+            <button mat-menu-item (click)="artifactId.set(a.id)"><mat-icon>{{ a.kind === 'code' ? 'data_object' : 'article' }}</mat-icon><span>{{ a.title }}</span></button>
+          }
+        </mat-menu>
+      } @else {
+        <div class="empty"><mat-icon>data_object</mat-icon><strong>Aucun artefact</strong><span>Le code et les documents produits apparaîtront ici.</span></div>
+      }
+    }
+
+    @case ('context') {
+      <section class="card">
+        <div class="card-title"><mat-icon>memory</mat-icon>Fenêtre de contexte</div>
+        <div class="usage-line"><strong>{{ usedTokens() | number:'1.0-0':'fr' }}</strong><span>/ {{ limit | number:'1.0-0':'fr' }} tokens</span><span class="pct">{{ usage() }} %</span></div>
+        <mat-progress-bar mode="determinate" [value]="usage()"></mat-progress-bar>
+        <div class="legend"><span><i class="dot files"></i>Fichiers</span><span><i class="dot chat"></i>Conversation</span></div>
+      </section>
+
+      <div class="section-label">Fichiers chargés · {{ context.length }}</div>
+      <ul class="files">
+        @for (f of context; track f.name) {
+          <li>
+            <span class="f-icon"><mat-icon>{{ kindIcon(f.kind) }}</mat-icon></span>
+            <span class="f-text"><span class="f-name">{{ f.name }}</span><span class="f-path">{{ f.path }}</span></span>
+            <span class="f-tokens">{{ f.tokens / 1000 | number:'1.1-1':'fr' }} k</span>
+          </li>
+        }
+      </ul>
+    }
+
+    @case ('tasks') {
+      <section class="card">
+        <div class="card-title"><mat-icon>flag</mat-icon>Plan de l'agent</div>
+        <div class="usage-line"><strong>{{ doneCount() }}</strong><span>/ {{ tasks.length }} étapes terminées</span></div>
+        <mat-progress-bar mode="determinate" [value]="(doneCount() / tasks.length) * 100"></mat-progress-bar>
+      </section>
+      <ol class="tasks">
+        @for (t of tasks; track t.label) {
+          <li [class]="t.status">
+            <mat-icon>{{ taskIcon(t.status) }}</mat-icon>
+            <span>{{ t.label }}</span>
+            @if (t.status === 'running') { <span class="tag">En cours</span> }
+          </li>
+        }
+      </ol>
+    }
+  }
+</div>

@@ -1,0 +1,139 @@
+@import 'styles/breakpoints';
+
+:host { display: block; min-width: 0; }
+
+// ─── Page ────────────────────────────────────────────────────────
+.doc-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-l) var(--space-l) 96px;
+  box-sizing: border-box;
+  @include mobile { padding: var(--space-m) var(--space-m) 64px; }
+}
+
+.doc-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  margin-bottom: var(--space-l);
+
+  .hero-icon {
+    width: 56px; height: 56px; flex: 0 0 56px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    mat-icon { font-size: 28px; width: 28px; height: 28px; }
+  }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  h1 { margin: 2px 0 4px; font-family: 'Outfit', sans-serif !important; font-size: 28px !important; }
+  p { margin: 0; color: var(--text-secondary); font-size: 14px; max-width: 760px; }
+}
+
+.doc-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  // Remonte le sommaire sous le hero (16px) ; puis 32px jusqu'à la 1re section, comme entre sections.
+  margin: calc(var(--space-s) - var(--space-l)) 0 var(--space-l);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: var(--space-s) 0;
+  background: var(--bg);
+
+  .toc-chip {
+    padding: 5px 12px;
+    border-radius: var(--r-full);
+    border: 0;
+    background: var(--mat-sys-surface-container-high, var(--hover-bg));
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    &:hover { color: var(--primary-color); border-color: var(--primary-color); background: var(--primary-color-light); }
+  }
+}
+
+// ─── Section ─────────────────────────────────────────────────────
+.doc-section {
+  scroll-margin-top: 64px;
+  margin-bottom: var(--space-xl);
+
+  .section-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h2 { margin: 0; font-family: 'Outfit', sans-serif !important; font-size: 20px !important; }
+  .source {
+    font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--hover-bg);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .section-desc { margin: var(--space-s) 0 0; color: var(--text-secondary); font-size: 13px; max-width: 820px; }
+
+  .section-body {
+    margin-top: var(--space-m);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-m);
+    &.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    &.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @include lg { &.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @include mobile { &.cols-2, &.cols-3 { grid-template-columns: 1fr; } }
+  }
+}
+
+// ─── Demo ────────────────────────────────────────────────────────
+.demo {
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-radius: var(--r-l);
+  background: var(--card-bg);
+  overflow: hidden;
+
+  .demo-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 4px 6px 4px 16px;
+    border-bottom: 0;
+    background: color-mix(in srgb, var(--hover-bg) 50%, transparent);
+  }
+  .demo-label { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+  .demo-hint { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .spacer { flex: 1; }
+  .demo-btn {
+    color: var(--text-muted);
+    width: 32px; height: 32px; padding: 4px;
+    --mdc-icon-button-state-layer-size: 32px;
+    --mat-icon-button-state-layer-size: 32px;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+
+  .demo-stage {
+    flex: 1 1 auto;
+    padding: var(--space-l);
+    min-width: 0;
+    overflow-x: auto;
+    &.pad-none { padding: 0; }
+    &.stage-muted { background: var(--bg); }
+  }
+  &.dense .demo-stage { padding: var(--space-m); }
+
+  .demo-code {
+    position: relative;
+    border-top: 0;
+    background: #0f172a;
+    pre { margin: 0; padding: 16px 48px 16px 16px; overflow-x: auto; max-height: 360px; }
+    code { font-family: 'JetBrains Mono', 'Roboto Mono', monospace; font-size: 12px; line-height: 1.55; color: #e2e8f0; white-space: pre; }
+    .copy-btn { position: absolute; top: 4px; right: 4px; color: #94a3b8; }
+  }
+}

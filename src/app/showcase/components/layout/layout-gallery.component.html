@@ -1,0 +1,157 @@
+<kit-doc-page title="Layout" icon="dashboard_customize"
+  subtitle="Structures de page du projet : conteneur de page, en-tête, grilles de tableau de bord, fiche détail en deux colonnes, panneaux de section et conteneurs responsive. Voir aussi la galerie des layouts complets (/layouts)."
+  [toc]="toc">
+
+  <kit-section id="page" title="Page layout" source=".page-container · .page-header · contenu"
+    description="Squelette commun à toutes les pages liste et détail.">
+    <kit-demo label="Structure" [muted]="true" [code]="code.page">
+      <div class="wire page-wire">
+        <div class="w-header"><div class="w-title"><span class="w-ico"><mat-icon>menu</mat-icon></span><div><b>Titre de la page</b><i>Sous-titre descriptif — 128 élément(s)</i></div></div>
+          <div class="w-actions"><span class="w-btn sq"></span><span class="w-btn primary">+ Nouveau</span></div></div>
+        <div class="w-search"><mat-icon>search</mat-icon><span>Rechercher…</span><span class="w-sep"></span><span class="w-filter">Statut : Tous ▾</span></div>
+        <div class="w-table">@for (i of [1,2,3,4,5]; track i) { <div class="w-row"><span class="w-tag"></span><span class="w-line"></span><span class="w-line short"></span><span class="w-pill"></span></div> }</div>
+        <div class="w-pager"><span></span><span class="active"></span><span></span><span></span></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="dashboard" title="Dashboard layout" source=".kpi-grid · grilles de graphiques · panneaux d'alertes">
+    <kit-demo label="KPI + graphiques + listes" [muted]="true">
+      <div class="wire">
+        <div class="w-kpis">@for (k of ['indigo', 'success', 'warning', 'danger']; track k) { <div class="w-kpi"><span class="w-kpi-ico" [class]="'w-kpi-ico ' + k"></span><div><b></b><i></i></div></div> }</div>
+        <div class="w-dash">
+          <div class="w-card big"><div class="w-card-h"></div><div class="w-chart">@for (h of [40, 65, 52, 80, 70, 92, 85]; track $index) { <span [style.height.%]="h"></span> }</div></div>
+          <div class="w-card"><div class="w-card-h"></div><div class="w-donut"></div></div>
+        </div>
+        <div class="w-dash even">
+          <div class="w-card"><div class="w-card-h"></div>@for (i of [1,2,3]; track i) { <div class="w-li"><span class="w-dot"></span><span class="w-line"></span></div> }</div>
+          <div class="w-card"><div class="w-card-h"></div>@for (i of [1,2,3]; track i) { <div class="w-li"><span class="w-dot warn"></span><span class="w-line"></span></div> }</div>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="two-cols" title="Two columns" source=".detail-grid · .detail-main · .detail-aside (styles/detail-page)"
+    description="Fiche détail : colonne principale 2fr + colonne latérale 1fr ; bascule en une colonne sous 1280px.">
+    <kit-demo label="Fiche détail" [code]="code.detail">
+      <div class="detail-grid">
+        <div class="detail-main">
+          <div class="panel-card">
+            <div class="section-header-flex"><div class="section-title-box"><mat-icon>business</mat-icon><h3>Informations générales</h3></div></div>
+            <div class="info-grid">
+              <div class="info-field"><span class="lbl">Raison sociale</span><span class="val">Bolloré Logistics CI</span></div>
+              <div class="info-field"><span class="lbl">Secteur</span><span class="val">Logistique</span></div>
+              <div class="info-field"><span class="lbl">Téléphone</span><span class="val">+225 07 21 45 33</span></div>
+              <div class="info-field"><span class="lbl">Email</span><span class="val">contact&#64;bollore.ci</span></div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="section-header-flex"><div class="section-title-box"><mat-icon>directions_car</mat-icon><h3>Véhicules (3)</h3></div></div>
+            <div class="mini-list">
+              @for (v of ['AB-1234-CI', 'AB-5678-CI', 'CD-9012-CI']; track v) {
+                <div class="mini-row"><div class="item-left"><span class="code-tag">{{ v }}</span></div><div class="item-right"><app-status-badge label="Actif" color="success" /></div></div>
+              }
+            </div>
+          </div>
+        </div>
+        <aside class="detail-aside">
+          <div class="panel-card">
+            <div class="section-header-flex"><div class="section-title-box"><mat-icon>insights</mat-icon><h3>Résumé</h3></div></div>
+            <div class="info-grid one">
+              <div class="info-field"><span class="lbl">Statut</span><span class="val"><app-status-badge label="Actif" color="success" /></span></div>
+              <div class="info-field"><span class="lbl">CA mensuel</span><span class="val">1 240 000 F</span></div>
+              <div class="info-field"><span class="lbl">Gestionnaire</span><span class="val">Aminata Diallo</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="three-cols" title="Three columns" source="grilles CSS (kanban, tableaux de bord)">
+    <kit-demo label="3 colonnes égales → 1 colonne en mobile">
+      <div class="three-cols">
+        @for (c of [{ t: 'À faire', n: 4, col: 'neutral' }, { t: 'En cours', n: 3, col: 'info' }, { t: 'Terminé', n: 6, col: 'success' }]; track c.t) {
+          <div class="col-card">
+            <div class="col-head"><strong>{{ c.t }}</strong><app-status-badge [label]="'' + c.n" [color]="c.col" /></div>
+            @for (i of [1, 2]; track i) { <div class="col-item"><span class="w-line"></span><span class="w-line short"></span></div> }
+          </div>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="sidebar" title="Sidebar layout" source="module shell : mat-sidenav-container + sidenav de module"
+    description="Chaque module (Produits, Finance, ASSAC…) encapsule ses pages dans un conteneur avec sa propre sous-navigation repliable.">
+    <kit-demo label="Shell de module" hint="bascule" [flush]="true" [code]="code.module">
+      <mat-sidenav-container class="sidebar-demo">
+        <mat-sidenav mode="side" [opened]="sidebarOpen()" class="sd-nav">
+          <div class="sd-inner">
+            <div class="sd-head"><span class="w-kpi-ico indigo"></span><b>Module</b></div>
+            @for (s of ['Tableau de bord', 'Catalogue', 'Paramètres']; track s; let i = $index) {
+              <div class="sd-sec">{{ s }}</div>
+              <div class="sd-item" [class.active]="i === 1"><mat-icon>chevron_right</mat-icon> Élément {{ i + 1 }}</div>
+            }
+          </div>
+        </mat-sidenav>
+        <mat-sidenav-content class="sd-content">
+          <button mat-icon-button (click)="sidebarOpen.set(!sidebarOpen())"><mat-icon>menu</mat-icon></button>
+          <div class="wire inner"><div class="w-table">@for (i of [1,2,3]; track i) { <div class="w-row"><span class="w-tag"></span><span class="w-line"></span><span class="w-pill"></span></div> }</div></div>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="full" title="Full width" source="pages plein écran (kanban, planning, calendrier, explorateur)">
+    <kit-demo label="Contenu pleine largeur avec défilement horizontal" [muted]="true">
+      <div class="full-scroll">
+        @for (d of ['Lun 12', 'Mar 13', 'Mer 14', 'Jeu 15', 'Ven 16', 'Sam 17', 'Dim 18', 'Lun 19', 'Mar 20']; track d) {
+          <div class="day-col"><b>{{ d }}</b><span class="ev" [style.height.px]="40 + ($index % 3) * 18"></span>@if ($index % 2) { <span class="ev alt"></span> }</div>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="sections" title="Card sections" source=".panel-card · .section-header-flex · .info-grid · .notes-block · .empty-section" [cols]="2">
+    <kit-demo label="Section avec grille d'attributs" [code]="code.sections">
+      <div class="panel-card">
+        <div class="section-header-flex"><div class="section-title-box"><mat-icon>receipt_long</mat-icon><h3>Facturation</h3></div>
+          <button mat-icon-button class="action-icon-btn"><mat-icon>edit</mat-icon></button></div>
+        <div class="info-grid">
+          <div class="info-field"><span class="lbl">Profil</span><span class="val">Mensuel standard</span></div>
+          <div class="info-field"><span class="lbl">Groupe</span><span class="val">Grands comptes</span></div>
+          <div class="info-field"><span class="lbl">Échéance</span><span class="val">5 du mois</span></div>
+          <div class="info-field"><span class="lbl">Mode</span><span class="val">Virement</span></div>
+        </div>
+        <div class="notes-block"><span class="lbl">Notes</span><p>Facture groupée pour toutes les filiales.</p></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Section vide">
+      <div class="panel-card">
+        <div class="section-header-flex"><div class="section-title-box"><mat-icon>description</mat-icon><h3>Contrats</h3></div>
+          <button mat-stroked-button color="primary"><mat-icon>add</mat-icon> Ajouter</button></div>
+        <div class="empty-section"><mat-icon>description</mat-icon><span>Aucun contrat pour ce client</span></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="responsive" title="Responsive containers" source=".cards-grid (auto-fill 300px) · .form-grid (2 → 1 col < 560px) · .kpi-grid"
+    description="Faites varier la largeur du conteneur pour voir la grille se réorganiser.">
+    <kit-demo label="cards-grid" [hint]="width() + ' %'">
+      <mat-slider min="30" max="100" step="5" class="w-100" discrete><input matSliderThumb [value]="width()" (valueChange)="width.set($event)"></mat-slider>
+      <div class="resizable" [style.width.%]="width()">
+        <div class="cards-grid">@for (i of [1,2,3,4,5,6]; track i) { <div class="entity-card mini"><span class="w-kpi-ico success"></span><span class="w-line"></span><span class="w-line short"></span></div> }</div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="breakpoints" title="Breakpoints" source="src/styles/_breakpoints.scss (mixins SCSS)">
+    <kit-demo label="Mixins disponibles">
+      <div class="bp-table">
+        <div class="bp-row head"><span>Mixin</span><span>Plage</span><span>Usage typique</span></div>
+        @for (b of breakpoints; track b.mixin) { <div class="bp-row"><code>{{ b.mixin }}</code><span>{{ b.range }}</span><span>{{ b.usage }}</span></div> }
+      </div>
+      <p class="muted">Dans un SCSS de composant : <code>&#64;import 'styles/breakpoints';</code> puis <code>&#64;include mobile {{ '{' }} … {{ '}' }}</code>.</p>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

@@ -1,0 +1,167 @@
+<kit-doc-page title="Interactions" icon="touch_app"
+  subtitle="Ce qui rend une application « finie » : palette de commandes ⌘K, raccourcis clavier avec aide intégrée, popovers riches, visite guidée d'onboarding, centre de notifications et menus contextuels — tout au clavier comme à la souris."
+  [toc]="toc">
+
+  <!-- ═══════════════════════ PALETTE ═══════════════════════ -->
+  <kit-section id="palette" title="Palette de commandes (⌘K)" source="CommandPaletteService (shared/components/interaction)"
+    description="Recherche approchée insensible aux accents (« clt nv » trouve « Créer un client »), groupes, récents mémorisés, navigation clavier. Les commandes sont enregistrées par chaque écran (register) et retirées à sa destruction ; le layout du kit enregistre déjà toutes les pages et le changement de thème." [cols]="2">
+    <kit-demo label="Ouvrir la palette" [code]="code.palette">
+      <div class="palette-cta">
+        <button type="button" class="fake-search" (click)="palette.open()">
+          <mat-icon>search</mat-icon><span>Rechercher une page, une action…</span><app-kbd keys="mod+k" />
+        </button>
+        <span class="muted">Essayez : « media », « sombre », « clt », « export », « visite ».</span>
+        @if (lastCommand()) { <span class="last"><mat-icon>bolt</mat-icon>Dernière commande : <strong>{{ lastCommand() }}</strong></span> }
+      </div>
+    </kit-demo>
+    <kit-demo label="Commandes enregistrées">
+      <ul class="cmd-list">
+        @for (c of palette.commands().slice(0, 9); track c.id) {
+          <li><mat-icon>{{ c.icon || 'chevron_right' }}</mat-icon><span>{{ c.label }}</span><em>{{ c.group }}</em></li>
+        }
+        <li class="more">… {{ palette.commands().length }} commandes au total</li>
+      </ul>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ RACCOURCIS ═══════════════════════ -->
+  <kit-section id="shortcuts" title="Raccourcis clavier" source="ShortcutService · app-kbd (shared/components/interaction)"
+    description="Registre global : combinaisons (mod = ⌘ sur macOS, Ctrl ailleurs) et séquences (G puis C), ignorés pendant la saisie dans un champ. La touche « ? » affiche l'aide listant tous les raccourcis actifs, groupés." [cols]="2">
+    <kit-demo label="Essayez au clavier" [code]="code.shortcuts">
+      <ul class="sc-list">
+        <li><app-kbd keys="c" /><span>Créer un client</span></li>
+        <li><app-kbd keys="g c" /><span>Aller aux clients (séquence)</span></li>
+        <li><app-kbd keys="g n" /><span>Notifications (séquence)</span></li>
+        <li><app-kbd keys="mod+shift+e" /><span>Exporter</span></li>
+        <li><app-kbd keys="t" /><span>Visite guidée</span></li>
+        <li><app-kbd keys="shift+?" /><span>Aide des raccourcis</span></li>
+      </ul>
+      <div class="row demo-actions"><button mat-stroked-button (click)="shortcuts.openHelp()"><mat-icon>keyboard</mat-icon>Afficher l'aide</button></div>
+    </kit-demo>
+    <kit-demo label="Journal">
+      @if (log().length) { <ul class="event-log">@for (l of log(); track l) { <li>{{ l }}</li> }</ul> }
+      @else { <span class="muted">Appuyez sur une des touches à gauche (hors d'un champ de saisie).</span> }
+      <div class="kbd-samples">
+        <span>Styles <code>app-kbd</code> :</span>
+        <app-kbd keys="mod+s" /><app-kbd keys="ctrl+alt+delete" /><app-kbd keys="shift+enter" /><app-kbd keys="esc" /><app-kbd keys="up" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ POPOVER ═══════════════════════ -->
+  <kit-section id="popover" title="Popover riche" source="[appPopover] (shared/components/interaction)"
+    description="Carte au survol (aperçu d'un client sans quitter la liste) ou au clic (mini-formulaire, filtres). Contenu libre via template, délai d'ouverture, reste ouvert au survol de la carte, repositionnement automatique, Échap / clic extérieur." [cols]="2">
+    <kit-demo label="Carte au survol" hint="survolez un nom" [code]="code.popover">
+      <ul class="hover-list">
+        @for (c of clients; track c._id) {
+          <li><span class="code">{{ c.code }}</span>
+            <a class="name" tabindex="0" [appPopover]="clientCard" [popoverContext]="c" popoverPosition="bottom-start">{{ c.raison_sociale }}</a>
+            <span class="muted">{{ c.ville }}</span></li>
+        }
+      </ul>
+      <ng-template #clientCard let-c>
+        <div class="kit-popover client-card">
+          <div class="cc-head">
+            <span class="cc-av">{{ c.raison_sociale[0] }}</span>
+            <div><strong>{{ c.raison_sociale }}</strong><span>{{ c.code }} · {{ c.secteur }}</span></div>
+          </div>
+          <div class="cc-grid">
+            <span>Contact</span><b>{{ c.contact }}</b>
+            <span>Téléphone</span><b>{{ c.telephone }}</b>
+            <span>Véhicules</span><b>{{ c.vehicules }}</b>
+            <span>Statut</span><b [style.color]="statutColor[c.statut]">{{ c.statut }}</b>
+          </div>
+          <div class="cc-actions"><button mat-stroked-button><mat-icon>call</mat-icon>Appeler</button><button mat-flat-button>Ouvrir la fiche</button></div>
+        </div>
+      </ng-template>
+    </kit-demo>
+    <kit-demo label="Au clic + positions" hint="popoverTrigger=&quot;click&quot;">
+      <div class="row lg">
+        <button mat-stroked-button [appPopover]="quickNote" popoverTrigger="click"><mat-icon>sticky_note_2</mat-icon>Note rapide</button>
+        @for (p of ['top', 'right', 'bottom', 'left']; track p) {
+          <button mat-button [appPopover]="simple" [popoverContext]="p" [popoverPosition]="$any(p)">{{ p }}</button>
+        }
+      </div>
+      <ng-template #quickNote let-x let-close="close">
+        <div class="kit-popover note-pop">
+          <strong>Ajouter une note</strong>
+          <textarea rows="3" placeholder="Rappeler le client lundi…"></textarea>
+          <div class="cc-actions"><button mat-button (click)="close()">Annuler</button><button mat-flat-button (click)="close()">Enregistrer</button></div>
+        </div>
+      </ng-template>
+      <ng-template #simple let-p><div class="kit-popover small">Popover positionné en <b>{{ p }}</b> (bascule automatiquement s'il manque de place).</div></ng-template>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ VISITE GUIDÉE ═══════════════════════ -->
+  <kit-section id="tour" title="Visite guidée / onboarding" source="TourService (shared/components/interaction)"
+    description="Projecteur sur l'élément ciblé (sélecteur CSS), carte d'explication positionnée automatiquement, progression, Précédent / Suivant / Passer, ←/→ et Échap, suivi du défilement et du redimensionnement. Callback onFinish(terminée ou non) pour ne l'afficher qu'une fois.">
+    <kit-demo label="Tableau de bord fictif" [code]="code.tour">
+      <div class="mini-dash">
+        <div class="md-top">
+          <div class="md-search" id="tour-search"><mat-icon>search</mat-icon>Rechercher…<app-kbd keys="mod+k" /></div>
+          <span class="spacer"></span>
+          <button mat-flat-button (click)="startTour()"><mat-icon>tour</mat-icon>Lancer la visite</button>
+        </div>
+        <div class="md-body">
+          <div class="md-kpis" id="tour-kpis">
+            @for (k of [['1 248', 'Véhicules'], ['97,4 %', 'Disponibilité'], ['55,8 M', 'CA (FCFA)']]; track k[1]) {
+              <div class="md-kpi"><strong>{{ k[0] }}</strong><span>{{ k[1] }}</span></div>
+            }
+          </div>
+          <div class="md-alerts" id="tour-alerts">
+            <strong>Alertes</strong>
+            <span><i class="err"></i>Sortie de zone — CI-9902-NP</span>
+            <span><i class="warn"></i>Batterie faible — CI-0418-GH</span>
+          </div>
+        </div>
+        <button mat-fab extended class="md-fab" id="tour-create"><mat-icon>add</mat-icon>Créer</button>
+      </div>
+      @if (tourDone()) { <span class="caption">{{ tourDone() }}</span> }
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ NOTIFICATIONS ═══════════════════════ -->
+  <kit-section id="notifications" title="Centre de notifications" source="app-notification-center (shared/components/interaction)"
+    description="Cloche avec compteur (pastille animée à l'arrivée), panneau avec onglets Toutes / Non lues / catégories, groupement par jour, marquer lu (une ou toutes), suppression, actions rapides, état vide." [cols]="2">
+    <kit-demo label="Barre d'application" [code]="code.notifications">
+      <div class="app-bar">
+        <mat-icon class="logo">hub</mat-icon><strong>Lookas</strong><span class="spacer"></span>
+        <app-notification-center [notifications]="notifs()" (action)="onNotifAction($event)" />
+        <span class="me">AD</span>
+      </div>
+      <div class="row demo-actions">
+        <button mat-stroked-button (click)="simulate()"><mat-icon>add_alert</mat-icon>Simuler une notification</button>
+        <span class="muted">Ouvrez la cloche, filtrez, marquez comme lu…</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Sans notification">
+      <div class="app-bar"><strong>État vide</strong><span class="spacer"></span><app-notification-center [notifications]="[]" footer="" [settings]="false" /></div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MENU CONTEXTUEL ═══════════════════════ -->
+  <kit-section id="context-menu" title="Menu contextuel" source="[appContextMenu] (shared/components/interaction)"
+    description="Clic droit (ou appui long au doigt, touche Menu / Maj+F10 au clavier) : menu au curseur avec titre, icônes, raccourcis affichés, séparateurs, éléments désactivés et actions dangereuses ; navigation ↑/↓, Entrée, Échap." [cols]="2">
+    <kit-demo label="Fichiers" hint="clic droit sur un fichier" [code]="code.contextMenu">
+      <div class="files">
+        @for (f of files; track f.name) {
+          <div class="file" tabindex="0" [class.sel]="selectedFile() === f.name" [appContextMenu]="fileMenu(f.name)" (contextMenuOpen)="selectedFile.set(f.name)" (click)="selectedFile.set(f.name)">
+            <mat-icon [class.pdf]="f.icon === 'picture_as_pdf'" [class.folder]="f.icon === 'folder'">{{ f.icon }}</mat-icon>
+            <span class="fname">{{ f.name }}</span><span class="muted">{{ f.meta }}</span>
+          </div>
+        }
+      </div>
+    </kit-demo>
+    <kit-demo label="Lignes de tableau" hint="clic droit sur une ligne">
+      <table class="ctx-table">
+        <thead><tr><th>Code</th><th>Client</th><th>Statut</th></tr></thead>
+        <tbody>
+          @for (c of clients; track c._id) {
+            <tr [appContextMenu]="rowMenu(c)" tabindex="0"><td><code>{{ c.code }}</code></td><td>{{ c.raison_sociale }}</td><td [style.color]="statutColor[c.statut]">{{ c.statut }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

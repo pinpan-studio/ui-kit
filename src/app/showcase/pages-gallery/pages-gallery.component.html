@@ -1,0 +1,59 @@
+<kit-doc-page title="Pages" icon="view_quilt" eyebrow="Catalogue"
+  subtitle="Toutes les pages de l'application d'origine, converties en version 100 % statique. Cliquez une carte pour ouvrir la page dans son shell ; les puces ouvrent ses variantes d'état (vide, chargement, erreur…)."
+  [toc]="toc()">
+
+  <div class="filters">
+    <div class="search"><mat-icon>search</mat-icon>
+      <input type="text" placeholder="Rechercher une page, une URL…" [value]="query()" (input)="query.set($any($event.target).value)" />
+      @if (query()) { <button type="button" (click)="query.set('')"><mat-icon>close</mat-icon></button> }
+    </div>
+    <div class="field-box select-box small">
+      <mat-icon>apps</mat-icon>
+      <mat-select [value]="moduleFilter()" (valueChange)="moduleFilter.set($event)" placeholder="Tous les modules" panelClass="m3-dropdown-menu">
+        <mat-option value="">Tous les modules</mat-option>
+        @for (g of allGroups; track g.id) { <mat-option [value]="g.id">{{ g.label }}</mat-option> }
+      </mat-select>
+    </div>
+    <div class="kind-chips">
+      <button type="button" [class.active]="!kind()" (click)="kind.set('')">Tous types</button>
+      @for (k of kinds; track k) { <button type="button" [class.active]="kind() === k" (click)="kind.set(k)"><mat-icon>{{ kindIcon[k] }}</mat-icon>{{ kindLabel[k] }}</button> }
+    </div>
+    <span class="count">{{ count() }} page(s)</span>
+  </div>
+
+  @for (g of groups(); track g.id) {
+    <section class="group" [attr.id]="g.id">
+      <div class="group-head">
+        <div class="g-icon"><mat-icon>{{ g.icon }}</mat-icon></div>
+        <div class="g-text"><h2>{{ g.label }}</h2>@if (g.description) { <p>{{ g.description }}</p> }</div>
+        <span class="g-count">{{ g.pages.length }}</span>
+      </div>
+      @if (g.pages.length) {
+        <div class="page-grid">
+          @for (p of g.pages; track p.path) {
+            <div class="page-card">
+              <a class="pc-main" [routerLink]="p.path">
+                <div class="pc-top">
+                  <span class="pc-icon"><mat-icon>{{ p.icon || (p.kind ? kindIcon[p.kind] : 'web') }}</mat-icon></span>
+                  @if (p.kind) { <span class="pc-kind">{{ kindLabel[p.kind] }}</span> }
+                </div>
+                <strong>{{ p.label }}</strong>
+                @if (p.description) { <span class="pc-desc">{{ p.description }}</span> }
+                <code>{{ p.path }}</code>
+              </a>
+              @if (p.variants?.length) {
+                <div class="pc-variants">
+                  @for (v of p.variants; track v.path) { <a [routerLink]="v.path" class="variant">{{ v.label }}</a> }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="g-empty"><mat-icon>construction</mat-icon> Conversion de ce module en cours.</div>
+      }
+    </section>
+  } @empty {
+    <div class="g-empty big"><mat-icon>search_off</mat-icon> Aucune page ne correspond. <button mat-button color="primary" (click)="reset()">Réinitialiser</button></div>
+  }
+</kit-doc-page>

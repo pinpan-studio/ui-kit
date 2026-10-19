@@ -1,0 +1,79 @@
+<ex-app-shell nav="topnav" title="Article">
+  <div class="progress" role="progressbar" aria-label="Progression de lecture" [attr.aria-valuenow]="progress() | number: '1.0-0'" aria-valuemin="0" aria-valuemax="100">
+    <span [style.width.%]="progress()"></span>
+  </div>
+
+  @let a = article();
+  <header class="hero">
+    <nav class="crumbs" aria-label="Fil d’Ariane"><a routerLink="/examples/app/blog">Blog</a><mat-icon>chevron_right</mat-icon><span>{{ a.category }}</span></nav>
+    <h1>{{ a.title }}</h1>
+    <p class="dek">{{ a.dek }}</p>
+    <div class="byline">
+      <span class="ava" [style.background]="a.author.color">{{ initials(a.author.name) }}</span>
+      <div class="who">
+        <strong>{{ a.author.name }}</strong>
+        <span><time [attr.datetime]="a.date">{{ a.date | date: 'd MMMM yyyy' }}</time> · {{ a.minutes }} min de lecture</span>
+      </div>
+      <span class="spacer"></span>
+      <div class="reading" role="group" aria-label="Réglages de lecture">
+        <button type="button" [class.on]="size() === 'md'" (click)="size.set('md')" matTooltip="Texte standard" aria-label="Texte standard"><span class="a-sm">A</span></button>
+        <button type="button" [class.on]="size() === 'lg'" (click)="size.set('lg')" matTooltip="Grand texte" aria-label="Grand texte"><span class="a-lg">A</span></button>
+        <i></i>
+        <button type="button" [class.on]="!serif()" (click)="serif.set(false)" matTooltip="Sans empattement" aria-label="Police sans empattement"><span class="f-sans">Aa</span></button>
+        <button type="button" [class.on]="serif()" (click)="serif.set(true)" matTooltip="Avec empattement" aria-label="Police à empattement"><span class="f-serif">Aa</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="cover" [style.--h]="a.hue"><mat-icon>{{ a.icon }}</mat-icon></div>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Sommaire">
+      <span class="text-overline">Sommaire</span>
+      <ol>
+        @for (t of toc(); track t.id) {
+          <li [class.sub]="t.level === 3"><a [href]="'#' + t.id" (click)="goTo(t.id, $event)" [class.on]="active() === t.id">{{ t.text }}</a></li>
+        }
+      </ol>
+    </aside>
+
+    <article class="main">
+      <app-article-body [blocks]="a.blocks" [size]="size()" [serif]="serif()" />
+
+      <div class="tags">@for (t of a.tags; track t) { <span>#{{ t }}</span> }</div>
+
+      <section class="author card">
+        <span class="ava big" [style.background]="a.author.color">{{ initials(a.author.name) }}</span>
+        <div>
+          <span class="text-overline">Écrit par</span>
+          <h2>{{ a.author.name }}</h2>
+          <p>{{ a.author.bio ?? a.author.role }}</p>
+        </div>
+        <button mat-stroked-button>Suivre</button>
+      </section>
+
+      <section id="comments" class="comments">
+        <app-comment-thread [comments]="comments" [me]="me" [mentionables]="people" moderator />
+      </section>
+    </article>
+
+    <aside class="rail" aria-label="Actions">
+      <button type="button" [class.on]="clapped()" (click)="clap()" matTooltip="J’apprécie" matTooltipPosition="left"><mat-icon>{{ clapped() ? 'favorite' : 'favorite_border' }}</mat-icon><b>{{ claps() }}</b></button>
+      <button type="button" (click)="toComments()" matTooltip="Commentaires" matTooltipPosition="left"><mat-icon>chat_bubble_outline</mat-icon><b>{{ comments.length }}</b></button>
+      <button type="button" [class.on]="saved()" (click)="saved.set(!saved())" matTooltip="Enregistrer" matTooltipPosition="left"><mat-icon>{{ saved() ? 'bookmark' : 'bookmark_border' }}</mat-icon></button>
+      <button type="button" (click)="share()" [matTooltip]="copied() ? 'Lien copié' : 'Copier le lien'" matTooltipPosition="left"><mat-icon>{{ copied() ? 'check' : 'ios_share' }}</mat-icon></button>
+    </aside>
+  </div>
+
+  <section class="related">
+    <h2>À lire ensuite</h2>
+    <div class="rel-grid">
+      @for (r of related(); track r.slug) {
+        <a class="card rel" [routerLink]="['/examples/app/blog', r.slug]">
+          <div class="r-art" [style.--h]="r.hue"><mat-icon>{{ r.icon }}</mat-icon></div>
+          <div class="r-body"><span class="cat">{{ r.category }}</span><strong>{{ r.title }}</strong><small>{{ r.minutes }} min de lecture</small></div>
+        </a>
+      }
+    </div>
+  </section>
+</ex-app-shell>

@@ -1,0 +1,386 @@
+<kit-doc-page title="Material & CDK" icon="extension"
+  subtitle="Composants Angular Material / CDK présents dans le barrel MaterialModule mais jusqu'ici non documentés : accordion, tree, drag & drop, chips input, card, grid list, bottom sheet, virtual scroll et ripple — tous interactifs, données locales."
+  [toc]="toc">
+
+  <!-- ═══════════════ ACCORDION ═══════════════ -->
+  <kit-section id="accordion" title="Accordion / Expansion panel" source="mat-accordion · mat-expansion-panel (MatExpansionModule)"
+    description="Panneaux dépliables : formulaire en étapes, ouverture multiple, variantes (toggle avant, sans icône, désactivé, contenu différé), FAQ stylée par jetons M3 et panneau de filtres.">
+
+    <kit-demo label="Accordion en étapes" hint="un seul panneau ouvert · mat-action-row" [code]="code.accordion">
+      <mat-accordion class="kit-accordion" displayMode="flat">
+        <mat-expansion-panel [expanded]="step() === 0" (opened)="setStep(0)">
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon class="pt-icon">business</mat-icon>Informations client</mat-panel-title>
+            <mat-panel-description>Raison sociale, contact</mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="form-grid">
+            <div class="form-field"><label class="field-label">Raison sociale</label><div class="field-box"><mat-icon>business</mat-icon><input value="Transports Yao SARL" /></div></div>
+            <div class="form-field"><label class="field-label">Contact</label><div class="field-box"><mat-icon>person</mat-icon><input value="Koffi Yao" /></div></div>
+          </div>
+          <mat-action-row>
+            <button mat-flat-button color="primary" (click)="nextStep()">Suivant</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="step() === 1" (opened)="setStep(1)">
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon class="pt-icon">local_shipping</mat-icon>Flotte</mat-panel-title>
+            <mat-panel-description>Nombre de véhicules, offre</mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="form-grid">
+            <div class="form-field"><label class="field-label">Véhicules</label><div class="field-box"><mat-icon>local_shipping</mat-icon><input type="number" value="14" /></div></div>
+            <div class="form-field">
+              <label class="field-label">Offre</label>
+              <div class="field-box select-box"><mat-icon>sell</mat-icon>
+                <mat-select value="premium" panelClass="m3-dropdown-menu"><mat-option value="essentiel">Essentiel</mat-option><mat-option value="premium">Premium</mat-option><mat-option value="flotte">Flotte+</mat-option></mat-select>
+              </div>
+            </div>
+          </div>
+          <mat-action-row>
+            <button mat-button (click)="prevStep()">Précédent</button>
+            <button mat-flat-button color="primary" (click)="nextStep()">Suivant</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="step() === 2" (opened)="setStep(2)">
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon class="pt-icon">event</mat-icon>Installation</mat-panel-title>
+            <mat-panel-description>{{ stepDone() ? 'Planifiée' : 'Date et lieu' }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="form-grid">
+            <div class="form-field"><label class="field-label">Lieu</label><div class="field-box"><mat-icon>location_on</mat-icon><input value="Zone 4, Marcory — Abidjan" /></div></div>
+            <div class="form-field"><label class="field-label">Créneau</label><div class="field-box"><mat-icon>schedule</mat-icon><input value="Lundi 20/10, 08:00" /></div></div>
+          </div>
+          <mat-action-row>
+            <button mat-button (click)="prevStep()">Précédent</button>
+            <button mat-flat-button color="primary" (click)="stepDone.set(true); step.set(-1); toast('Installation planifiée')">Terminer</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </kit-demo>
+
+    <div class="grid-2">
+      <kit-demo label="Multi + tout déplier" hint="multi · displayMode=&quot;flat&quot;" [code]="code.multi">
+        <div class="row acc-toolbar">
+          <button mat-button (click)="multiAcc.openAll()"><mat-icon>unfold_more</mat-icon> Tout déplier</button>
+          <button mat-button (click)="multiAcc.closeAll()"><mat-icon>unfold_less</mat-icon> Tout replier</button>
+        </div>
+        <mat-accordion #multiAcc="matAccordion" multi displayMode="flat" class="kit-accordion">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header><mat-panel-title>Contrat</mat-panel-title><mat-panel-description>CTR-2026-0031</mat-panel-description></mat-expansion-panel-header>
+            <dl class="kv"><dt>Début</dt><dd>01/01/2026</dd><dt>Échéance</dt><dd>31/12/2026</dd><dt>Montant</dt><dd>84 000 F / mois</dd></dl>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header><mat-panel-title>Facturation</mat-panel-title><mat-panel-description>Mensuelle</mat-panel-description></mat-expansion-panel-header>
+            <dl class="kv"><dt>Mode</dt><dd>Virement</dd><dt>Jour</dt><dd>Le 5 du mois</dd></dl>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header><mat-panel-title>Historique</mat-panel-title><mat-panel-description>3 événements</mat-panel-description></mat-expansion-panel-header>
+            <ul class="mini-timeline"><li>12/10 — Balise remplacée</li><li>02/09 — Avenant signé</li><li>05/01 — Contrat créé</li></ul>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </kit-demo>
+
+      <kit-demo label="Variantes" hint="togglePosition · hideToggle · disabled · lazy" [code]="code.variants">
+        <mat-accordion multi displayMode="flat" class="kit-accordion">
+          <mat-expansion-panel togglePosition="before">
+            <mat-expansion-panel-header><mat-panel-title>Toggle avant le titre</mat-panel-title></mat-expansion-panel-header>
+            <p class="p">L'indicateur est placé à gauche (<code>togglePosition="before"</code>), utile pour les arborescences.</p>
+          </mat-expansion-panel>
+          <mat-expansion-panel hideToggle #custom>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Icône personnalisée</mat-panel-title>
+              <mat-icon class="custom-toggle">{{ custom.expanded ? 'remove' : 'add' }}</mat-icon>
+            </mat-expansion-panel-header>
+            <p class="p"><code>hideToggle</code> + icône pilotée par <code>panel.expanded</code>.</p>
+          </mat-expansion-panel>
+          <mat-expansion-panel disabled>
+            <mat-expansion-panel-header><mat-panel-title>Panneau désactivé</mat-panel-title><mat-panel-description>Permission requise</mat-panel-description></mat-expansion-panel-header>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header><mat-panel-title>Contenu différé</mat-panel-title><mat-panel-description>rendu à l'ouverture</mat-panel-description></mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent>
+              <p class="p">Ce contenu n'est instancié qu'à la première ouverture (<code>matExpansionPanelContent</code>) — idéal pour des tableaux lourds.</p>
+            </ng-template>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </kit-demo>
+    </div>
+
+    <div class="grid-2">
+      <kit-demo label="FAQ" hint="jetons --mat-expansion-*" [code]="code.faq" [muted]="true">
+        <mat-accordion class="kit-faq" displayMode="flat">
+          @for (item of faq; track item.q; let first = $first) {
+            <mat-expansion-panel [expanded]="first">
+              <mat-expansion-panel-header><mat-panel-title>{{ item.q }}</mat-panel-title></mat-expansion-panel-header>
+              <p class="p">{{ item.a }}</p>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      </kit-demo>
+
+      <kit-demo label="Panneau de filtres" [hint]="filterCount() + ' filtre(s) actif(s)'">
+        <div class="filters-panel">
+          <div class="fp-head">
+            <strong><mat-icon>tune</mat-icon> Filtres</strong>
+            <button mat-button [disabled]="!filterCount()" (click)="clearFilters()">Réinitialiser</button>
+          </div>
+          <mat-accordion multi displayMode="flat" class="kit-accordion compact">
+            @for (g of filterGroups; track g.key; let first = $first) {
+              <mat-expansion-panel [expanded]="first">
+                <mat-expansion-panel-header>
+                  <mat-panel-title><mat-icon class="pt-icon">{{ g.icon }}</mat-icon>{{ g.label }}</mat-panel-title>
+                  @if (filters()[g.key].size) { <mat-panel-description><em class="count-pill">{{ filters()[g.key].size }}</em></mat-panel-description> }
+                </mat-expansion-panel-header>
+                <div class="fp-options">
+                  @for (o of g.options; track o) {
+                    <mat-checkbox color="primary" [checked]="isFiltered(g.key, o)" (change)="toggleFilter(g.key, o)">{{ o }}</mat-checkbox>
+                  }
+                </div>
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        </div>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ TREE ═══════════════ -->
+  <kit-section id="tree" title="Tree" source="mat-tree · childrenAccessor (MatTreeModule)" [cols]="2"
+    description="Arborescences avec l'API moderne childrenAccessor (TreeControl est déprécié) : explorateur de fichiers et arbre de permissions à cases tri-état.">
+    <kit-demo label="Explorateur de fichiers" [code]="code.tree">
+      <div class="row acc-toolbar">
+        <button mat-button (click)="fileTreeRef.expandAll()"><mat-icon>unfold_more</mat-icon> Déplier</button>
+        <button mat-button (click)="fileTreeRef.collapseAll()"><mat-icon>unfold_less</mat-icon> Replier</button>
+      </div>
+      <mat-tree #fileTreeRef [dataSource]="fileTree" [childrenAccessor]="childrenAccessor" class="kit-tree">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="24">
+          <span class="tree-spacer"></span>
+          <mat-icon class="node-icon file">{{ node.icon }}</mat-icon>
+          <span class="node-name">{{ node.name }}</span>
+          @if (node.meta) { <span class="node-meta">{{ node.meta }}</span> }
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding matTreeNodePaddingIndent="24" isExpandable [cdkTreeNodeTypeaheadLabel]="node.name">
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Basculer ' + node.name">
+            <mat-icon>{{ fileTreeRef.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          </button>
+          <mat-icon class="node-icon folder">{{ fileTreeRef.isExpanded(node) ? 'folder_open' : 'folder' }}</mat-icon>
+          <span class="node-name">{{ node.name }}</span>
+          <span class="node-meta">{{ node.children.length }}</span>
+        </mat-tree-node>
+      </mat-tree>
+    </kit-demo>
+
+    <kit-demo label="Permissions (tri-état)" [hint]="perms().size + ' / ' + permTotal + ' accordées'">
+      <mat-tree #permTreeRef [dataSource]="permTree" [childrenAccessor]="childrenAccessor" class="kit-tree">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="24">
+          <span class="tree-spacer"></span>
+          <mat-checkbox color="primary" [checked]="permChecked(node)" (change)="togglePerm(node)">{{ node.name }}</mat-checkbox>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding matTreeNodePaddingIndent="24" isExpandable>
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Basculer ' + node.name">
+            <mat-icon>{{ permTreeRef.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          </button>
+          <mat-checkbox color="primary" [checked]="permChecked(node)" [indeterminate]="permPartial(node)" (change)="togglePerm(node)"><strong>{{ node.name }}</strong></mat-checkbox>
+        </mat-tree-node>
+      </mat-tree>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ DRAG & DROP ═══════════════ -->
+  <kit-section id="drag-drop" title="Drag & drop" source="cdkDropList · cdkDrag (DragDropModule)"
+    description="Réordonnancement d'une liste avec poignée et placeholder, transfert entre colonnes avec prédicat d'entrée, et déplacement libre borné.">
+    <div class="grid-2">
+      <kit-demo label="Liste triable" hint="poignée · placeholder" [code]="code.dragList">
+        <div cdkDropList class="dd-list" (cdkDropListDropped)="dropPriority($event)">
+          @for (p of priorities(); track p; let i = $index) {
+            <div class="dd-item" cdkDrag cdkDragLockAxis="y">
+              <mat-icon class="dd-handle" cdkDragHandle>drag_indicator</mat-icon>
+              <span class="dd-rank">{{ i + 1 }}</span>
+              <span>{{ p }}</span>
+              <div class="dd-placeholder" *cdkDragPlaceholder></div>
+            </div>
+          }
+        </div>
+      </kit-demo>
+
+      <kit-demo label="Déplacement libre" hint="cdkDragBoundary">
+        <div class="dd-zone">
+          <div class="dd-free" cdkDrag cdkDragBoundary=".dd-zone"><mat-icon>sticky_note_2</mat-icon> Glissez-moi</div>
+          <div class="dd-free alt" cdkDrag cdkDragBoundary=".dd-zone"><mat-icon>push_pin</mat-icon> Et moi aussi</div>
+        </div>
+      </kit-demo>
+    </div>
+
+    <kit-demo label="Colonnes connectées" hint="« À faire » → « Terminé » interdit (cdkDropListEnterPredicate)" [code]="code.dragKanban">
+      <div class="dd-board" cdkDropListGroup>
+        @for (col of [{ id: 'col-todo', label: 'À faire', data: todo }, { id: 'col-doing', label: 'En cours', data: doing }, { id: 'col-done', label: 'Terminé', data: done }]; track col.id) {
+          <div class="dd-col">
+            <div class="dd-col-head">{{ col.label }} <em class="count-pill">{{ col.data.length }}</em></div>
+            <div cdkDropList [id]="col.id" [cdkDropListData]="col.data" class="dd-col-body" (cdkDropListDropped)="dropKanban($event)"
+              [cdkDropListEnterPredicate]="col.id === 'col-done' ? doneGuard : allowAll">
+              @for (it of col.data; track it.id) {
+                <div class="dd-card" cdkDrag [cdkDragData]="col.id">
+                  <span class="dd-card-id">{{ it.id }}</span>
+                  <span class="dd-card-title">{{ it.title }}</span>
+                  <span class="dd-card-tag">{{ it.tag }}</span>
+                </div>
+              } @empty {
+                <div class="dd-empty">Déposez une carte ici</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CHIPS INPUT ═══════════════ -->
+  <kit-section id="chips-input" title="Chips input" source="mat-chip-grid · mat-chip-row · matChipInputFor" [cols]="2"
+    description="Saisie de valeurs multiples : Entrée ou virgule pour valider, double-clic pour éditer, validation visuelle par chip.">
+    <kit-demo label="Destinataires (validation email)" [code]="code.chips">
+      <div class="form-field">
+        <label class="field-label">Destinataires</label>
+        <div class="field-box chips-box"><mat-icon>alternate_email</mat-icon>
+        <mat-chip-grid #emailGrid aria-label="Destinataires">
+          @for (e of emails(); track e) {
+            <mat-chip-row [editable]="true" (edited)="editChip('emails', e, $event)" (removed)="removeChip('emails', e)" [class.chip-invalid]="invalidEmail(e)">
+              @if (invalidEmail(e)) { <mat-icon matChipAvatar>error</mat-icon> }
+              {{ e }}
+              <button matChipRemove [attr.aria-label]="'Retirer ' + e"><mat-icon>cancel</mat-icon></button>
+            </mat-chip-row>
+          }
+          <input placeholder="Ajouter une adresse…" [matChipInputFor]="emailGrid" [matChipInputSeparatorKeyCodes]="separators" matChipInputAddOnBlur (matChipInputTokenEnd)="addChip('emails', $event)" />
+        </mat-chip-grid>
+        </div>
+        <span class="field-hint">Entrée ou virgule pour ajouter · double-clic pour modifier</span>
+      </div>
+    </kit-demo>
+
+    <kit-demo label="Étiquettes">
+      <div class="form-field">
+        <label class="field-label">Étiquettes client</label>
+        <div class="field-box chips-box"><mat-icon>sell</mat-icon>
+        <mat-chip-grid #tagGrid aria-label="Étiquettes">
+          @for (t of tags(); track t) {
+            <mat-chip-row (removed)="removeChip('tags', t)" [editable]="true" (edited)="editChip('tags', t, $event)">
+              {{ t }}
+              <button matChipRemove [attr.aria-label]="'Retirer ' + t"><mat-icon>cancel</mat-icon></button>
+            </mat-chip-row>
+          }
+          <input placeholder="Nouvelle étiquette…" [matChipInputFor]="tagGrid" [matChipInputSeparatorKeyCodes]="separators" (matChipInputTokenEnd)="addChip('tags', $event)" />
+        </mat-chip-grid>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CARD ═══════════════ -->
+  <kit-section id="card" title="Card" source="mat-card · appearance (MatCardModule)" [cols]="3"
+    description="Cartes Material natives : en-tête avec avatar, média, actions alignées, variante outlined / raised.">
+    <kit-demo label="Outlined + actions" [code]="code.card">
+      <mat-card appearance="outlined" class="kit-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-avatar">TY</div>
+          <mat-card-title>Transports Yao SARL</mat-card-title>
+          <mat-card-subtitle>Client depuis 2021 · Abidjan</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="p">14 véhicules suivis, offre Premium. Dernière facture réglée le 05/10.</p>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button (click)="toast('Ouverture de la fiche')">Détails</button>
+          <button mat-flat-button color="primary" (click)="toast('Appel en cours…')">Contacter</button>
+        </mat-card-actions>
+      </mat-card>
+    </kit-demo>
+
+    <kit-demo label="Média + footer">
+      <mat-card appearance="outlined" class="kit-card">
+        <div class="card-media"><mat-icon>route</mat-icon></div>
+        <mat-card-header>
+          <mat-card-title>Trajet CI-4521-AB</mat-card-title>
+          <mat-card-subtitle>Abidjan → Yamoussoukro</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content><p class="p">238 km · 3 h 12 · 2 arrêts</p></mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-footer class="card-footer"><mat-icon>schedule</mat-icon> Mis à jour il y a 4 min</mat-card-footer>
+      </mat-card>
+    </kit-demo>
+
+    <kit-demo label="Raised (KPI)">
+      <mat-card appearance="raised" class="kit-card">
+        <mat-card-content class="kpi">
+          <span class="kpi-label">CA du mois</span>
+          <strong class="kpi-value">{{ 12480000 | number:'1.0-0' }} F</strong>
+          <span class="kpi-trend up"><mat-icon>trending_up</mat-icon> +8,4 % vs septembre</span>
+        </mat-card-content>
+      </mat-card>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ GRID LIST ═══════════════ -->
+  <kit-section id="grid-list" title="Grid list" source="mat-grid-list · mat-grid-tile (MatGridListModule)"
+    description="Grille à tuiles avec colspan / rowspan — pratique pour des mosaïques de widgets.">
+    <kit-demo label="Mosaïque de dashboard" [code]="code.grid">
+      <div class="row acc-toolbar">
+        <span class="muted">Colonnes :</span>
+        <mat-button-toggle-group [value]="gridCols()" (change)="gridCols.set($event.value)">
+          <mat-button-toggle [value]="2">2</mat-button-toggle>
+          <mat-button-toggle [value]="4">4</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <mat-grid-list [cols]="gridCols()" rowHeight="110px" gutterSize="12">
+        @for (t of tiles; track t.label) {
+          <mat-grid-tile [colspan]="t.cols > gridCols() ? gridCols() : t.cols" [rowspan]="t.rows" [class]="'tile tone-' + t.tone">
+            <div class="tile-inner"><mat-icon>{{ t.icon }}</mat-icon><span>{{ t.label }}</span></div>
+          </mat-grid-tile>
+        }
+      </mat-grid-list>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ BOTTOM SHEET ═══════════════ -->
+  <kit-section id="bottom-sheet" title="Bottom sheet" source="MatBottomSheet (MatBottomSheetModule)"
+    description="Feuille d'actions ancrée en bas de l'écran, idéale sur mobile. Le résultat est renvoyé via afterDismissed().">
+    <kit-demo label="Actions de partage" [hint]="'Résultat : ' + sheetResult()" [code]="code.sheet">
+      <button mat-flat-button color="primary" (click)="openSheet()"><mat-icon>ios_share</mat-icon> Partager la proforma</button>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ VIRTUAL SCROLL ═══════════════ -->
+  <kit-section id="virtual-scroll" title="Virtual scroll" source="cdk-virtual-scroll-viewport (ScrollingModule)"
+    description="10 000 lignes rendues sans ralentissement : seules les lignes visibles existent dans le DOM.">
+    <kit-demo label="Positions de la flotte" [hint]="(positions.length | number) + ' lignes'" [code]="code.virtual" [flush]="true">
+      <cdk-virtual-scroll-viewport itemSize="52" class="vs-viewport">
+        <div *cdkVirtualFor="let p of positions; trackBy: trackById" class="vs-row">
+          <span class="vs-id">#{{ p.id }}</span>
+          <span class="vs-plate">{{ p.plaque }}</span>
+          <span class="vs-speed">{{ p.vitesse }} km/h</span>
+          <span class="vs-status" [class.on]="p.online">{{ p.online ? 'En ligne' : 'Hors ligne' }}</span>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ RIPPLE ═══════════════ -->
+  <kit-section id="ripple" title="Ripple" source="matRipple (MatRippleModule)"
+    description="Effet d'onde Material applicable à n'importe quelle surface cliquable personnalisée.">
+    <kit-demo label="Surface personnalisée" [code]="code.ripple">
+      <div class="row acc-toolbar">
+        <mat-slide-toggle color="primary" [checked]="rippleCentered()" (change)="rippleCentered.set($event.checked)">Centré</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="rippleUnbounded()" (change)="rippleUnbounded.set($event.checked)">Non borné</mat-slide-toggle>
+      </div>
+      <div class="ripple-row">
+        <div class="ripple-surface" matRipple [matRippleCentered]="rippleCentered()" [matRippleUnbounded]="rippleUnbounded()">
+          <mat-icon>touch_app</mat-icon> Cliquez ici
+        </div>
+        <div class="ripple-surface primary" matRipple [matRippleCentered]="rippleCentered()" [matRippleUnbounded]="rippleUnbounded()"
+          matRippleColor="color-mix(in srgb, var(--primary-color) 22%, transparent)">
+          <mat-icon>palette</mat-icon> Couleur primaire
+        </div>
+        <div class="ripple-surface round" matRipple [matRippleCentered]="true" [matRippleRadius]="40"><mat-icon>favorite</mat-icon></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

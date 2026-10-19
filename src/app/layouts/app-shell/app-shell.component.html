@@ -1,0 +1,110 @@
+<mat-sidenav-container class="shell-container" autosize>
+
+  <!-- ── Sidenav (rail d'icônes ; chaque module a sa propre sous-navigation) ── -->
+  <mat-sidenav #drawerLeftInside class="shell-sidenav" [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()">
+    <div class="sidenav-inner">
+      <div class="sidenav-header">
+        <img src="assets/logo.png" class="brand-logo" alt="SC Storage" matTooltip="SC Storage"
+          matTooltipPosition="right" />
+      </div>
+
+      <ng-scrollbar class="nav-scrollbar" visibility="hover">
+        <div class="nav-rail">
+          @for (item of menuItems; track item) {
+          <a class="nav-rail-item" [routerLink]="['/main', item.$object?.type]" routerLinkActive="active"
+            [matTooltip]="item.libelle" matTooltipPosition="right" (click)="isMobile() && drawerLeftInside.close()">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </a>
+          }
+        </div>
+      </ng-scrollbar>
+
+      <!-- Utilisateur connecté -->
+      @if (user) {
+      <button type="button" class="user-avatar-btn" [matTooltip]="user?.fullname" matTooltipPosition="right"
+        (click)="openSideRight()">
+        <div class="avatar">{{ initiales() }}</div>
+      </button>
+      }
+    </div>
+  </mat-sidenav>
+
+  <!-- ── Contenu principal ── -->
+  <mat-sidenav-content>
+
+    <mat-toolbar class="shell-toolbar">
+      <button mat-icon-button (click)="drawerLeftInside.toggle()">
+        <mat-icon>{{ drawerLeftInside.opened ? 'menu_open' : 'menu' }}</mat-icon>
+      </button>
+
+      <span class="page-title">{{ pageTitle() }}</span>
+
+      <span class="spacer"></span>
+
+      @if (mainAction) {
+      <button mat-stroked-button class="action-main-btn" (click)="mainAction.action($event)">
+        @if (mainAction.icon) {
+        <mat-icon>{{ mainAction.icon }}</mat-icon>
+        }
+        <span>{{ mainAction.title }}</span>
+      </button>
+      }
+
+      <a mat-icon-button routerLink="/ui-showcase" matTooltip="Retour au catalogue UI Kit" class="ui-kit-btn">
+        <mat-icon>widgets</mat-icon>
+      </a>
+
+      <button mat-icon-button (click)="changeThemeMode()" matTooltip="Changer de thème">
+        @if (theme.mode() == 'light') {
+        <mat-icon>dark_mode</mat-icon>
+        }
+        @if (theme.mode() == 'dark') {
+        <mat-icon>light_mode</mat-icon>
+        }
+      </button>
+      <app-theme-picker />
+
+      @if (user) {
+      <button mat-icon-button (click)="openNotification()" matTooltip="Notifications">
+        @if (messages.length > 0) {
+        <mat-icon [matBadge]="messages.length | number:'1.0-0'" matBadgeColor="warn">notifications</mat-icon>
+        }
+        @if (messages.length === 0) {
+        <mat-icon>notifications</mat-icon>
+        }
+      </button>
+      <button mat-icon-button class="avatar-btn" (click)="openSideRight()" matTooltip="Mon compte">
+        <div class="avatar">{{ initiales() }}</div>
+      </button>
+      }
+
+      @if (!user) {
+      <button mat-raised-button color="primary" (click)="showFastSignin(false)" class="signin-btn">
+        <mat-icon>login</mat-icon>
+        <span>Connexion</span>
+      </button>
+      }
+    </mat-toolbar>
+
+    <ng-scrollbar class="content-area" visibility="hover">
+      <router-outlet></router-outlet>
+    </ng-scrollbar>
+
+  </mat-sidenav-content>
+
+  <!-- ── Drawer droit (profil / notifications) ── -->
+  <mat-sidenav class="right-drawer" position="end"
+    [mode]="isMobile() ? 'over' : 'side'" #drawer>
+    <div class="sidenav-inner">
+      @if (sideShow == 'user-settings') {
+      <app-user-settings (onLeave)="closeSideRight()" (onSelect)="onSettingSelect($any($event))" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+      </app-user-settings>
+      }
+      @if (sideShow == 'notifications') {
+      <app-notifications (onLeave)="closeSideRight()" (onSelect)="onMessageSelect($any($event))" (onGoBack)="goBack()"
+        style="flex:1; display:flex; flex-direction:column; min-height:0;">
+      </app-notifications>
+      }
+    </div>
+  </mat-sidenav>
+</mat-sidenav-container>

@@ -1,0 +1,123 @@
+<kit-doc-page title="Cartes" icon="map"
+  subtitle="Composant app-map (shared/components/map) basé sur Leaflet et ses plugins gratuits : fonds de carte libres sans clé d'API, marqueurs flat, clustering, trajets, zones, dessin avec Leaflet Draw ou Geoman (édition gratuite). Contrôles, popups et barres d'outils suivent le thème clair / sombre."
+  [toc]="toc">
+
+  <!-- ═══════════════ FONDS ═══════════════ -->
+  <kit-section id="basemaps" title="Fonds de carte" source="app-map [basemap] [basemapSwitcher]" [cols]="2"
+    description="Fonds gratuits sans clé, retenus pour leur rapidité : Esri Canvas gris clair / gris foncé (avec libellés), Esri Rues, Esri Topographique, OpenStreetMap, Esri Satellite. « auto » bascule entre gris clair et gris foncé selon le thème ; les fonds clairs sont assombris en mode sombre. Au-delà du zoom natif d'un fond, ses tuiles sont agrandies plutôt que laissées vides.">
+    <kit-demo label="Sélecteur de fond" [code]="code.basemaps" [flush]="true">
+      <app-map [center]="center" [zoom]="12" [(basemap)]="basemap" [basemapSwitcher]="true" [basemapOptions]="['auto', 'streets', 'topo', 'osm', 'esri-imagery']" [markers]="flotte" height="360px" />
+    </kit-demo>
+    <kit-demo label="Fournisseurs disponibles" hint="aucune clé requise">
+      <ul class="provider-list">
+        @for (b of basemapList; track b.key) {
+          <li [class.active]="basemap() === b.key" (click)="basemap.set(b.key)">
+            <code>{{ b.key }}</code><span>{{ b.label }}</span><small>{{ b.url }}</small>
+          </li>
+        }
+      </ul>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ MARQUEURS ═══════════════ -->
+  <kit-section id="markers" title="Marqueurs" source="MapMarker · divIcon flat"
+    description="Pastilles colorées par tone avec icône Material, halo « en direct », flèche de cap, infobulle au survol et popup flat. Le contenu projeté [mapOverlay] sert de légende.">
+    <kit-demo label="Flotte en temps réel" [hint]="'Dernier clic : ' + lastClick()" [code]="code.markers" [flush]="true">
+      <app-map [markers]="flotte" [scale]="true" height="420px" (markerClick)="pick($event)" (mapClick)="clicked($event)">
+        <div mapOverlay class="map-legend">
+          <span><i style="background: var(--success-color)"></i>En mouvement</span>
+          <span><i style="background: var(--warning-color)"></i>À l'arrêt</span>
+          <span><i style="background: var(--info-color)"></i>Maintenance</span>
+          <span><i style="background: var(--error-color)"></i>Alerte / hors ligne</span>
+          <span><i style="background: var(--text-muted)"></i>Moteur coupé</span>
+        </div>
+      </app-map>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CLUSTER ═══════════════ -->
+  <kit-section id="cluster" title="Clustering" source="leaflet.markercluster"
+    description="420 balises regroupées par proximité ; les groupes éclatent au zoom. Pastilles de groupe flat, sans zone de couverture.">
+    <kit-demo label="Parc de balises (Côte d'Ivoire)" [hint]="denses.length + ' positions'" [code]="code.cluster" [flush]="true">
+      <app-map [markers]="denses" [cluster]="true" [center]="[7.2, -5.4]" [zoom]="7" [fitBounds]="false" height="420px" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ TRAJETS ═══════════════ -->
+  <kit-section id="routes" title="Trajets" source="MapRoute (polyline)"
+    description="Trajet réalisé avec points de départ / arrivée, itinéraire prévu en pointillés, événements (arrêts, excès de vitesse) en marqueurs.">
+    <kit-demo label="Historique CI-4521-AB" [code]="code.routes" [flush]="true">
+      <app-map [routes]="trajets" [markers]="etapes" height="380px" (markerClick)="pick($event)" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ ZONES ═══════════════ -->
+  <kit-section id="zones" title="Zones / géofences" source="MapZone (cercle ou polygone)"
+    description="Zones colorées par tone, contour fin et remplissage léger, libellé au survol.">
+    <kit-demo label="Géofences d'exploitation" [code]="code.zones" [flush]="true">
+      <app-map [zones]="zones" [markers]="zoneMarkers" height="380px" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ LEAFLET DRAW ═══════════════ -->
+  <kit-section id="draw" title="Leaflet Draw" source="leaflet-draw · draw=&quot;leaflet-draw&quot;"
+    description="Barre d'outils de dessin (polygone, rectangle, cercle, ligne, point) avec édition et suppression. Le résultat est émis en GeoJSON.">
+    <div class="draw-grid">
+      <kit-demo label="Dessiner une zone" [code]="code.draw" [flush]="true">
+        <app-map draw="leaflet-draw" [center]="center" [zoom]="13" [fitBounds]="false" height="400px" (drawChange)="drawGeo.set($event)" />
+      </kit-demo>
+      <kit-demo label="Sortie GeoJSON" [hint]="summary(drawGeo())">
+        <pre class="geojson">{{ drawGeo() ? (drawGeo() | json) : 'Dessinez une forme sur la carte…' }}</pre>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ GEOMAN ═══════════════ -->
+  <kit-section id="geoman" title="Geoman (édition gratuite)" source="@geoman-io/leaflet-geoman-free · draw=&quot;geoman&quot;"
+    description="Alternative libre et plus récente à Leaflet Draw : dessin, édition des sommets, déplacement, découpe et suppression, interface en français.">
+    <div class="draw-grid">
+      <kit-demo label="Dessiner et éditer" [code]="code.geoman" [flush]="true">
+        <app-map draw="geoman" [center]="center" [zoom]="13" [fitBounds]="false" height="400px" (drawChange)="geomanGeo.set($event)" />
+      </kit-demo>
+      <kit-demo label="Sortie GeoJSON" [hint]="summary(geomanGeo())">
+        <pre class="geojson">{{ geomanGeo() ? (geomanGeo() | json) : 'Dessinez une forme sur la carte…' }}</pre>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ COMPACTE ═══════════════ -->
+  <kit-section id="compact" title="Carte compacte" source="[interactive]=&quot;false&quot;" [cols]="3"
+    description="Aperçu statique pour fiches de détail ou cartes de liste : pas de zoom ni de déplacement.">
+    <kit-demo label="Fiche véhicule" [code]="code.compact">
+      <div class="map-card">
+        <app-map [markers]="single" [interactive]="false" [fitBounds]="false" [center]="[single[0].lat, single[0].lng]" [zoom]="15" height="170px" />
+        <div class="map-card-body"><strong>CI-4521-AB</strong><span>Plateau, bd de la République · il y a 2 min</span></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Satellite">
+      <div class="map-card">
+        <app-map [markers]="zoneMarkers" basemap="esri-imagery" [interactive]="false" [fitBounds]="false" [center]="[5.303, -3.985]" [zoom]="16" height="170px" />
+        <div class="map-card-body"><strong>Dépôt central</strong><span>Marcory, zone 4</span></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Zone">
+      <div class="map-card">
+        <app-map [zones]="[zones[1]]" [interactive]="false" height="170px" />
+        <div class="map-card-body"><strong>Zone portuaire</strong><span>Accès restreint · 2 alertes ce mois</span></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ ÉTATS ═══════════════ -->
+  <kit-section id="states" title="États" source="[state]"
+    description="Chargement, erreur (avec action Réessayer) et vide, superposés à la carte.">
+    <kit-demo label="États de la carte" [code]="code.states">
+      <div class="state-toggle">
+        @for (s of ['loading', 'error', 'empty', 'ready']; track s) {
+          <button type="button" [class.active]="demoState() === s" (click)="demoState.set($any(s))">{{ s }}</button>
+        }
+      </div>
+      <app-map [markers]="flotte" [state]="demoState()" height="300px" (retry)="demoState.set('ready')" />
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

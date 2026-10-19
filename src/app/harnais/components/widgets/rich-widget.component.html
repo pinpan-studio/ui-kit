@@ -1,0 +1,165 @@
+@let b = block();
+
+@if (b.type === 'keyvalue') {
+  <dl class="kv">
+    @for (p of b.items; track p.label) {
+      <div class="kv-item">
+        <dt>@if (p.icon) {<mat-icon>{{ p.icon }}</mat-icon>}{{ p.label }}</dt>
+        <dd [class.mono]="p.mono" [style.color]="p.tone ? toneVar(p.tone) : null">
+          <span>{{ p.value }}</span>
+          @if (p.copy) {
+            <button type="button" class="copy" (click)="copy(p.value)" [attr.aria-label]="'Copier ' + p.label">
+              <mat-icon>{{ copied() === p.value ? 'check' : 'content_copy' }}</mat-icon>
+            </button>
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+} @else if (b.type === 'steps') {
+  <ol class="steps">
+    @for (s of b.steps; track $index) {
+      <li [class]="s.status">
+        <span class="dot">@if (stepIcon(s.status)) {<mat-icon>{{ stepIcon(s.status) }}</mat-icon>} @else {<span>{{ $index + 1 }}</span>}</span>
+        <span class="st-text"><span class="st-label">{{ s.label }}</span>@if (s.text) {<span class="st-sub">{{ s.text }}</span>}</span>
+      </li>
+    }
+  </ol>
+} @else if (b.type === 'checklist') {
+  <div class="cl-head">
+    <span>{{ checklistDone() }} / {{ checklist().length }} terminé(s)</span>
+    <span class="bar"><i [style.width.%]="(checklistDone() / checklist().length) * 100"></i></span>
+  </div>
+  <ul class="checklist">
+    @for (it of checklist(); track $index) {
+      <li [class.done]="it.done">
+        <mat-checkbox [checked]="it.done" (change)="toggleCheck($index)">
+          <span class="cl-label">{{ it.label }}</span>
+        </mat-checkbox>
+        @if (it.hint) { <span class="cl-hint">{{ it.hint }}</span> }
+      </li>
+    }
+  </ul>
+} @else if (b.type === 'progress') {
+  <div class="meters">
+    @for (m of b.items; track m.label) {
+      <div class="meter" [style.--tone]="toneVar(m.tone)">
+        <div class="m-head">
+          <span class="m-label">{{ m.label }}</span>
+          <span class="m-val"><strong>{{ m.value }}{{ m.unit }}</strong>@if (m.target) {<span> / {{ m.target }}{{ m.unit }}</span>}</span>
+        </div>
+        <div class="m-bar"><i [style.width.%]="pct(m.value, m.target)"></i></div>
+        <span class="m-pct">{{ pct(m.value, m.target) }} % de l’objectif</span>
+      </div>
+    }
+  </div>
+} @else if (b.type === 'diff') {
+  <div class="diff">
+    <div class="diff-head">
+      <mat-icon>description</mat-icon><code>{{ b.file }}</code>
+      <span class="spacer"></span>
+      <span class="plus">+{{ diff().added }}</span><span class="minus">−{{ diff().removed }}</span>
+      <button type="button" class="copy" (click)="copy(b.patch)" aria-label="Copier le diff"><mat-icon>{{ copied() === b.patch ? 'check' : 'content_copy' }}</mat-icon></button>
+    </div>
+    <div class="diff-body">
+      @for (l of diff().lines; track $index) {
+        <div class="dl {{ l.kind }}">
+          <span class="n">{{ l.old }}</span><span class="n">{{ l.new }}</span>
+          <span class="sign">{{ l.kind === 'add' ? '+' : l.kind === 'del' ? '−' : '' }}</span>
+          <span class="t">{{ l.text }}</span>
+        </div>
+      }
+    </div>
+  </div>
+} @else if (b.type === 'sources') {
+  <ol class="sources">
+    @for (s of b.items; track $index) {
+      <li>
+        <span class="src-n">{{ $index + 1 }}</span>
+        <span class="src-main">
+          <span class="src-site"><span class="fav">{{ s.site[0] }}</span>{{ s.site }}@if (s.date) {<span> · {{ s.date }}</span>}</span>
+          <span class="src-title">{{ s.title }}</span>
+          @if (s.snippet) { <span class="src-snippet">{{ s.snippet }}</span> }
+        </span>
+      </li>
+    }
+  </ol>
+} @else if (b.type === 'tags') {
+  <div class="tags">
+    @for (t of b.items; track t.label) {
+      <span class="tag" [style.--tone]="toneVar(t.tone)">{{ t.label }}@if (t.count !== undefined) {<b>{{ t.count }}</b>}</span>
+    }
+  </div>
+} @else if (b.type === 'heatmap') {
+  <div class="heat" [style.--cols]="b.cols.length">
+    <span></span>
+    @for (c of b.cols; track $index) { <span class="hc">{{ c }}</span> }
+    @for (r of b.rows; track $index; let ri = $index) {
+      <span class="hr">{{ r }}</span>
+      @for (c of b.cols; track $index; let ci = $index) {
+        <span class="cell" [style.background]="heat(b.values[ri][ci])" [matTooltip]="r + ' ' + c + ' : ' + b.values[ri][ci] + (b.unit ?? '')"></span>
+      }
+    }
+  </div>
+  <div class="heat-legend"><span>Moins</span>@for (k of [0.1, 0.35, 0.6, 0.85, 1]; track k) {<i [style.background]="heat(k * heatMax())"></i>}<span>Plus</span></div>
+} @else if (b.type === 'files') {
+  <ul class="files">
+    @for (f of b.items; track f.name) {
+      <li>
+        <img [src]="fileIcon(f.ext)" [alt]="f.ext" width="30" height="30" />
+        <span class="f-main"><span class="f-name">{{ f.name }}</span><span class="f-meta">{{ f.size }}@if (f.date) {<span> · {{ f.date }}</span>}@if (f.by) {<span> · {{ f.by }}</span>}</span></span>
+        <button mat-icon-button class="f-dl" matTooltip="Télécharger" disabled><mat-icon>download</mat-icon></button>
+      </li>
+    }
+  </ul>
+} @else if (b.type === 'cards') {
+  <div class="cards">
+    @for (c of b.items; track c.title) {
+      <article class="card" [style.--tone]="toneVar(c.tone)">
+        <div class="c-visual">
+          @if (c.image) { <img [src]="c.image" [alt]="c.title" loading="lazy" /> } @else { <mat-icon>{{ c.icon ?? 'category' }}</mat-icon> }
+        </div>
+        <div class="c-body">
+          <span class="c-title">{{ c.title }}</span>
+          @if (c.text) { <span class="c-text">{{ c.text }}</span> }
+          @if (c.tags?.length) { <span class="c-tags">@for (t of c.tags; track t) {<span>{{ t }}</span>}</span> }
+        </div>
+        <div class="c-foot">
+          @if (c.price) { <strong>{{ c.price }}</strong> }
+          @if (c.meta) { <span class="c-meta">{{ c.meta }}</span> }
+          @if (c.cta) { <button type="button" class="c-cta">{{ c.cta }}<mat-icon>arrow_forward</mat-icon></button> }
+        </div>
+      </article>
+    }
+  </div>
+} @else if (b.type === 'compare') {
+  <div class="compare-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th></th>
+          @for (p of b.plans; track p.name) {
+            <th [class.reco]="p.recommended">
+              @if (p.recommended) { <span class="reco-badge">Recommandé</span> }
+              <span class="p-name">{{ p.name }}</span>
+              @if (p.price) { <span class="p-price">{{ p.price }}</span> }
+              @if (p.note) { <span class="p-note">{{ p.note }}</span> }
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of b.features; track f.label) {
+          <tr>
+            <td class="f-label">{{ f.label }}</td>
+            @for (v of f.values; track $index; let i = $index) {
+              <td [class.reco]="b.plans[i]?.recommended">
+                @if (isBool(v)) { <mat-icon [class]="v ? 'yes' : 'no'">{{ v ? 'check_circle' : 'remove' }}</mat-icon> } @else {<span>{{ v }}</span>}
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

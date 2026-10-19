@@ -1,0 +1,156 @@
+<kit-doc-page title="UI Showcase" icon="auto_awesome_mosaic" eyebrow="Catalogue visuel"
+  subtitle="Vue globale du design system extrait du référentiel : jetons de couleur, typographie, icônes, composants, layouts et pages statiques. Tout fonctionne sans backend."
+  [toc]="toc">
+
+  <!-- ═══════════════ OVERVIEW ═══════════════ -->
+  <section id="overview" class="overview">
+    <div class="stat-row">
+      <a class="stat" routerLink="/pages"><mat-icon>view_quilt</mat-icon><b>{{ totalPages() }}</b><span>pages statiques</span></a>
+      <a class="stat" routerLink="/pages"><mat-icon>layers</mat-icon><b>{{ totalVariants() }}</b><span>variantes d'état</span></a>
+      <a class="stat" routerLink="/pages"><mat-icon>apps</mat-icon><b>{{ groups.length }}</b><span>modules</span></a>
+      <a class="stat" routerLink="/components"><mat-icon>widgets</mat-icon><b>{{ categories.length }}</b><span>catégories de composants</span></a>
+    </div>
+    <div class="quick-grid">
+      @for (s of sections; track s.label) {
+        <a class="quick" [routerLink]="s.path" [fragment]="s.fragment"><mat-icon>{{ s.icon }}</mat-icon><span>{{ s.label }}</span></a>
+      }
+    </div>
+  </section>
+
+  <!-- ═══════════════ THEMES ═══════════════ -->
+  <kit-section id="themes" title="Thèmes" source="src/themes/_palettes.scss (généré par tools/generate-themes.mjs) · ThemeService · &lt;app-theme-picker&gt;"
+    description="{{ theme.palettes.length }} thèmes de couleur Material 3, chacun en clair, en sombre ou selon le réglage du système. Les palettes tonales sont calculées dans l'espace HCT à partir d'une couleur source : les rôles (primary, container, surface…) garantissent les contrastes Material quelle que soit la couleur.">
+    <div class="themes-layout">
+      <app-theme-settings class="themes-settings" />
+      <div class="themes-preview">
+        <div class="roles">
+          @for (r of roles; track r.role) {
+            <button class="role" [class.bordered]="r.bordered" [style.background]="'var(--mat-sys-' + r.role + ')'" [style.color]="'var(--mat-sys-' + r.on + ')'"
+                    (click)="copy('var(--mat-sys-' + r.role + ')')">
+              <b>{{ r.label }}</b><code>--mat-sys-{{ r.role }}</code>
+            </button>
+          }
+        </div>
+        <div class="row">
+          <button matButton="filled">Filled</button>
+          <button matButton="tonal">Tonal</button>
+          <button matButton="outlined">Outlined</button>
+          <button matButton="elevated">Elevated</button>
+          <button matButton>Text</button>
+          <button matFab extended><mat-icon>edit</mat-icon> FAB</button>
+        </div>
+        <div class="row">
+          <mat-slide-toggle [checked]="true">Activé</mat-slide-toggle>
+          <mat-checkbox [checked]="true">Coché</mat-checkbox>
+          <mat-radio-button [checked]="true">Sélection</mat-radio-button>
+          <mat-progress-bar class="themes-progress" mode="determinate" value="62" />
+        </div>
+      </div>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ COLORS ═══════════════ -->
+  <kit-section id="colors" title="Colors" source="styles.scss :root, .light, .dark (dérivés du thème M3 courant)"
+    description="Jetons CSS définis globalement et redéfinis par le thème clair/sombre. Cliquez une pastille pour copier var(--token). Basculez le thème pour voir les valeurs sombres.">
+    <div class="theme-switch">
+      <span>Thème actuel : <strong>{{ theme.mode() === 'light' ? 'clair' : 'sombre' }}</strong></span>
+      <button mat-stroked-button (click)="theme.toggle()"><mat-icon>{{ theme.mode() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon> Basculer</button>
+    </div>
+    <h4 class="sub-h">Marque</h4>
+    <div class="swatches">
+      @for (c of brand; track c.token) {
+        <button class="swatch" (click)="copy('var(' + c.token + ')')"><span class="chip" [style.background]="'var(' + c.token + ')'"></span><b>{{ c.name }}</b><code>{{ c.token }}</code>@if (c.note) { <i>{{ c.note }}</i> }</button>
+      }
+    </div>
+    <h4 class="sub-h">Sémantique</h4>
+    <div class="swatches">
+      @for (c of semantic; track c.token) {
+        <button class="swatch" (click)="copy('var(' + c.token + ')')"><span class="chip" [style.background]="'var(' + c.token + ')'"></span><b>{{ c.name }}</b><code>{{ c.token }}</code></button>
+      }
+    </div>
+    <h4 class="sub-h">Surfaces & texte</h4>
+    <div class="swatches">
+      @for (c of surfaces; track c.token) {
+        <button class="swatch" (click)="copy('var(' + c.token + ')')"><span class="chip bordered" [style.background]="'var(' + c.token + ')'"></span><b>{{ c.name }}</b><code>{{ c.token }}</code></button>
+      }
+    </div>
+    <h4 class="sub-h">Badges de statut</h4>
+    <div class="row">
+      <app-status-badge label="success" color="success" /><app-status-badge label="warning" color="warning" /><app-status-badge label="error" color="error" />
+      <app-status-badge label="info" color="info" /><app-status-badge label="purple" color="purple" /><app-status-badge label="cyan" color="cyan" /><app-status-badge label="neutral" color="neutral" />
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ TYPOGRAPHY ═══════════════ -->
+  <kit-section id="typography" title="Typography" source="Outfit (titres) · Inter (texte) · Roboto (repli) · JetBrains Mono (codes)"
+    description="Polices embarquées localement (@fontsource), aucune requête vers Google Fonts.">
+    <div class="type-scale">
+      <div class="type-row"><span class="tag">h1 · 32/700</span><h1 class="t-h1">Référentiel unique</h1></div>
+      <div class="type-row"><span class="tag">Titre de page · Outfit 22</span><div class="t-page">Registre des Produits</div></div>
+      <div class="type-row"><span class="tag">h2 · 24/600</span><h2 class="t-h2">Tableau de bord Finance</h2></div>
+      <div class="type-row"><span class="tag">h3 · 20/600</span><h3 class="t-h3">Informations générales</h3></div>
+      <div class="type-row"><span class="tag">Titre de carte · Outfit 16</span><div class="t-card">Abonnement Standard</div></div>
+      <div class="type-row"><span class="tag">Corps · Inter 14</span><p class="t-body">Le client signale une perte de signal récurrente entre 18h et 20h sur l'axe Yopougon–Abobo.</p></div>
+      <div class="type-row"><span class="tag">Secondaire · 13</span><p class="t-sec">Catalogue des offres : tarifs d'installation, d'abonnement et de désinstallation.</p></div>
+      <div class="type-row"><span class="tag">Libellé · 12/600</span><span class="t-label">Raison sociale</span></div>
+      <div class="type-row"><span class="tag">En-tête de table · 11/700</span><span class="t-th">Code client</span></div>
+      <div class="type-row"><span class="tag">Code · JetBrains Mono 11</span><span class="t-code">FAC-2026-0912</span></div>
+      <div class="type-row"><span class="tag">Montant · Mono 12</span><span class="t-num">1 245 000 F CFA</span></div>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ SPACING ═══════════════ -->
+  <kit-section id="spacing" title="Espacements & rayons" source="styles.scss :root" [cols]="2">
+    <kit-demo label="Échelle d'espacement">
+      @for (s of spaces; track s[0]) {
+        <button class="space-row" (click)="copy('var(' + s[0] + ')')"><code>{{ s[0] }}</code><span class="bar" [style.width]="'var(' + s[0] + ')'"></span><i>{{ s[1] }}</i></button>
+      }
+    </kit-demo>
+    <kit-demo label="Rayons & ombres">
+      <div class="radius-row">
+        @for (r of radii; track r[0]) { <button class="radius" [style.border-radius]="'var(' + r[0] + ')'" (click)="copy('var(' + r[0] + ')')"><code>{{ r[0] }}</code><i>{{ r[1] }}</i></button> }
+      </div>
+      <div class="radius-row">
+        <div class="shadow" style="box-shadow: var(--elevation-1)"><code>--elevation-1</code></div>
+        <div class="shadow" style="box-shadow: var(--elevation-3)"><code>--elevation-3</code></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ ICONS ═══════════════ -->
+  <kit-section id="icons" title="Icons" source="Material Icons (police locale, package material-icons)"
+    description="Sélection des icônes utilisées dans le projet. Cliquez pour copier la balise.">
+    <div class="icon-search">
+      <mat-icon>search</mat-icon><input type="text" placeholder="Filtrer les icônes…" [value]="iconQuery()" (input)="iconQuery.set($any($event.target).value)" />
+      <span class="muted">{{ icons().length }} icône(s)</span>
+    </div>
+    <div class="icon-grid">
+      @for (i of icons(); track i) {
+        <button class="icon-cell" (click)="copy('<mat-icon>' + i + '</mat-icon>', i)" [matTooltip]="i"><mat-icon>{{ i }}</mat-icon><span>{{ i }}</span></button>
+      }
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ CATALOG ═══════════════ -->
+  <kit-section id="catalog" title="Catalogue" description="Accès direct aux galeries détaillées.">
+    <div class="cat-grid">
+      @for (c of categories; track c.path) {
+        <a class="cat-card" [routerLink]="c.path"><div class="cat-icon"><mat-icon>{{ c.icon }}</mat-icon></div>
+          <div class="cat-text"><strong>{{ c.label }}</strong><span>{{ c.description }}</span></div></a>
+      }
+      <a class="cat-card" routerLink="/layouts"><div class="cat-icon"><mat-icon>view_compact</mat-icon></div>
+        <div class="cat-text"><strong>Layouts</strong><span>Shell applicatif, shell de module, authentification, pages publiques, catalogue.</span></div></a>
+      <a class="cat-card" routerLink="/pages"><div class="cat-icon"><mat-icon>view_quilt</mat-icon></div>
+        <div class="cat-text"><strong>Pages</strong><span>Toutes les pages statiques de l'application, par module, avec leurs variantes.</span></div></a>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ MODULES ═══════════════ -->
+  <kit-section id="modules" title="Pages par module" description="Nombre de pages statiques disponibles dans chaque module.">
+    <div class="module-grid">
+      @for (g of groups; track g.id) {
+        <a class="module" routerLink="/pages" [fragment]="g.id"><mat-icon>{{ g.icon }}</mat-icon><span>{{ g.label }}</span><b>{{ g.pages.length }}</b></a>
+      }
+    </div>
+  </kit-section>
+</kit-doc-page>

@@ -1,0 +1,185 @@
+<ex-app-shell title="Fil d’équipe" crumb="Communication">
+  <div class="layout">
+    <aside class="left">
+      <section class="card profile">
+        <div class="cover"></div>
+        <span class="ava big" [style.background]="me.color">{{ initials(me.name) }}</span>
+        <strong>{{ me.name }}</strong>
+        <small>{{ me.role }} · SC Storage</small>
+        <div class="stats"><div><b>42</b><span>publications</span></div><div><b>318</b><span>abonnés</span></div><div><b>27</b><span>équipes</span></div></div>
+      </section>
+      <nav class="card menu">
+        <button [class.on]="tab() === 'all'" (click)="tab.set('all')"><mat-icon>dynamic_feed</mat-icon>Tout le fil</button>
+        <button [class.on]="tab() === 'team'" (click)="tab.set('team')"><mat-icon>groups</mat-icon>Mon équipe</button>
+        <button [class.on]="tab() === 'saved'" (click)="tab.set('saved')"><mat-icon>bookmark</mat-icon>Enregistrés</button>
+      </nav>
+    </aside>
+
+    <main class="feed">
+      <!-- Nouvelle publication -->
+      <section class="card new-post">
+        <app-comment-composer [author]="me" [mentionables]="people" placeholder="Partagez une info avec l’équipe…" submitLabel="Publier" [maxLength]="600" (submitted)="publish($event)" />
+        @if (pending().length || pendingPlace()) {
+          <div class="pending">
+            @for (f of pending(); track f.id) {
+              <span class="pj">
+                @if (f.kind === 'image' && f.url) { <img [src]="f.url" alt="" /> } @else { <img class="ic" [src]="'assets/icons-files/' + kinds[f.kind].img" alt="" /> }
+                <span class="pj-txt"><strong>{{ f.name }}</strong><small>{{ size(f.size) }}</small></span>
+                <button type="button" (click)="unattach(f)" [attr.aria-label]="'Retirer ' + f.name"><mat-icon>close</mat-icon></button>
+              </span>
+            }
+            @if (pendingPlace()) {
+              <span class="pj"><mat-icon class="pin">place</mat-icon><span class="pj-txt"><strong>Siège SC Storage</strong><small>Plateau, Abidjan</small></span>
+                <button type="button" (click)="pendingPlace.set(false)" aria-label="Retirer le lieu"><mat-icon>close</mat-icon></button></span>
+            }
+          </div>
+        }
+        <div class="attach">
+          <button mat-button (click)="local.click()"><mat-icon>add_photo_alternate</mat-icon>Photo / vidéo</button>
+          <input #local type="file" hidden multiple accept="image/*,video/*,audio/*,application/pdf" (change)="attachLocal($any($event.target).files); local.value = ''" />
+          <button mat-button (click)="attachFromDrive()"><mat-icon>folder_open</mat-icon>Mes fichiers</button>
+          <button mat-button (click)="pendingPlace.set(true)" [disabled]="pendingPlace()"><mat-icon>add_location_alt</mat-icon>Lieu</button>
+        </div>
+      </section>
+
+      <!-- Filtres par type de média -->
+      <div class="filters" role="tablist" aria-label="Filtrer par type de média">
+        @for (f of filters; track f.id) {
+          <button type="button" role="tab" class="chip-filter" [class.on]="filter() === f.id" [attr.aria-selected]="filter() === f.id" (click)="filter.set(f.id)"><mat-icon>{{ f.icon }}</mat-icon>{{ f.label }}</button>
+        }
+      </div>
+
+      @for (p of visible(); track p.id) {
+        <article class="card post">
+          <header>
+            <span class="ava" [style.background]="p.author.color">{{ initials(p.author.name) }}</span>
+            <div class="who"><strong>{{ p.author.name }}</strong><small>{{ p.author.role }} · {{ p.at }} · <mat-icon>public</mat-icon></small></div>
+            <button mat-icon-button [matMenuTriggerFor]="postMenu" aria-label="Options"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #postMenu="matMenu" class="m3-dropdown-menu">
+              <button mat-menu-item (click)="save(p)"><mat-icon>{{ p.saved ? 'bookmark_remove' : 'bookmark_add' }}</mat-icon>{{ p.saved ? 'Retirer des enregistrés' : 'Enregistrer' }}</button>
+              <button mat-menu-item><mat-icon>link</mat-icon>Copier le lien</button>
+              <button mat-menu-item><mat-icon>notifications_off</mat-icon>Ne plus suivre</button>
+            </mat-menu>
+          </header>
+          <p class="text" [innerHTML]="md(p.text)"></p>
+
+          @for (m of p.media; track $index) {
+            @switch (m.kind) {
+              @case ('photos') {
+                @let items = $any(m).items;
+                <div class="mosaic" [attr.data-n]="items.length > 4 ? 4 : items.length">
+                  @for (img of items.slice(0, 4); track img.id; let i = $index) {
+                    <button type="button" class="tile" (click)="view(items, i)" [attr.aria-label]="'Agrandir ' + img.name">
+                      <img [src]="img.url" [alt]="img.name" loading="lazy" />
+                      @if (i === 3 && items.length > 4) { <span class="more">+{{ items.length - 4 }}</span> }
+                    </button>
+                  }
+                </div>
+              }
+              @case ('album') {
+                <div class="album"><app-carousel [items]="$any(m).slides" indicators="thumbs" aspectRatio="16 / 10" /></div>
+              }
+              @case ('video') {
+                @let v = videoOf($any(m));
+                <div class="video">
+                  @if (v?.url) { <app-video-player [src]="v!.url!" /> }
+                  @else { <div class="video-wait"><mat-spinner diameter="28" /><span>Préparation de la vidéo…</span></div> }
+                </div>
+              }
+              @case ('youtube') {
+                <div class="video"><app-youtube-player [video]="$any(m).id" [title]="$any(m).title" [duration]="$any(m).duration" /></div>
+              }
+              @case ('voice') {
+                <div class="voice"><app-audio-player [tracks]="$any(m).tracks" variant="compact" /></div>
+              }
+              @case ('podcast') {
+                <div class="podcast"><app-audio-player [tracks]="$any(m).tracks" [variant]="$any(m).tracks.length > 1 ? 'playlist' : 'default'" /></div>
+              }
+              @case ('document') {
+                @let d = $any(m).item;
+                <button type="button" class="doc" (click)="view([d], 0)">
+                  <span class="doc-cover"><mat-icon>picture_as_pdf</mat-icon><span class="lines"><i></i><i></i><i></i><i></i></span></span>
+                  <span class="doc-info"><strong>{{ d.name }}</strong><small>PDF · {{ $any(m).pages ?? 1 }} page(s) · {{ size(d.size) }}</small></span>
+                  <span class="doc-open"><mat-icon>open_in_full</mat-icon>Ouvrir</span>
+                </button>
+              }
+              @case ('files') {
+                <div class="files">
+                  @for (f of $any(m).items; track f.id; let i = $index) {
+                    <button type="button" class="file" (click)="view($any(m).items, i)" [disabled]="!f.url" [title]="f.url ? 'Aperçu' : 'Aperçu indisponible'">
+                      <img [src]="'assets/icons-files/' + kinds[$any(f).kind].img" alt="" />
+                      <span><strong>{{ f.name }}</strong><small>{{ kinds[$any(f).kind].label }} · {{ size(f.size) }}</small></span>
+                      <mat-icon>{{ f.url ? 'visibility' : 'download' }}</mat-icon>
+                    </button>
+                  }
+                </div>
+              }
+              @case ('link') {
+                @let l = $any(m);
+                <a class="link" [href]="l.url" [style.--h]="l.hue">
+                  <span class="l-art"><mat-icon>{{ l.icon }}</mat-icon></span>
+                  <span class="l-body"><small>{{ l.domain }}</small><strong>{{ l.title }}</strong><span>{{ l.description }}</span></span>
+                </a>
+              }
+              @case ('place') {
+                @let pl = $any(m);
+                <div class="place">
+                  <app-map [center]="pl.center" [zoom]="13" height="200px" [markers]="pl.markers" [fitBounds]="false" [interactive]="false" [zoomControl]="false" />
+                  <div class="pl-foot"><mat-icon>place</mat-icon><span><strong>{{ pl.name }}</strong><small>{{ pl.address }}</small></span><button mat-stroked-button>Itinéraire</button></div>
+                </div>
+              }
+              @case ('poll') {
+                @let poll = $any(m);
+                <div class="poll" role="group" [attr.aria-label]="poll.question">
+                  <strong>{{ poll.question }}</strong>
+                  @for (o of poll.options; track o.label; let i = $index) {
+                    @if (poll.voted === undefined) {
+                      <button type="button" class="opt" (click)="vote(p, i)"><span class="radio"></span>{{ o.label }}</button>
+                    } @else {
+                      <div class="res" [class.mine]="poll.voted === i">
+                        <span class="bar" [style.width.%]="(o.votes / total(m)) * 100"></span>
+                        <span class="lbl">{{ o.label }}@if (poll.voted === i) { <mat-icon>check_circle</mat-icon> }</span>
+                        <b>{{ (o.votes / total(m)) * 100 | number: '1.0-0' }} %</b>
+                      </div>
+                    }
+                  }
+                  <small>{{ total(m) }} votes · se termine dans 2 jours</small>
+                </div>
+              }
+            }
+          }
+
+          <div class="counts"><span><i class="heart"><mat-icon>favorite</mat-icon></i>{{ p.likes }}</span><button type="button" (click)="toggleComments(p)">{{ p.comments.length }} commentaire(s)</button></div>
+          <footer>
+            <button type="button" [class.on]="p.liked" (click)="like(p)"><mat-icon>{{ p.liked ? 'favorite' : 'favorite_border' }}</mat-icon>J’aime</button>
+            <button type="button" (click)="toggleComments(p)"><mat-icon>chat_bubble_outline</mat-icon>Commenter</button>
+            <button type="button" [class.saved]="p.saved" (click)="save(p)"><mat-icon>{{ p.saved ? 'bookmark' : 'bookmark_border' }}</mat-icon>Enregistrer</button>
+          </footer>
+
+          @if (p.open) {
+            <div class="post-comments"><app-comment-thread [comments]="p.comments" [me]="me" [mentionables]="people" compact /></div>
+          }
+        </article>
+      } @empty {
+        <div class="card empty"><mat-icon>{{ tab() === 'saved' ? 'bookmark_border' : 'filter_alt_off' }}</mat-icon>
+          <strong>{{ tab() === 'saved' ? 'Aucune publication enregistrée' : 'Aucune publication de ce type' }}</strong>
+          <span>{{ tab() === 'saved' ? 'Enregistrez une publication pour la retrouver ici.' : 'Essayez un autre filtre.' }}</span></div>
+      }
+    </main>
+
+    <aside class="right">
+      <section class="card">
+        <h3>Événements à venir</h3>
+        @for (e of [{ d: '21', m: 'oct.', t: 'Atelier produit', s: 'Salle Lagune · 10 h' }, { d: '24', m: 'oct.', t: 'Inauguration Vridi', s: 'Entrepôt · 16 h 30' }, { d: '03', m: 'nov.', t: 'Revue trimestrielle', s: 'En ligne · 9 h' }]; track e.t) {
+          <div class="event"><span class="date"><b>{{ e.d }}</b>{{ e.m }}</span><span><strong>{{ e.t }}</strong><small>{{ e.s }}</small></span></div>
+        }
+      </section>
+      <section class="card">
+        <h3>Collègues</h3>
+        @for (u of people.slice(1, 5); track u.name) {
+          <div class="mate"><span class="ava" [style.background]="u.color">{{ initials(u.name) }}</span><span><strong>{{ u.name }}</strong><small>{{ u.role }}</small></span><button mat-icon-button aria-label="Message"><mat-icon>chat</mat-icon></button></div>
+        }
+      </section>
+    </aside>
+  </div>
+</ex-app-shell>

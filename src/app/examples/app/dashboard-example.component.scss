@@ -1,0 +1,53 @@
+@import 'ex-page';
+
+.period { border-radius: 8px; --mat-standard-button-toggle-height: 36px;
+  --mat-standard-button-toggle-label-text-size: var(--fs-body-sm); --mat-standard-button-toggle-shape: 8px;
+  @include mobile { .page-head .actions & { flex: 1 1 100%; } mat-button-toggle { flex: 1; } } }
+
+.alert { display: block; margin-bottom: 16px; }
+
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
+  .chart-card { grid-column: span 2; }
+  .wide { grid-column: 1 / -1; }
+  @include tablet { grid-template-columns: repeat(2, minmax(0, 1fr)); .chart-card { grid-column: 1 / -1; } }
+  @include mobile { grid-template-columns: minmax(0, 1fr); .chart-card, .wide { grid-column: auto; } } }
+
+.chart { position: relative; height: 288px; @include mobile { height: 220px; } }
+
+.donut { position: relative; height: 176px; margin-top: 4px;
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;
+    strong { font: 600 28px / 1.1 var(--font-heading); font-variant-numeric: tabular-nums; } span { font-size: var(--fs-caption); color: var(--text-muted); } } }
+.legend { margin: 20px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column;
+  li { display: grid; grid-template-columns: 10px 1fr auto 44px; align-items: center; gap: 10px; padding: 7px 0; font-size: var(--fs-body-sm); color: var(--text-secondary); }
+  i { width: 10px; height: 10px; border-radius: 3px; }
+  b { font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  em { font-style: normal; text-align: right; color: var(--text-muted); font-variant-numeric: tabular-nums; } }
+
+.list { padding: 8px 0 8px; }
+.rank { width: 24px; flex: 0 0 24px; font: 600 var(--fs-body-sm) var(--font-heading); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-caption); color: var(--text-muted);
+  i { width: 6px; height: 6px; border-radius: 50%; background: var(--success-color); box-shadow: 0 0 0 3px var(--success-color-light); } }
+.feed { margin: 0; padding: 12px 20px 16px; list-style: none;
+  li { position: relative; display: flex; gap: 12px; padding-bottom: 14px;
+    &::before { content: ''; position: absolute; left: 4px; top: 16px; bottom: 0; width: 1px; background: var(--border-color); }
+    &:last-child { padding-bottom: 0; &::before { display: none; } } }
+  .dot { width: 9px; height: 9px; flex: 0 0 9px; margin-top: 6px; border-radius: 50%; background: currentColor; }
+  p { margin: 0; font-size: var(--fs-body-sm); line-height: 1.45; color: var(--text-primary); }
+  small { font-size: var(--fs-caption); color: var(--text-muted); } }
+
+.goals { display: flex; flex-direction: column; gap: 18px; padding-top: 12px;
+  .g-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: var(--fs-body-sm); color: var(--text-secondary); strong { color: var(--text-primary); } }
+  mat-progress-bar { border-radius: 4px; --mat-progress-bar-track-height: 6px; --mat-progress-bar-active-indicator-height: 6px; }
+  small { display: block; margin-top: 6px; font-size: var(--fs-caption); color: var(--text-muted); } }
+
+.dash-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 0; overflow-x: auto; scrollbar-width: none;
+  button { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border: 0; background: none; cursor: pointer; white-space: nowrap;
+    font: 500 var(--fs-body) var(--font-body); color: var(--text-secondary);
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+    &:hover { color: var(--text-primary); }
+    &.on { color: var(--text-primary); font-weight: 600;
+      &::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--primary-color); } } } }
+.kpi { position: relative; container-type: inline-size; }
+@container (max-width: 240px) { .spark { display: none; } }
+.spark { position: absolute; right: 16px; top: 16px; width: 88px; height: 34px; pointer-events: none; @include sm { display: none; } }

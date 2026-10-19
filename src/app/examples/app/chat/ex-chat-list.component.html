@@ -1,0 +1,42 @@
+<div class="head">
+  <label class="searchbox"><mat-icon>search</mat-icon><input type="search" placeholder="Rechercher" [value]="q()" (input)="q.set($any($event.target).value)" /></label>
+  <div class="filters" role="tablist">
+    @for (f of filters; track f.id) {
+      <button type="button" role="tab" [class.on]="filter() === f.id" [attr.aria-selected]="filter() === f.id" (click)="filter.set(f.id)">{{ f.label }}@if (f.id === 'unread' && chat.totalUnread()) { <b>{{ chat.totalUnread() }}</b> }</button>
+    }
+  </div>
+</div>
+<div class="items">
+  @for (g of groups(); track g.label) {
+    @if (g.items.length) {
+      <span class="sec">{{ g.label }}</span>
+      @for (c of g.items; track c.id) {
+        @let last = chat.last(c);
+        <button type="button" class="item" [class.on]="c.id === selected()" [class.unread]="c.unread" (click)="pick.emit(c.id)">
+          <span class="av">
+            @if (c.kind === 'direct') {
+              <span class="ava" [style.background]="chat.peer(c)!.color">{{ initials(chat.title(c)) }}</span>
+              @if (chat.peer(c)!.online) { <i class="online"></i> }
+            } @else {
+              <span class="ava grp" [style.background]="c.color"><mat-icon>{{ c.icon }}</mat-icon></span>
+            }
+          </span>
+          <span class="body">
+            <span class="top"><strong>{{ c.kind === 'channel' ? '# ' : '' }}{{ chat.title(c) }}</strong>
+              @if (c.muted) { <mat-icon class="mini">notifications_off</mat-icon> }
+              <time>{{ when(last?.at) }}</time></span>
+            <span class="bottom">
+              @if (c.typing) { <em>{{ chat.person(c.typing).name.split(' ')[0] }} écrit…</em> }
+              @else {
+                <span class="pv">@if (last && last.from === me) { <mat-icon class="mini" [class.read]="last.status === 'read'">{{ last.status === 'sent' || last.status === 'sending' ? 'done' : 'done_all' }}</mat-icon> }
+                  @else if (last && c.kind !== 'direct' && !last.system) { {{ chat.person(last.from).name.split(' ')[0] }} : }{{ chat.preview(last) }}</span>
+              }
+              @if (c.unread) { <b class="badge" [class.muted]="c.muted">{{ c.unread }}</b> } @else if (c.pinned) { <mat-icon class="mini">push_pin</mat-icon> }
+            </span>
+          </span>
+        </button>
+      }
+    }
+  }
+  @if (!count()) { <p class="none">Aucune conversation.</p> }
+</div>

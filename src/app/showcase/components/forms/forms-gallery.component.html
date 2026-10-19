@@ -1,0 +1,532 @@
+<kit-doc-page title="Formulaires" icon="edit_note"
+  subtitle="Champs de saisie du projet : le motif maison « field-box » (form-field / field-label / field-box), les champs Angular Material « outline » (écrans de compte), les sélecteurs riches, les dates, les choix et la validation."
+  [toc]="toc">
+
+  <!-- ═══════════════════════ INPUT (field-box) ═══════════════════════ -->
+  <kit-section id="input" title="Input" source=".form-field > .field-box (styles.scss)"
+    description="Motif de champ utilisé dans la quasi-totalité des formulaires et dialogs (CrudDialog, formulaires de modules). Fond « surface-container-high », bordure 1px, rayon 12px, halo primaire au focus." [cols]="3">
+    <kit-demo label="Default" [code]="code.fieldBox">
+      <div class="form-field">
+        <label class="field-label">Raison sociale</label>
+        <div class="field-box"><mat-icon>business</mat-icon><input placeholder="Ex : Transports Yao & Fils" /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Focused" hint="état :focus-within">
+      <div class="form-field">
+        <label class="field-label">Raison sociale</label>
+        <div class="field-box is-focused"><mat-icon>business</mat-icon><input placeholder="Saisie en cours…" /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Filled">
+      <div class="form-field">
+        <label class="field-label">Raison sociale</label>
+        <div class="field-box"><mat-icon>business</mat-icon><input [(ngModel)]="filled" /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Disabled">
+      <div class="form-field">
+        <label class="field-label">Code client</label>
+        <div class="field-box is-disabled"><mat-icon>tag</mat-icon><input value="CLI-1040" disabled /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Readonly">
+      <div class="form-field">
+        <label class="field-label">Référence</label>
+        <div class="field-box is-readonly"><mat-icon>lock</mat-icon><input [value]="readonlyValue" readonly /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Error" [code]="code.fieldError">
+      <div class="form-field">
+        <label class="field-label">Email *</label>
+        <div class="field-box field-invalid"><mat-icon>alternate_email</mat-icon><input [(ngModel)]="errorValue" /></div>
+        <span class="field-error">Adresse email invalide</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Success">
+      <div class="form-field">
+        <label class="field-label">Email</label>
+        <div class="field-box field-valid"><mat-icon>alternate_email</mat-icon><input [(ngModel)]="successValue" /><mat-icon class="state-icon ok">check_circle</mat-icon></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Required">
+      <div class="form-field">
+        <label class="field-label">Téléphone <span class="req">*</span></label>
+        <div class="field-box"><mat-icon>phone</mat-icon><input placeholder="+225 07 00 00 00 00" required /></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="With icon / action">
+      <div class="form-field">
+        <label class="field-label">Montant</label>
+        <div class="field-box"><mat-icon>payments</mat-icon><input type="number" value="250000" /><span class="unit">FCFA</span>
+          <button mat-icon-button type="button" matTooltip="Effacer"><mat-icon>close</mat-icon></button></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="With helper text">
+      <div class="form-field">
+        <label class="field-label">IMEI de la balise</label>
+        <div class="field-box"><mat-icon>router</mat-icon><input placeholder="15 chiffres" /></div>
+        <span class="field-hint">Inscrit sous le boîtier, 15 chiffres sans espace.</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Loading">
+      <div class="form-field">
+        <label class="field-label">Vérification du code</label>
+        <div class="field-box"><mat-icon>qr_code</mat-icon><input value="SC-77812" /><mat-spinner diameter="18"></mat-spinner></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Password">
+      <div class="form-field">
+        <label class="field-label">Mot de passe</label>
+        <div class="field-box"><mat-icon>lock</mat-icon><input #pw type="password" value="motdepasse" />
+          <button mat-icon-button type="button" (click)="pw.type = pw.type === 'password' ? 'text' : 'password'"><mat-icon>{{ pw.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ INPUT MATERIAL ═══════════════════════ -->
+  <kit-section id="input-material" title="Input Material (outline / fill)" source="mat-form-field"
+    description="Utilisés par les écrans de compte (profil, mot de passe, inscription)." [cols]="3">
+    <kit-demo label="Outline" [code]="code.matOutline">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nom complet</mat-label>
+        <mat-icon matSuffix>person</mat-icon>
+        <input matInput placeholder="Prénom(s) Nom" [(ngModel)]="matOutline">
+        <mat-hint>Affiché sur les documents</mat-hint>
+      </mat-form-field>
+    </kit-demo>
+    <kit-demo label="Outline — erreur">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Email</mat-label>
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        <input matInput [formControl]="matError">
+        <mat-error>Vous devez renseigner une adresse mail valide</mat-error>
+      </mat-form-field>
+    </kit-demo>
+    <kit-demo label="Fill — disabled">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>E-mail</mat-label>
+        <input matInput value="jean.kouassi@example.com" disabled>
+      </mat-form-field>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TEXTAREA ═══════════════════════ -->
+  <kit-section id="textarea" title="Textarea" source=".field-box.textarea-box" [cols]="3">
+    <kit-demo label="Default" [code]="code.textarea">
+      <div class="form-field">
+        <label class="field-label">Description</label>
+        <div class="field-box textarea-box"><textarea rows="3" placeholder="Décrivez la demande…"></textarea></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Filled + compteur">
+      <div class="form-field">
+        <label class="field-label">Commentaire</label>
+        <div class="field-box textarea-box"><textarea #ta rows="3" maxlength="200">Le client signale une perte de signal récurrente entre 18h et 20h sur l'axe Yopougon–Abobo.</textarea></div>
+        <span class="field-hint right">{{ ta.value.length }}/200</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Disabled">
+      <div class="form-field">
+        <label class="field-label">Notes internes</label>
+        <div class="field-box textarea-box is-disabled"><textarea rows="3" disabled>Lecture seule.</textarea></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MASQUE ═══════════════════════ -->
+  <kit-section id="mask" title="Masque de saisie" source="input[appInputMask] (shared/directives/input-mask.directive.ts)"
+    description="Directive légère sur un input de field-box : formate la saisie au fil de la frappe (0 chiffre, A lettre, * alphanumérique, autres caractères insérés automatiquement). La valeur du modèle est la valeur masquée." [cols]="2">
+    <kit-demo label="Téléphone" hint="+225 00 00 00 00 00" [code]="code.mask">
+      <div class="form-field">
+        <label class="field-label">Téléphone</label>
+        <div class="field-box"><mat-icon>call</mat-icon>
+          <input appInputMask="+225 00 00 00 00 00" [(ngModel)]="maskTel" placeholder="+225 07 00 00 00 00" inputmode="tel" />
+        </div>
+        <span class="field-hint">Valeur : {{ maskTel || '—' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Immatriculation" hint="0000 AA 00">
+      <div class="form-field">
+        <label class="field-label">Immatriculation</label>
+        <div class="field-box"><mat-icon>directions_car</mat-icon>
+          <input appInputMask="0000 AA 00" [(ngModel)]="maskPlaque" placeholder="1234 AB 01" />
+        </div>
+        <span class="field-hint">Valeur : {{ maskPlaque || '—' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Date saisie au clavier" hint="00/00/0000">
+      <div class="form-field">
+        <label class="field-label">Date de naissance</label>
+        <div class="field-box"><mat-icon>cake</mat-icon>
+          <input appInputMask="00/00/0000" [(ngModel)]="maskDate" placeholder="JJ/MM/AAAA" inputmode="numeric" />
+        </div>
+        <span class="field-hint">Valeur : {{ maskDate || '—' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Code avec préfixe" hint="CLI-00000">
+      <div class="form-field">
+        <label class="field-label">Code client</label>
+        <div class="field-box"><mat-icon>tag</mat-icon>
+          <input appInputMask="CLI-00000" [(ngModel)]="maskCode" placeholder="CLI-00000" inputmode="numeric" />
+        </div>
+        <span class="field-hint">Valeur : {{ maskCode || '—' }}</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ SELECT ═══════════════════════ -->
+  <kit-section id="select" title="Select" source="mat-select · app-searchable-select · select natif"
+    description="Trois variantes coexistent : mat-select dans une field-box (panel « m3-dropdown-menu »), le sélecteur riche recherchable app-searchable-select (icônes, couleurs, descriptions, clavier) et le select natif (paginateur)." [cols]="3">
+    <kit-demo label="mat-select" [code]="code.matSelect">
+      <div class="form-field">
+        <label class="field-label">Ville</label>
+        <div class="field-box select-box"><mat-icon>location_on</mat-icon>
+          <mat-select [(ngModel)]="matSelectValue" panelClass="m3-dropdown-menu">
+            @for (o of villeOptions; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }
+          </mat-select>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="app-searchable-select" [code]="code.searchable">
+      <div class="form-field">
+        <label class="field-label">Priorité</label>
+        <app-searchable-select [options]="priorityOptions" [(ngModel)]="searchableValue" placeholder="Priorité…" icon="flag" [clearable]="true" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Vide + allowNull">
+      <div class="form-field">
+        <label class="field-label">Secteur</label>
+        <app-searchable-select [options]="secteurOptions" [(ngModel)]="searchableEmpty" placeholder="Sélectionner un secteur…" icon="category" [allowNull]="true" nullLabel="— Aucun —" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Disabled">
+      <div class="form-field">
+        <label class="field-label">Ville (verrouillée)</label>
+        <app-searchable-select [options]="villeOptions" [ngModel]="'Abidjan'" [disabled]="true" icon="location_on" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Natif">
+      <div class="form-field">
+        <label class="field-label">Secteur</label>
+        <div class="field-box"><mat-icon>category</mat-icon>
+          <select [(ngModel)]="nativeSelect">@for (s of secteurOptions; track s.value) { <option [value]="s.value">{{ s.label }}</option> }</select>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Erreur">
+      <div class="form-field">
+        <label class="field-label">Ville *</label>
+        <div class="field-box select-box field-invalid"><mat-icon>location_on</mat-icon>
+          <mat-select placeholder="Choisir…" panelClass="m3-dropdown-menu">@for (o of villeOptions; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }</mat-select>
+        </div>
+        <span class="field-error">Ville est requis</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MULTI SELECT ═══════════════════════ -->
+  <kit-section id="multi-select" title="Multi-select" source="mat-select multiple · mat-chip-grid" [cols]="2">
+    <kit-demo label="mat-select multiple" [code]="code.multi">
+      <div class="form-field">
+        <label class="field-label">Zones couvertes</label>
+        <div class="field-box select-box"><mat-icon>checklist</mat-icon>
+          <mat-select [(ngModel)]="multiValue" multiple panelClass="m3-dropdown-menu" placeholder="Choisir des villes">
+            @for (o of villeOptions; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }
+          </mat-select>
+        </div>
+        <span class="field-hint">{{ multiValue.length }} sélectionnée(s)</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Chips">
+      <div class="form-field">
+        <label class="field-label">Secteurs</label>
+        <mat-chip-listbox class="form-chips" [(ngModel)]="chipsValue" multiple aria-label="Secteurs">
+          @for (s of secteurOptions; track s.value) { <mat-chip-option [value]="s.value">{{ s.label }}</mat-chip-option> }
+        </mat-chip-listbox>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ AUTOCOMPLETE ═══════════════════════ -->
+  <kit-section id="autocomplete" title="Autocomplete" source="app-entity-autocomplete · mat-autocomplete"
+    description="app-entity-autocomplete : recherche avec debounce, spinner, bouton d'effacement et état « aucun résultat ». Ici la fonction de recherche filtre une liste statique (of())." [cols]="2">
+    <kit-demo label="app-entity-autocomplete" hint="tapez « trans » ou « CLI-10 »" [code]="code.autocomplete">
+      <div class="form-field">
+        <label class="field-label">Client</label>
+        <app-entity-autocomplete placeholder="Rechercher un client…" icon="business" [searchFn]="clientSearch" [displayFn]="clientLabel" (itemSelected)="selectedClient = $event" />
+        @if (selectedClient) { <span class="field-hint">Sélection : {{ selectedClient.raison_sociale }} ({{ selectedClient.ville }})</span> }
+      </div>
+    </kit-demo>
+    <kit-demo label="mat-autocomplete">
+      <div class="form-field">
+        <label class="field-label">Ville</label>
+        <div class="field-box"><mat-icon>location_on</mat-icon>
+          <input [formControl]="matAutoCtrl" [matAutocomplete]="auto" (input)="onMatAutoInput($any($event.target).value)" placeholder="Commencez à taper…" />
+          <mat-autocomplete #auto="matAutocomplete" class="app-autocomplete-panel">
+            @for (v of filteredVilles(); track v) { <mat-option [value]="v">{{ v }}</mat-option> }
+          </mat-autocomplete>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ DATES ═══════════════════════ -->
+  <kit-section id="date" title="Date picker" source="matDatepicker (adaptateur natif fr-FR)" [cols]="3">
+    <kit-demo label="field-box" [code]="code.date">
+      <div class="form-field">
+        <label class="field-label">Date d'installation</label>
+        <div class="field-box"><mat-icon>event</mat-icon>
+          <input [matDatepicker]="dp1" [(ngModel)]="dateValue" placeholder="JJ/MM/AAAA">
+          <button mat-icon-button type="button" (click)="dp1.open()"><mat-icon>calendar_month</mat-icon></button>
+          <mat-datepicker #dp1></mat-datepicker>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Outline + bornes">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Échéance (2026)</mat-label>
+        <input matInput [matDatepicker]="dp2" [min]="minDate" [max]="maxDate">
+        <mat-datepicker-toggle matIconSuffix [for]="dp2"></mat-datepicker-toggle>
+        <mat-datepicker #dp2></mat-datepicker>
+        <mat-hint>JJ/MM/AAAA</mat-hint>
+      </mat-form-field>
+    </kit-demo>
+    <kit-demo label="Calendrier inline">
+      <mat-card class="inline-cal"><mat-calendar [(selected)]="dateValue"></mat-calendar></mat-card>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="date-range" title="Date range" source="mat-date-range-input" [cols]="2">
+    <kit-demo label="Période" [code]="code.range">
+      <div class="form-field">
+        <label class="field-label">Période de facturation</label>
+        <div class="field-box"><mat-icon>date_range</mat-icon>
+          <mat-date-range-input [rangePicker]="rp">
+            <input matStartDate [(ngModel)]="rangeStart" placeholder="Début">
+            <input matEndDate [(ngModel)]="rangeEnd" placeholder="Fin">
+          </mat-date-range-input>
+          <button mat-icon-button type="button" (click)="rp.open()"><mat-icon>calendar_month</mat-icon></button>
+          <mat-date-range-picker #rp></mat-date-range-picker>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Raccourcis de période" hint=".period-filter-group">
+      <div class="m3-filter-toggle">
+        <button type="button" class="active">Ce mois</button><button type="button">Trimestre</button><button type="button">Année</button><button type="button">Personnalisé</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="time" title="Time picker" source="matTimepicker (Angular Material ≥ 19)" [cols]="2">
+    <kit-demo label="Heure" [code]="code.time">
+      <div class="form-field">
+        <label class="field-label">Heure de passage</label>
+        <div class="field-box"><mat-icon>schedule</mat-icon>
+          <input [matTimepicker]="tp" [(ngModel)]="timeValue" placeholder="HH:MM">
+          <button mat-icon-button type="button" (click)="tp.open()"><mat-icon>expand_more</mat-icon></button>
+          <mat-timepicker #tp interval="15min"/>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Créneau (field-box)">
+      <div class="form-field">
+        <label class="field-label">Créneau</label>
+        <div class="field-box"><mat-icon>schedule</mat-icon><input type="time" value="08:30" /><span class="unit">→</span><input type="time" value="10:00" /></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ CHOIX ═══════════════════════ -->
+  <kit-section id="checkbox" title="Checkbox" source="mat-checkbox" [cols]="3">
+    <kit-demo label="États" [code]="code.checkbox">
+      <div class="stack">
+        <mat-checkbox color="primary" [(ngModel)]="checks.sms">Coché</mat-checkbox>
+        <mat-checkbox color="primary" [(ngModel)]="checks.mail">Non coché</mat-checkbox>
+        <mat-checkbox color="primary" [checked]="true" [disabled]="true">Coché désactivé</mat-checkbox>
+        <mat-checkbox color="primary" [disabled]="true">Désactivé</mat-checkbox>
+      </div>
+    </kit-demo>
+    <kit-demo label="Indéterminé (tout sélectionner)">
+      <div class="stack">
+        <mat-checkbox color="primary" [checked]="allChecked" [indeterminate]="someChecked" (change)="setAll($event.checked)"><strong>Canaux de notification</strong></mat-checkbox>
+        <div class="stack indent">
+          <mat-checkbox color="primary" [(ngModel)]="checks.sms">SMS</mat-checkbox>
+          <mat-checkbox color="primary" [(ngModel)]="checks.mail">Email</mat-checkbox>
+          <mat-checkbox color="primary" [(ngModel)]="checks.push">Push</mat-checkbox>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Erreur (CGU)">
+      <mat-checkbox color="primary" class="cb-error">J'accepte les conditions générales</mat-checkbox>
+      <span class="field-error">Vous devez accepter les conditions</span>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="radio" title="Radio" source="mat-radio-group" [cols]="2">
+    <kit-demo label="Vertical" [code]="code.radio">
+      <mat-radio-group [(ngModel)]="radioValue" color="primary" class="stack">
+        <mat-radio-button value="MENSUEL">Mensuel</mat-radio-button>
+        <mat-radio-button value="TRIMESTRIEL">Trimestriel</mat-radio-button>
+        <mat-radio-button value="ANNUEL">Annuel</mat-radio-button>
+        <mat-radio-button value="PONCTUEL" [disabled]="true">Ponctuel (indisponible)</mat-radio-button>
+      </mat-radio-group>
+    </kit-demo>
+    <kit-demo label="Cartes de choix">
+      <div class="choice-cards">
+        @for (opt of [{ v: 'MENSUEL', i: 'calendar_view_month', l: 'Mensuel', d: 'Facture chaque mois' }, { v: 'TRIMESTRIEL', i: 'date_range', l: 'Trimestriel', d: '-5 % de remise' }, { v: 'ANNUEL', i: 'event_repeat', l: 'Annuel', d: '-12 % de remise' }]; track opt.v) {
+          <button type="button" class="choice-card" [class.active]="radioValue === opt.v" (click)="radioValue = opt.v">
+            <mat-icon>{{ opt.i }}</mat-icon><strong>{{ opt.l }}</strong><span>{{ opt.d }}</span>
+          </button>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="toggle" title="Toggle" source="mat-slide-toggle · mat-button-toggle-group" [cols]="2">
+    <kit-demo label="Slide toggle" [code]="code.toggle">
+      <div class="stack">
+        <mat-slide-toggle color="primary" [(ngModel)]="toggleA">Notifications actives</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [(ngModel)]="toggleB">Mode maintenance</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="true" [disabled]="true">Verrouillé</mat-slide-toggle>
+      </div>
+    </kit-demo>
+    <kit-demo label="Button toggle">
+      <mat-button-toggle-group [value]="'list'" aria-label="Vue">
+        <mat-button-toggle value="card"><mat-icon>grid_view</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="list"><mat-icon>view_list</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="calendar"><mat-icon>calendar_month</mat-icon></mat-button-toggle>
+      </mat-button-toggle-group>
+    </kit-demo>
+  </kit-section>
+
+  <kit-section id="slider" title="Slider" source="mat-slider" [cols]="2">
+    <kit-demo label="Valeur simple">
+      <mat-slider min="0" max="100" step="5" discrete class="w-100"><input matSliderThumb [(ngModel)]="sliderValue"></mat-slider>
+      <span class="field-hint">Seuil d'alerte batterie : {{ sliderValue }} %</span>
+    </kit-demo>
+    <kit-demo label="Intervalle">
+      <mat-slider min="0" max="100" discrete class="w-100"><input matSliderStartThumb [(ngModel)]="rangeLow"><input matSliderEndThumb [(ngModel)]="rangeHigh"></mat-slider>
+      <span class="field-hint">Vitesse tolérée : {{ rangeLow }} – {{ rangeHigh }} km/h</span>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ UPLOAD ═══════════════════════ -->
+  <kit-section id="upload" title="File upload" source="app-file-upload (core/components/file-upload)"
+    description="Le fichier choisi est lu localement (blob URL) : aucun envoi réseau. Modes « champ » et « photo »." [cols]="3">
+    <kit-demo label="Champ — vide" [code]="code.upload">
+      <app-file-upload placeholder="Joindre un document" accept="application/pdf" (onUpload)="uploaded = $event" />
+    </kit-demo>
+    <kit-demo label="Champ — fichier joint">
+      <app-file-upload [fichier]="uploadedDoc" placeholder="Document" />
+    </kit-demo>
+    <kit-demo label="Photo">
+      <app-file-upload mode="photo" placeholder="Photo" accept="image/*" [fichier]="photo" (onUpload)="photo = $event" />
+    </kit-demo>
+    <kit-demo label="Zone de dépôt" hint="motif des écrans d'import">
+      <label class="drop-zone">
+        <input type="file" hidden (change)="uploaded = $any($event.target).files?.[0]" />
+        <mat-icon>cloud_upload</mat-icon>
+        <strong>Glissez un fichier ici</strong>
+        <span>ou cliquez pour parcourir — CSV, XLSX (max 10 Mo)</span>
+        @if (uploaded?.name || uploaded?.nom) { <span class="code-tag">{{ uploaded?.name || uploaded?.nom }}</span> }
+      </label>
+    </kit-demo>
+    <kit-demo label="Disabled">
+      <app-file-upload placeholder="Pièce justificative" [disabled]="true" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ SEARCH ═══════════════════════ -->
+  <kit-section id="search" title="Search" source=".toolbar-search-filters · .m3-search-bar-unified · app-filter-dropdown · .m3-search-bar"
+    description="Barre de recherche unifiée des pages liste : champ + séparateur + filtres popover recherchables. Filtrage local en direct.">
+    <kit-demo label="Recherche unifiée + filtres" [hint]="searchResults.length + ' résultat(s)'" [code]="code.search">
+      <div class="toolbar-search-filters">
+        <div class="m3-search-bar-unified">
+          <div class="search-input-wrapper">
+            <mat-icon class="search-icon">search</mat-icon>
+            <input type="text" [(ngModel)]="search" placeholder="Rechercher par code, raison sociale…" />
+            @if (search) { <button class="clear-btn" (click)="search = ''"><mat-icon>close</mat-icon></button> }
+          </div>
+          <div class="divider"></div>
+          <app-filter-dropdown [options]="statutOptions" [(value)]="statutFilter" labelPrefix="Statut" />
+          <app-filter-dropdown [options]="villeFilterOptions" [(value)]="villeFilter" labelPrefix="Ville" />
+        </div>
+      </div>
+      <div class="result-chips">
+        @for (c of searchResults.slice(0, 8); track c._id) { <span class="code-tag">{{ c.code }} · {{ c.raison_sociale }}</span> }
+        @if (searchResults.length > 8) { <span class="more">+{{ searchResults.length - 8 }}</span> }
+        @if (!searchResults.length) { <span class="more">Aucun résultat</span> }
+      </div>
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Barre compacte (.m3-search-bar)">
+        <div class="m3-search-bar"><mat-icon class="search-icon">search</mat-icon><input type="text" placeholder="Rechercher…" /></div>
+      </kit-demo>
+      <kit-demo label="Filtre seul (standalone)">
+        <app-filter-dropdown [options]="statutOptions" [(value)]="statutFilter" labelPrefix="Statut" [standalone]="true" />
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ VALIDATION ═══════════════════════ -->
+  <kit-section id="validation" title="Form validation" source="ReactiveForms + .field-error"
+    description="Validation visuelle : les erreurs apparaissent après interaction ou à la soumission. Rien n'est envoyé.">
+    <kit-demo label="Formulaire client" [code]="code.validation">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="validation-form">
+        <div class="form-grid">
+          <div class="form-field span-2">
+            <label class="field-label">Raison sociale *</label>
+            <div class="field-box" [class.field-invalid]="showError('raison_sociale')"><mat-icon>business</mat-icon><input formControlName="raison_sociale" placeholder="Ex : Bolloré Logistics CI" /></div>
+            @if (showError('raison_sociale')) { <span class="field-error">{{ form.get('raison_sociale')?.hasError('required') ? 'La raison sociale est requise' : '3 caractères minimum' }}</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Email *</label>
+            <div class="field-box" [class.field-invalid]="showError('email')"><mat-icon>alternate_email</mat-icon><input formControlName="email" placeholder="contact@societe.ci" /></div>
+            @if (showError('email')) { <span class="field-error">Adresse email invalide</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Téléphone *</label>
+            <div class="field-box" [class.field-invalid]="showError('telephone')"><mat-icon>phone</mat-icon><input formControlName="telephone" placeholder="+225 07 00 00 00 00" /></div>
+            @if (showError('telephone')) { <span class="field-error">Format attendu : +225 07 00 00 00 00</span> } @else { <span class="field-hint">Format international</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Ville *</label>
+            <div class="field-box select-box" [class.field-invalid]="showError('ville')"><mat-icon>location_on</mat-icon>
+              <mat-select formControlName="ville" placeholder="Choisir…" panelClass="m3-dropdown-menu">@for (o of villeOptions; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }</mat-select>
+            </div>
+            @if (showError('ville')) { <span class="field-error">La ville est requise</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Nombre de véhicules *</label>
+            <div class="field-box" [class.field-invalid]="showError('vehicules')"><mat-icon>directions_car</mat-icon><input type="number" formControlName="vehicules" placeholder="1 – 500" /></div>
+            @if (showError('vehicules')) { <span class="field-error">Entre 1 et 500 véhicules</span> }
+          </div>
+          <div class="form-field span-2">
+            <mat-checkbox color="primary" formControlName="cgu">J'accepte les conditions générales de service</mat-checkbox>
+            @if (showError('cgu')) { <span class="field-error">Vous devez accepter les conditions</span> }
+          </div>
+        </div>
+        <div class="form-actions">
+          <span class="status" [class.ok]="form.valid">
+            <mat-icon>{{ form.valid ? 'check_circle' : 'info' }}</mat-icon>{{ form.valid ? 'Formulaire valide' : 'Champs requis manquants' }}
+          </span>
+          <span class="spacer"></span>
+          <button mat-button type="button" (click)="resetForm()">Réinitialiser</button>
+          <button mat-flat-button color="primary" type="submit"><mat-icon>save</mat-icon> Enregistrer</button>
+        </div>
+      </form>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ CRUD DIALOG ═══════════════════════ -->
+  <kit-section id="crud-dialog" title="Formulaire en modale" source="CrudDialogComponent (shared/components/crud-dialog)"
+    description="Formulaire générique piloté par configuration (text, number, email, select, multiselect, textarea, checkbox, date, autocomplete) — utilisé pour toutes les créations/éditions rapides.">
+    <kit-demo label="Modes create / edit / view" [code]="code.crud">
+      <div class="row">
+        <button mat-flat-button color="primary" (click)="openCrud('create')"><mat-icon>add</mat-icon> Créer</button>
+        <button mat-stroked-button (click)="openCrud('edit')"><mat-icon>edit</mat-icon> Modifier</button>
+        <button mat-button (click)="openCrud('view')"><mat-icon>visibility</mat-icon> Consulter</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

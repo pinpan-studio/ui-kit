@@ -1,0 +1,64 @@
+@let b = block();
+
+<div class="toolbar">
+  @if (b.searchable) {
+    <label class="search">
+      <mat-icon>search</mat-icon>
+      <input type="search" placeholder="Filtrer…" aria-label="Filtrer le tableau" [value]="query()" (input)="search($any($event.target).value)" />
+    </label>
+  }
+  <span class="spacer"></span>
+  <button type="button" class="ghost" (click)="exportCsv()"><mat-icon>download</mat-icon>CSV</button>
+</div>
+
+<div class="scroller">
+  <table>
+    <thead>
+      <tr>
+        @for (c of b.columns; track c.key) {
+          <th [class.num]="isNumeric(c)" [attr.aria-sort]="sort()?.key === c.key ? (sort()!.dir === 1 ? 'ascending' : 'descending') : 'none'">
+            <button type="button" (click)="toggleSort(c.key)">
+              {{ c.label }}
+              <mat-icon class="sort" [class.on]="sort()?.key === c.key">{{ sort()?.key === c.key && sort()!.dir === -1 ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+            </button>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of visible(); track $index) {
+        <tr>
+          @for (c of b.columns; track c.key) {
+            @let v = r[c.key];
+            <td [class.num]="isNumeric(c)">
+              @switch (c.kind) {
+                @case ('badge') { <span class="m3-badge {{ tone(c, v) }}">{{ v }}</span> }
+                @case ('progress') {
+                  <span class="progress"><span class="bar"><i [style.width.%]="v"></i></span><span class="pct">{{ v }} %</span></span>
+                }
+                @case ('person') {
+                  <span class="person"><span class="ava">{{ initials(v) }}</span><span class="name">{{ v }}</span></span>
+                }
+                @case ('mono') { <code>{{ v }}</code> }
+                @default { {{ format(c, v) }} }
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr><td class="empty" [attr.colspan]="b.columns.length">Aucune ligne ne correspond à « {{ query() }} ».</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <span>{{ range() }}</span>
+  @if (pages() > 1) {
+    <span class="pager">
+      <button type="button" class="icon" [disabled]="page() === 0" (click)="page.set(page() - 1)" aria-label="Page précédente"><mat-icon>chevron_left</mat-icon></button>
+      <span>{{ page() + 1 }} / {{ pages() }}</span>
+      <button type="button" class="icon" [disabled]="page() >= pages() - 1" (click)="page.set(page() + 1)" aria-label="Page suivante"><mat-icon>chevron_right</mat-icon></button>
+    </span>
+  }
+</div>

@@ -1,0 +1,433 @@
+<kit-doc-page title="Data display" icon="table_chart"
+  subtitle="Affichage de données du design system « registre » (styles/entity-list, styles/detail-page) : tables m3, cartes d'entité, listes compactes, timelines, badges de statut, KPI et graphiques Chart.js."
+  [toc]="toc">
+
+  <!-- ═══════════════ TABLE INTERACTIVE ═══════════════ -->
+  <kit-section id="table" title="Table" source=".m3-table-container · .m3-table · .m3-table-row (styles/entity-list)"
+    description="Table « registre » en CSS grid : recherche, filtre, tri, sélection multiple, actions de ligne et pagination — tout est local. Activez/désactivez les options et changez l'état pour voir chaque variante.">
+    <kit-demo label="Table complète" [hint]="filtered().length + ' ligne(s)'" [code]="code.table">
+      <div class="table-controls">
+        <div class="m3-filter-toggle state-toggle">
+          @for (s of ['normal', 'loading', 'empty', 'error']; track s) {
+            <button type="button" [class.active]="state() === s" (click)="state.set($any(s))">{{ s === 'normal' ? 'Normal' : s === 'loading' ? 'Loading' : s === 'empty' ? 'Empty' : 'Error' }}</button>
+          }
+        </div>
+        <mat-slide-toggle color="primary" [checked]="withFilters()" (change)="withFilters.set($event.checked)">Filtres</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="withSelection()" (change)="withSelection.set($event.checked)">Sélection</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="withActions()" (change)="withActions.set($event.checked)">Actions</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="withPagination()" (change)="withPagination.set($event.checked)">Pagination</mat-slide-toggle>
+        <span class="spacer"></span>
+        <app-view-mode-toggle [mode]="viewMode()" (modeChange)="viewMode.set($event)" />
+      </div>
+
+      @if (withFilters()) {
+        <div class="toolbar-search-filters">
+          <div class="m3-search-bar-unified">
+            <div class="search-input-wrapper">
+              <mat-icon class="search-icon">search</mat-icon>
+              <input type="text" [ngModel]="search()" (ngModelChange)="onSearch($event)" placeholder="Rechercher par code, client, contact…" />
+              @if (search()) { <button class="clear-btn" (click)="onSearch('')"><mat-icon>close</mat-icon></button> }
+            </div>
+            <div class="divider"></div>
+            <app-filter-dropdown [options]="statutOptions" [value]="statut()" (valueChange)="onStatut($event)" labelPrefix="Statut" />
+          </div>
+        </div>
+      }
+
+      @if (withSelection() && selected().size > 0) {
+        <div class="selection-bar">
+          <mat-icon>check_box</mat-icon><strong>{{ selected().size }}</strong> sélectionné(s)
+          <span class="spacer"></span>
+          <button mat-button (click)="clearSelection()">Désélectionner</button>
+          <button mat-stroked-button color="warn" (click)="deleteSelected()"><mat-icon>delete</mat-icon> Supprimer ({{ selected().size }})</button>
+        </div>
+      }
+
+      @switch (state()) {
+        @case ('loading') {
+          <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+        }
+        @case ('error') {
+          <div class="error-block">
+            <div class="err-icon"><mat-icon>cloud_off</mat-icon></div>
+            <h3>Impossible de charger les clients</h3>
+            <p>Le service est momentanément indisponible. Vérifiez votre connexion puis réessayez.</p>
+            <button mat-flat-button color="primary" (click)="state.set('normal')"><mat-icon>refresh</mat-icon> Réessayer</button>
+          </div>
+        }
+        @default {
+          @if (filtered().length === 0) {
+            <app-empty-state icon="people" title="Aucun client trouvé" subtitle="Ajustez vos critères de recherche ou ajoutez un nouveau client." [actionLabel]="state() === 'empty' ? 'Nouveau client' : ''" />
+          } @else if (viewMode() === 'list') {
+            <div class="m3-table-container">
+              <div class="m3-table demo-table" [class.no-select]="!withSelection()" [class.no-actions]="!withActions()">
+                <div class="m3-table-header">
+                  @if (withSelection()) {
+                    <span class="col-select"><mat-checkbox (change)="toggleAll()" [checked]="allVisibleSelected()" [indeterminate]="someVisibleSelected()"></mat-checkbox></span>
+                  }
+                  <button class="sort-th" (click)="sortBy('code')">Code <mat-icon>{{ sortIcon('code') }}</mat-icon></button>
+                  <button class="sort-th" (click)="sortBy('raison_sociale')">Client / Contact <mat-icon>{{ sortIcon('raison_sociale') }}</mat-icon></button>
+                  <button class="sort-th" (click)="sortBy('ville')">Ville <mat-icon>{{ sortIcon('ville') }}</mat-icon></button>
+                  <button class="sort-th right" (click)="sortBy('vehicules')">Véhicules <mat-icon>{{ sortIcon('vehicules') }}</mat-icon></button>
+                  <button class="sort-th right" (click)="sortBy('ca_mensuel')">CA mensuel <mat-icon>{{ sortIcon('ca_mensuel') }}</mat-icon></button>
+                  <span class="text-center">Statut</span>
+                  @if (withActions()) { <span class="text-right">Actions</span> }
+                </div>
+                @for (row of visible(); track row._id) {
+                  <div class="m3-table-row" [class.selected]="selected().has(row._id)">
+                    @if (withSelection()) {
+                      <span class="col-select" (click)="$event.stopPropagation()"><mat-checkbox [checked]="selected().has(row._id)" (change)="toggleRow(row._id)"></mat-checkbox></span>
+                    }
+                    <span><span class="code-tag">{{ row.code }}</span></span>
+                    <div class="col-main-info"><span class="primary-text">{{ row.raison_sociale }}</span><span class="sub-text">{{ row.contact }} · {{ row.telephone }}</span></div>
+                    <span class="date-cell">{{ row.ville }}</span>
+                    <span class="text-right num-cell">{{ row.vehicules }}</span>
+                    <span class="text-right num-cell">{{ row.ca_mensuel | number:'1.0-0' }} F</span>
+                    <div class="text-center"><app-status-badge [label]="row.statut" [color]="statutColor[row.statut]" /></div>
+                    @if (withActions()) {
+                      <div class="row-actions" (click)="$event.stopPropagation()">
+                        <button mat-icon-button class="action-icon-btn" [matMenuTriggerFor]="rowMenu" matTooltip="Options"><mat-icon>more_vert</mat-icon></button>
+                        <mat-menu #rowMenu="matMenu" xPosition="before">
+                          <button mat-menu-item><mat-icon>visibility</mat-icon><span>Voir la fiche</span></button>
+                          <button mat-menu-item><mat-icon>edit</mat-icon><span>Modifier</span></button>
+                          <mat-divider></mat-divider>
+                          <button mat-menu-item class="menu-danger" (click)="deleteRow(row)"><mat-icon>delete</mat-icon><span>Supprimer</span></button>
+                        </mat-menu>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="cards-grid">
+              @for (row of visible(); track row._id) {
+                <div class="m3-card entity-card">
+                  <div class="card-header">
+                    <div class="card-icon-box icon-blue"><mat-icon>business</mat-icon></div>
+                    <app-status-badge [label]="row.statut" [color]="statutColor[row.statut]" />
+                  </div>
+                  <div class="card-body">
+                    <div class="card-title-area">
+                      <span class="code-tag">{{ row.code }}</span>
+                      <h3 class="card-title">{{ row.raison_sociale }}</h3>
+                      <p class="card-desc">{{ row.secteur }} · {{ row.ville }}</p>
+                    </div>
+                    <div class="card-info-list">
+                      <div class="info-item"><mat-icon>person</mat-icon><span class="info-label">Contact :</span><span class="info-val">{{ row.contact }}</span></div>
+                      <div class="info-item"><mat-icon>directions_car</mat-icon><span class="info-label">Véhicules :</span><span class="info-val font-bold">{{ row.vehicules }}</span></div>
+                      <div class="info-item"><mat-icon>payments</mat-icon><span class="info-label">CA mensuel :</span><span class="info-val font-bold">{{ row.ca_mensuel | number:'1.0-0' }} F CFA</span></div>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <button mat-icon-button class="action-icon-btn" matTooltip="Options"><mat-icon>more_vert</mat-icon></button>
+                    <button mat-button color="primary" class="detail-btn">Fiche client <mat-icon iconPositionEnd>arrow_forward</mat-icon></button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          @if (withPagination() && filtered().length > 0) {
+            <app-paginator [total]="filtered().length" [page]="page()" [itemPerPage]="pageSize()" [pageSizeOptions]="[8, 16, 40]"
+              (pageChange)="page.set($event)" (pageSizeChange)="pageSize.set($event); page.set(1)" />
+          }
+        }
+      }
+      <div class="demo-footer"><button mat-button (click)="resetRows(); clearSelection()"><mat-icon>restart_alt</mat-icon> Réinitialiser les données</button></div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ ÉTATS DE TABLE ═══════════════ -->
+  <kit-section id="table-states" title="États de table" description="Chaque état tel qu'il apparaît dans les pages liste (spinner centré, skeleton de lignes, empty-state, erreur)." [cols]="2">
+    <kit-demo label="Loading — spinner (.loading-center)">
+      <div class="loading-center small"><mat-spinner diameter="40"></mat-spinner></div>
+    </kit-demo>
+    <kit-demo label="Loading — skeleton (app-skeleton table-row)">
+      <app-skeleton variant="table-row" [count]="4" />
+    </kit-demo>
+    <kit-demo label="Empty">
+      <app-empty-state icon="search_off" title="Aucun résultat" subtitle="Aucun client ne correspond à « Korhogo Transit »." />
+    </kit-demo>
+    <kit-demo label="Error">
+      <div class="error-block compact">
+        <div class="err-icon"><mat-icon>error_outline</mat-icon></div>
+        <h3>Erreur de chargement</h3>
+        <p>Une erreur inattendue est survenue.</p>
+        <button mat-stroked-button color="primary"><mat-icon>refresh</mat-icon> Réessayer</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ MAT TABLE ═══════════════ -->
+  <kit-section id="data-table" title="Data table (Material)" source="mat-table + matSort" description="Table Material triable (cliquez les en-têtes), pour les besoins tabulaires classiques.">
+    <kit-demo label="mat-table triable" [flush]="true">
+      <div class="mat-table-wrapper">
+        <table mat-table [dataSource]="matData" matSort class="demo-mat-table">
+          <ng-container matColumnDef="code"><th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th><td mat-cell *matCellDef="let r"><span class="code-tag">{{ r.code }}</span></td></ng-container>
+          <ng-container matColumnDef="raison_sociale"><th mat-header-cell *matHeaderCellDef mat-sort-header>Raison sociale</th><td mat-cell *matCellDef="let r">{{ r.raison_sociale }}</td></ng-container>
+          <ng-container matColumnDef="ville"><th mat-header-cell *matHeaderCellDef mat-sort-header>Ville</th><td mat-cell *matCellDef="let r">{{ r.ville }}</td></ng-container>
+          <ng-container matColumnDef="vehicules"><th mat-header-cell *matHeaderCellDef mat-sort-header arrowPosition="before" class="text-right">Véhicules</th><td mat-cell *matCellDef="let r" class="text-right">{{ r.vehicules }}</td></ng-container>
+          <ng-container matColumnDef="ca_mensuel"><th mat-header-cell *matHeaderCellDef mat-sort-header arrowPosition="before" class="text-right">CA mensuel</th><td mat-cell *matCellDef="let r" class="text-right">{{ r.ca_mensuel | number:'1.0-0' }} F</td></ng-container>
+          <ng-container matColumnDef="statut"><th mat-header-cell *matHeaderCellDef>Statut</th><td mat-cell *matCellDef="let r"><app-status-badge [label]="r.statut" [color]="statutColor[$any(r.statut)]" /></td></ng-container>
+          <tr mat-header-row *matHeaderRowDef="matColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: matColumns"></tr>
+        </table>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CARDS ═══════════════ -->
+  <kit-section id="cards" title="Cards" source=".entity-card · .m3-card · .panel-card · .metric-card" [cols]="3">
+    <kit-demo label="Entity card (registre)" [code]="code.card">
+      <div class="m3-card entity-card">
+        <div class="card-header">
+          <div class="card-icon-box icon-purple"><mat-icon>inventory_2</mat-icon></div>
+          <app-status-badge label="ACTIF" color="success" />
+        </div>
+        <div class="card-body">
+          <div class="card-title-area">
+            <span class="code-tag">PROD-001</span>
+            <h3 class="card-title">Abonnement Standard</h3>
+            <p class="card-desc">Suivi GPS temps réel, alertes, historique 90 jours.</p>
+          </div>
+          <div class="card-info-list">
+            <div class="info-item"><mat-icon>build</mat-icon><span class="info-label">Installation :</span><span class="info-val font-bold">45 000 F CFA</span></div>
+            <div class="info-item"><mat-icon>repeat</mat-icon><span class="info-label">Abonnement :</span><span class="info-val font-bold">15 000 F CFA</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button mat-icon-button class="action-icon-btn"><mat-icon>more_vert</mat-icon></button>
+          <button mat-button color="primary" class="detail-btn">Fiche produit <mat-icon iconPositionEnd>arrow_forward</mat-icon></button>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="m3-card simple">
+      <div class="m3-card">
+        <h3 class="card-h">Contrat cadre 2026</h3>
+        <p class="card-p">Couverture de 42 véhicules, renouvellement tacite au 31/12/2026.</p>
+        <div class="row"><span class="m3-badge info">Annuel</span><span class="m3-badge success">Signé</span></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Panel card (fiche détail)">
+      <div class="panel-card">
+        <div class="section-header-flex">
+          <div class="section-title-box"><mat-icon>business</mat-icon><h3>Informations</h3></div>
+          <button mat-icon-button class="action-icon-btn"><mat-icon>edit</mat-icon></button>
+        </div>
+        <div class="info-grid">
+          <div class="info-field"><span class="lbl">Raison sociale</span><span class="val">Bolloré Logistics CI</span></div>
+          <div class="info-field"><span class="lbl">RCCM</span><span class="val">CI-ABJ-2009-B-1234</span></div>
+          <div class="info-field"><span class="lbl">Ville</span><span class="val">Abidjan</span></div>
+          <div class="info-field"><span class="lbl">Gestionnaire</span><span class="val">Aminata Diallo</span></div>
+        </div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Metric card (.metric-card)">
+      <div class="metric-card">
+        <div class="metric-top"><span class="metric-lbl">Chiffre d'affaires</span><mat-icon class="metric-ico">trending_up</mat-icon></div>
+        <div class="metric-val">55,8 M <small>FCFA</small></div>
+        <div class="metric-trend up"><mat-icon>arrow_upward</mat-icon> +9,2 % vs septembre</div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Carte avec graphique (sparkline)">
+      <div class="m3-card spark-card">
+        <div class="metric-top"><span class="metric-lbl">Encaissements 2026</span><span class="m3-badge success">+18 %</span></div>
+        <div class="metric-val">476,6 M <small>FCFA</small></div>
+        <div class="spark"><canvas baseChart type="line" [data]="sparkData" [options]="sparkOptions"></canvas></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Carte sélectionnable">
+      <div class="m3-card select-card" tabindex="0">
+        <mat-icon class="sel-ico">radio_button_checked</mat-icon>
+        <div><strong>Profil Premium</strong><p class="card-p">Facturation mensuelle, remise 10 %.</p></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ LIST ═══════════════ -->
+  <kit-section id="list" title="List" source=".mini-list / .mini-row (styles/detail-page) · mat-list · mat-selection-list" [cols]="3">
+    <kit-demo label="Mini-list (fiche détail)">
+      <div class="mini-list">
+        @for (c of people; track c._id) {
+          <div class="mini-row">
+            <div class="item-left"><div class="row-icon-box"><mat-icon>directions_car</mat-icon></div>
+              <div class="item-meta"><span class="item-title">{{ c.code }} · {{ c.ville }}</span><span class="item-sub">{{ c.vehicules }} véhicules</span></div></div>
+            <div class="item-right"><app-status-badge [label]="c.statut" [color]="statutColor[c.statut]" /></div>
+          </div>
+        }
+      </div>
+    </kit-demo>
+    <kit-demo label="mat-list (avatars)">
+      <mat-list>
+        @for (c of people; track c._id) {
+          <mat-list-item>
+            <div matListItemAvatar class="list-avatar">{{ initials(c.contact) }}</div>
+            <span matListItemTitle>{{ c.contact }}</span>
+            <span matListItemLine>{{ c.raison_sociale }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </kit-demo>
+    <kit-demo label="mat-selection-list">
+      <mat-selection-list [(ngModel)]="selectedPeople" color="primary">
+        @for (c of people; track c._id) { <mat-list-option [value]="c._id">{{ c.raison_sociale }}</mat-list-option> }
+      </mat-selection-list>
+      <span class="caption">{{ selectedPeople.length }} sélectionné(s)</span>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ TIMELINE ═══════════════ -->
+  <kit-section id="timeline" title="Timeline" source=".timeline / .timeline-item / .timeline-dot (dashboard)" [cols]="2">
+    <kit-demo label="Alertes (tableau de bord)">
+      <div class="timeline">
+        @for (e of events; track e.date) {
+          <div class="timeline-item">
+            <span class="timeline-dot" [class]="'timeline-dot ' + (e.color === 'primary' ? 'cyan' : e.color)"><mat-icon>{{ e.icon }}</mat-icon></span>
+            <div class="timeline-content"><span class="timeline-title">{{ e.titre }}</span><span class="timeline-date">{{ e.texte }}</span></div>
+          </div>
+        }
+      </div>
+    </kit-demo>
+    <kit-demo label="Historique vertical">
+      <ol class="history">
+        @for (e of events; track e.date; let last = $last) {
+          <li [class.last]="last">
+            <span class="h-dot" [class]="'h-dot ' + e.color"><mat-icon>{{ e.icon }}</mat-icon></span>
+            <div class="h-body"><div class="h-top"><strong>{{ e.titre }}</strong><span>{{ e.date | date:'dd/MM/yyyy HH:mm' }}</span></div><p>{{ e.texte }}</p></div>
+          </li>
+        }
+      </ol>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ BADGE ═══════════════ -->
+  <kit-section id="badge" title="Badge" source="app-status-badge · .m3-badge · matBadge" [cols]="2">
+    <kit-demo label="app-status-badge — couleurs" [code]="code.badge">
+      <div class="row">
+        <app-status-badge label="Actif" color="success" /><app-status-badge label="En attente" color="warning" />
+        <app-status-badge label="Résilié" color="error" /><app-status-badge label="Installé" color="info" />
+        <app-status-badge label="Premium" color="purple" /><app-status-badge label="Synchronisé" color="cyan" />
+        <app-status-badge label="Brouillon" color="neutral" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Avec icône">
+      <div class="row">
+        <app-status-badge label="Payée" color="success" icon="check_circle" /><app-status-badge label="Échue" color="error" icon="schedule" />
+        <app-status-badge label="Planifiée" color="warning" icon="event" /><app-status-badge label="En ligne" color="cyan" icon="wifi" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Badge de notification (matBadge)">
+      <div class="row lg">
+        <mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon>
+        <mat-icon matBadge="7" matBadgeColor="primary">checklist</mat-icon>
+        <mat-icon matBadge="99+" matBadgeColor="accent">mail</mat-icon>
+        <mat-icon matBadge="" matBadgeSize="small" matBadgeColor="warn">chat</mat-icon>
+        <button mat-stroked-button matBadge="12" matBadgePosition="after">Requêtes</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Pastilles (.stick-*)">
+      <div class="row">
+        @for (c of ['green', 'orange', 'red', 'blue', 'grey']; track c) { <span class="stick" [class]="'stick stick-' + c"></span><span class="muted">{{ c }}</span> }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CHIP ═══════════════ -->
+  <kit-section id="chip" title="Chip" source="mat-chip · .code-tag · .label-badge" [cols]="2">
+    <kit-demo label="mat-chip">
+      <mat-chip-set>
+        <mat-chip>Abidjan</mat-chip><mat-chip highlighted color="primary">Prioritaire</mat-chip>
+        <mat-chip><mat-icon matChipAvatar>person</mat-icon>Koffi N’Guessan</mat-chip>
+        <mat-chip [removable]="true">Transport<button matChipRemove><mat-icon>cancel</mat-icon></button></mat-chip>
+        <mat-chip disabled>Archivé</mat-chip>
+      </mat-chip-set>
+    </kit-demo>
+    <kit-demo label="Tags de code / référence">
+      <div class="row"><span class="code-tag">CLI-1043</span><span class="code-tag">FAC-2026-0912</span><span class="code-tag">IMEI 3548 2109 8812 004</span></div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ AVATAR ═══════════════ -->
+  <kit-section id="avatar" title="Avatar" source=".avatar · .card-avatar · .member-avatar · .assignee-avatar" [cols]="3">
+    <kit-demo label="Tailles">
+      <div class="row lg">
+        <span class="av xs">JK</span><span class="av sm">MY</span><span class="av md">AD</span><span class="av lg">KN</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Couleurs de rôle">
+      <div class="row">
+        <span class="av md role-admin" matTooltip="Administrateur">JK</span><span class="av md role-manager" matTooltip="Responsable">AD</span>
+        <span class="av md role-tech" matTooltip="Technicien">KN</span><span class="av md role-agent" matTooltip="Agent">FB</span>
+        <span class="av md photo"><mat-icon>person</mat-icon></span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Groupe (assignés)">
+      <div class="av-stack">
+        @for (c of people; track c._id) { <span class="av sm" [matTooltip]="c.contact">{{ initials(c.contact) }}</span> }
+        <span class="av sm more">+4</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ STATS ═══════════════ -->
+  <kit-section id="stats" title="Statistics cards" source=".kpi-grid / .kpi-card (styles/detail-page)">
+    <kit-demo label="Grille KPI" [code]="code.kpi">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-icon indigo"><mat-icon>people</mat-icon></div><div class="kpi-content"><span class="kpi-value">434</span><span class="kpi-label">Clients actifs</span></div></div>
+        <div class="kpi-card"><div class="kpi-icon success"><mat-icon>directions_car</mat-icon></div><div class="kpi-content"><span class="kpi-value">3 912</span><span class="kpi-label">Véhicules suivis</span></div></div>
+        <div class="kpi-card"><div class="kpi-icon warning"><mat-icon>pending_actions</mat-icon></div><div class="kpi-content"><span class="kpi-value">27</span><span class="kpi-label">Requêtes ouvertes</span></div></div>
+        <div class="kpi-card"><div class="kpi-icon danger"><mat-icon>report</mat-icon></div><div class="kpi-content"><span class="kpi-value">12,4 <small>M F</small></span><span class="kpi-label">Impayés &gt; 60 j</span></div></div>
+        <div class="kpi-card"><div class="kpi-icon purple"><mat-icon>engineering</mat-icon></div><div class="kpi-content"><span class="kpi-value">18</span><span class="kpi-label">Missions en cours</span></div></div>
+        <div class="kpi-card"><div class="kpi-icon cyan"><mat-icon>cloud_sync</mat-icon></div><div class="kpi-content"><span class="kpi-value">98,7 %</span><span class="kpi-label">Balises synchronisées</span></div></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="KPI — chargement">
+      <app-skeleton variant="card" [count]="4" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CHARTS ═══════════════ -->
+  <kit-section id="charts" title="Graphiques" source="ng2-charts (BaseChartDirective) + Chart.js 4" description="Tous les types Chart.js disponibles via ng2-charts. Options dérivées du thème (clair / sombre) : axes sans bordure, grille discrète, segments séparés par un liseré 1px couleur de surface, fonds de graduation transparents." [cols]="2">
+<kit-demo label="Courbe (évolution du CA)" [code]="code.chart"><div class="chart-box"><canvas baseChart type="line" [data]="lineData" [options]="lineOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Aires empilées (contrats par offre)" hint="fill: '-1'"><div class="chart-box"><canvas baseChart type="line" [data]="areaData" [options]="areaOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Barres (activité)"><div class="chart-box"><canvas baseChart type="bar" [data]="barData" [options]="barOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Barres horizontales (interventions par zone)" hint="indexAxis: 'y'"><div class="chart-box"><canvas baseChart type="bar" [data]="hbarData" [options]="hbarOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Barres groupées (facturé / encaissé, M FCFA)"><div class="chart-box"><canvas baseChart type="bar" [data]="groupedData" [options]="groupedOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Barres empilées (activité par type)" hint="stacked: true"><div class="chart-box"><canvas baseChart type="bar" [data]="stackedData" [options]="stackedOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Mixte barres + courbe (2 axes)" hint="type par dataset"><div class="chart-box"><canvas baseChart type="bar" [data]="$any(mixedData)" [options]="$any(mixedOptions())"></canvas></div></kit-demo>
+    <kit-demo label="Escalier (balises en ligne sur 24 h)" hint="stepped: true"><div class="chart-box"><canvas baseChart type="line" [data]="stepData" [options]="stepOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Anneau (statuts clients)"><div class="chart-box"><canvas baseChart type="doughnut" [data]="doughnutData()" [options]="doughnutOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Jauge (demi-anneau)" hint="circumference: 180">
+      <div class="chart-box gauge-box">
+        <canvas baseChart type="doughnut" [data]="gaugeData()" [options]="gaugeOptions()"></canvas>
+        <div class="gauge-label"><strong>94 %</strong><span>balises en ligne</span></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Camembert (marques de balises)"><div class="chart-box"><canvas baseChart type="pie" [data]="pieData()" [options]="pieOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Aire polaire (véhicules par ville)"><div class="chart-box"><canvas baseChart type="polarArea" [data]="polarData()" [options]="polarOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Radar (performance équipes)"><div class="chart-box"><canvas baseChart type="radar" [data]="radarData" [options]="radarOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Nuage de points (vitesse / consommation)" hint="type: 'scatter'"><div class="chart-box"><canvas baseChart type="scatter" [data]="scatterData" [options]="scatterOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Bulles (véhicules × disponibilité × CA)" hint="type: 'bubble'"><div class="chart-box"><canvas baseChart type="bubble" [data]="bubbleData" [options]="bubbleOptions()"></canvas></div></kit-demo>
+    <kit-demo label="Barres de progression">
+      <div class="progress-list">
+        @for (p of [{ l: 'Abidjan', v: 82, c: 'primary' }, { l: 'Bouaké', v: 64, c: 'accent' }, { l: 'San-Pédro', v: 41, c: 'warn' }]; track p.l) {
+          <div class="pg-row"><span>{{ p.l }}</span><mat-progress-bar mode="determinate" [value]="p.v" [color]="p.c"></mat-progress-bar><strong>{{ p.v }} %</strong></div>
+        }
+        <div class="pg-row"><span>Objectif</span><div class="ring"><mat-progress-spinner mode="determinate" [value]="72" diameter="56"></mat-progress-spinner><span>72 %</span></div></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ EMPTY ═══════════════ -->
+  <kit-section id="empty" title="Empty state" source="app-empty-state (87 usages) · .empty-section (styles/detail-page)" [cols]="3">
+    <kit-demo label="Par défaut"><app-empty-state /></kit-demo>
+    <kit-demo label="Avec action" [code]="code.empty">
+      <app-empty-state icon="inventory_2" title="Aucun produit trouvé" subtitle="Ajustez vos critères de recherche ou ajoutez un nouveau produit." actionLabel="Nouveau produit" />
+    </kit-demo>
+    <kit-demo label="Section vide (fiche détail)">
+      <div class="empty-section"><mat-icon>receipt_long</mat-icon><span>Aucune facture pour ce client</span></div>
+    </kit-demo>
+  </kit-section>
+
+  <app-data-advanced />
+</kit-doc-page>

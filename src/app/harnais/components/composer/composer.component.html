@@ -1,0 +1,82 @@
+<div class="composer" [class.busy]="generating()" (click)="field.focus()">
+  @if (attachments().length) {
+    <div class="chips">
+      @for (a of attachments(); track a.name) {
+        <span class="chip">
+          <mat-icon class="kind">{{ attachmentIcon(a.kind) }}</mat-icon>
+          <span class="name">{{ a.name }}</span>
+          <span class="size">{{ a.size }}</span>
+          <button type="button" class="remove" aria-label="Retirer" (click)="detach(a.name); $event.stopPropagation()"><mat-icon>close</mat-icon></button>
+        </span>
+      }
+    </div>
+  }
+
+  <textarea #field class="field" rows="1"
+    cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10"
+    [placeholder]="placeholder()" aria-label="Message"
+    [ngModel]="draft()" (ngModelChange)="draft.set($event)"
+    (keydown)="onKeydown($event)"></textarea>
+
+  <div class="bar" (click)="$event.stopPropagation()">
+    <button mat-icon-button class="tool" [matMenuTriggerFor]="attachMenu" matTooltip="Joindre un fichier"><mat-icon>add</mat-icon></button>
+    <button mat-icon-button class="tool" [matMenuTriggerFor]="toolsMenu" matTooltip="Outils"><mat-icon>tune</mat-icon></button>
+    @if (extendedThinking()) {
+      <button type="button" class="pill on" (click)="extendedThinking.set(false)" matTooltip="Désactiver la réflexion étendue"><mat-icon>psychology</mat-icon><span>Réflexion</span></button>
+    }
+    @if (webSearch()) {
+      <button type="button" class="pill on" (click)="webSearch.set(false)" matTooltip="Désactiver la recherche web"><mat-icon>travel_explore</mat-icon><span>Web</span></button>
+    }
+
+    <span class="spacer"></span>
+
+    <button type="button" class="model-btn" [matMenuTriggerFor]="modelMenu">
+      <span>{{ currentModel().label }}</span><mat-icon>expand_more</mat-icon>
+    </button>
+
+    @if (generating()) {
+      <button type="button" class="send stop" (click)="stop.emit()" matTooltip="Arrêter" aria-label="Arrêter la génération"><mat-icon>stop</mat-icon></button>
+    } @else {
+      <button type="button" class="send" [disabled]="!canSend()" (click)="submit()" matTooltip="Envoyer (Entrée)" aria-label="Envoyer"><mat-icon>arrow_upward</mat-icon></button>
+    }
+  </div>
+</div>
+
+<mat-menu #attachMenu="matMenu" xPosition="after" yPosition="above" class="harnais-menu">
+  <div class="menu-caption">Fichiers récents</div>
+  @for (f of attachable; track f.name) {
+    <button mat-menu-item (click)="attach(f)" [disabled]="isAttached(f.name)">
+      <mat-icon>{{ attachmentIcon(f.kind) }}</mat-icon>
+      <span>{{ f.name }}</span>
+    </button>
+  }
+  <mat-divider></mat-divider>
+  <button mat-menu-item disabled><mat-icon>upload_file</mat-icon><span>Importer depuis l'ordinateur</span></button>
+</mat-menu>
+
+<mat-menu #toolsMenu="matMenu" xPosition="after" yPosition="above" class="harnais-menu">
+  <div class="menu-toggle" (click)="$event.stopPropagation()">
+    <mat-icon>psychology</mat-icon>
+    <span class="label"><strong>Réflexion étendue</strong><small>Raisonne avant de répondre</small></span>
+    <mat-slide-toggle [checked]="extendedThinking()" (change)="extendedThinking.set($event.checked)" aria-label="Réflexion étendue"></mat-slide-toggle>
+  </div>
+  <div class="menu-toggle" (click)="$event.stopPropagation()">
+    <mat-icon>travel_explore</mat-icon>
+    <span class="label"><strong>Recherche web</strong><small>Consulte des sources récentes</small></span>
+    <mat-slide-toggle [checked]="webSearch()" (change)="webSearch.set($event.checked)" aria-label="Recherche web"></mat-slide-toggle>
+  </div>
+</mat-menu>
+
+<mat-menu #modelMenu="matMenu" xPosition="before" yPosition="above" class="harnais-menu">
+  @for (m of models(); track m.id) {
+    <button mat-menu-item class="model-item" (click)="modelId.set(m.id)">
+      <span class="model-line">
+        <span class="model-text">
+          <strong>{{ m.label }} @if (m.badge) {<span class="badge">{{ m.badge }}</span>}</strong>
+          <small>{{ m.description }}</small>
+        </span>
+        @if (m.id === modelId()) { <mat-icon class="check">check</mat-icon> }
+      </span>
+    </button>
+  }
+</mat-menu>

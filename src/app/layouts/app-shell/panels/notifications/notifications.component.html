@@ -1,0 +1,57 @@
+<div class="notifications-drawer">
+  <!-- Sidenav Header aligné sur le module tâches -->
+  <div class="sidenav-header">
+    <button mat-icon-button class="action-icon-btn back-btn" (click)="goBack()" matTooltip="Retour aux paramètres">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-icon-box orange">
+      <mat-icon>notifications</mat-icon>
+    </div>
+    <div class="header-text">
+      <span class="app-title">Notifications</span>
+      <span class="app-subtitle">{{ messages.length }} message{{ messages.length > 1 ? 's' : '' }}</span>
+    </div>
+    <span class="spacer"></span>
+    @if (messages.length > 0) {
+      <button mat-icon-button class="action-icon-btn" (click)="deleteAll()" matTooltip="Supprimer toutes les notifications">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
+    }
+    <button mat-icon-button class="action-icon-btn" (click)="close()" matTooltip="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  @if (progress.loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  <ng-scrollbar class="notif-scrollbar" visibility="hover">
+    <div class="notif-list">
+      @for (message of messages; track message._id || $index) {
+        <button type="button" class="notif-card" [class.unread]="!message.lu" (click)="selectMessage(message)">
+          <div class="notif-icon-box" [class.unread]="!message.lu">
+            <mat-icon>{{ message.lu ? 'mark_chat_read' : 'mark_unread_chat_alt' }}</mat-icon>
+          </div>
+          <div class="notif-content">
+            <div class="notif-top">
+              <span class="notif-type">{{ message.type || 'Notification' }}</span>
+              @if (message.envoyeLe) {
+                <span class="notif-time">{{ message.envoyeLe | date:'dd/MM HH:mm' }}</span>
+              }
+            </div>
+            <div class="notif-text">{{ message.contenu }}</div>
+          </div>
+        </button>
+      } @empty {
+        <div class="notif-empty">
+          <div class="empty-icon-box">
+            <mat-icon>notifications_off</mat-icon>
+          </div>
+          <span class="empty-title">Aucune notification</span>
+          <span class="empty-sub">Vous êtes à jour !</span>
+        </div>
+      }
+    </div>
+  </ng-scrollbar>
+</div>

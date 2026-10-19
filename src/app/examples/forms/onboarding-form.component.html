@@ -1,0 +1,89 @@
+<div class="wizard">
+  <aside class="rail">
+    <a class="brand" routerLink="/examples/app/modules"><img src="assets/logo-white.png" alt="" /><span>SC Storage</span></a>
+    <div class="intro"><h2>Configurons votre espace</h2><p>Quatre étapes, environ deux minutes. Vous pourrez tout modifier plus tard.</p></div>
+    <ol class="vsteps">
+      @for (s of steps; track s.label; let i = $index) {
+        <li [class.on]="i === step() && !done()" [class.done]="i < step() || done()">
+          <button type="button" (click)="goTo(i)" [disabled]="i >= step()">
+            <span class="dot">@if (i < step() || done()) { <mat-icon>check</mat-icon> } @else { <mat-icon>{{ s.icon }}</mat-icon> }</span>
+            <span class="txt"><strong>{{ s.label }}</strong><small>{{ s.hint }}</small></span>
+          </button>
+        </li>
+      }
+    </ol>
+    <p class="help-line"><mat-icon>support_agent</mat-icon>Besoin d’aide ? <a href="#" (click)="$event.preventDefault()">Parler à un conseiller</a></p>
+  </aside>
+
+  <main class="stage">
+    <div class="mobile-progress"><span [style.width.%]="progress()"></span></div>
+    <div class="top"><span class="count">Étape {{ done() ? steps.length : step() + 1 }} sur {{ steps.length }}</span><a routerLink="/examples/app/modules" class="skip">Passer pour l’instant</a></div>
+
+    <div class="pane">
+      @if (done()) {
+        <app-result status="success" icon="celebration" [title]="'Bienvenue ' + m.first + ' !'">
+          <p class="result-text">L’espace <strong>{{ m.company }}</strong> est prêt avec {{ m.modules.size }} module(s). @if (m.invites.length) { {{ m.invites.length }} invitation(s) envoyée(s). }</p>
+          <div actions><button mat-stroked-button (click)="restart()">Recommencer</button><a mat-flat-button color="primary" routerLink="/examples/app/dashboard">Accéder au tableau de bord</a></div>
+        </app-result>
+      } @else {
+        @switch (step()) {
+          @case (0) {
+            <h1>Faisons connaissance</h1>
+            <p class="lead">Ces informations apparaissent sur vos commentaires, factures et messages.</p>
+            <div class="profile">
+              <span class="avatar" [style.background]="m.color">{{ initials() }}</span>
+              <div class="form-field"><label class="field-label">Couleur de l’avatar</label><app-color-picker [(ngModel)]="m.color" [swatches]="['#0ea5e9', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#334155']" /></div>
+            </div>
+            <div class="row-2">
+              <div class="form-field"><label class="field-label">Prénom</label><div class="field-box"><input [(ngModel)]="m.first" autocomplete="given-name" /></div></div>
+              <div class="form-field"><label class="field-label">Nom</label><div class="field-box"><input [(ngModel)]="m.last" autocomplete="family-name" /></div></div>
+            </div>
+            <div class="form-field"><label class="field-label">Votre rôle</label>
+              <div class="chips-choice">@for (r of roles; track r) { <button type="button" [class.on]="m.role === r" (click)="m.role = r">{{ r }}</button> }</div></div>
+          }
+          @case (1) {
+            <h1>Votre organisation</h1>
+            <p class="lead">Nous adaptons les modèles de factures, les rapports et le vocabulaire à votre activité.</p>
+            <div class="form-field"><label class="field-label">Nom de l’organisation</label><div class="field-box big"><mat-icon>business</mat-icon><input [(ngModel)]="m.company" placeholder="Ex : Sotra Logistique" autocomplete="organization" /></div></div>
+            <div class="form-field"><label class="field-label">Secteur d’activité</label>
+              <div class="choices">
+                @for (s of sectors; track s.id) {
+                  <button type="button" class="choice" [class.on]="m.sector === s.id" (click)="m.sector = s.id"><span class="c-ic"><mat-icon>{{ s.icon }}</mat-icon></span><span class="c-txt"><strong>{{ s.label }}</strong></span><span class="mark"></span></button>
+                }
+              </div></div>
+            <div class="form-field"><label class="field-label">Nombre d’employés</label>
+              <div class="seg">@for (s of sizes; track s) { <button type="button" [class.on]="m.size === s" (click)="m.size = s">{{ s }}</button> }</div></div>
+          }
+          @case (2) {
+            <h1>Que voulez-vous gérer ?</h1>
+            <p class="lead">Choisissez vos modules de départ. Les autres restent disponibles à tout moment.</p>
+            <div class="choices mods">
+              @for (mod of modules; track mod.id) {
+                <button type="button" class="choice square" [class.on]="m.modules.has(mod.id)" [attr.aria-pressed]="m.modules.has(mod.id)" (click)="toggleModule(mod.id)">
+                  <span class="c-ic" [style.color]="m.modules.has(mod.id) ? null : mod.color"><mat-icon>{{ mod.icon }}</mat-icon></span>
+                  <span class="c-txt"><strong>{{ mod.label }}</strong><small>{{ mod.description }}</small></span><span class="mark"></span>
+                </button>
+              }
+            </div>
+            <p class="help">{{ m.modules.size }} module(s) sélectionné(s) · inclus dans l’essai gratuit</p>
+          }
+          @case (3) {
+            <h1>Invitez votre équipe</h1>
+            <p class="lead">Ajoutez des adresses e-mail séparées par une virgule ou Entrée. Vous pouvez aussi le faire plus tard.</p>
+            <div class="form-field"><label class="field-label">Adresses e-mail</label>
+              <app-tag-input [(ngModel)]="m.invites" [suggestions]="suggestions" [validator]="emailValidator" invalidMessage="Adresse e-mail invalide" placeholder="collegue@entreprise.ci" icon="alternate_email" /></div>
+            <div class="form-field"><label class="field-label">Rôle attribué</label>
+              <div class="seg">@for (r of ['Administrateur', 'Membre', 'Lecture seule']; track r) { <button type="button" [class.on]="m.inviteRole === r" (click)="m.inviteRole = r">{{ r }}</button> }</div></div>
+            <div class="share card"><mat-icon>link</mat-icon><span><strong>Ou partagez un lien d’invitation</strong><small>scstorage.ci/rejoindre/7Hk2-pQ</small></span><button mat-stroked-button>Copier</button></div>
+          }
+        }
+        @if (error()) { <p class="err" role="alert"><mat-icon>error</mat-icon>{{ error() }}</p> }
+        <div class="actions-bar nav">
+          @if (step() > 0) { <button mat-button (click)="back()"><mat-icon>arrow_back</mat-icon>Retour</button> }
+          <span class="spacer"></span>
+          <button mat-flat-button color="primary" (click)="next()">{{ step() === steps.length - 1 ? (m.invites.length ? 'Envoyer et terminer' : 'Terminer') : 'Continuer' }}<mat-icon iconPositionEnd>arrow_forward</mat-icon></button>
+        </div>
+      }
+    </div>
+  </main>
+</div>

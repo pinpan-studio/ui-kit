@@ -1,0 +1,132 @@
+<mat-sidenav-container class="kit-container">
+  <mat-sidenav #nav class="kit-sidenav" [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()">
+    <div class="sidenav-inner">
+      <div class="sidenav-header">
+        <img src="assets/logo.png" class="brand-logo" alt="UI Kit" />
+        <div class="header-text">
+          <span class="app-title">UI Kit</span>
+          <span class="app-subtitle">Référentiel statique</span>
+        </div>
+        @if (isMobile()) {
+          <button mat-icon-button (click)="nav.close()" class="close-drawer-btn"><mat-icon>chevron_left</mat-icon></button>
+        }
+      </div>
+
+      <div class="nav-search">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Rechercher une page…" [value]="search()" (input)="search.set($any($event.target).value)" />
+        @if (search()) {
+          <button type="button" class="clear" (click)="search.set('')"><mat-icon>close</mat-icon></button>
+        }
+      </div>
+
+      <div class="sidenav-menu-wrapper" (click)="isMobile() && $any($event.target).closest('a') && nav.close()">
+        <div class="menu-section">
+          <a class="menu-item top" routerLink="/ui-showcase" routerLinkActive="active">
+            <mat-icon class="item-icon">auto_awesome_mosaic</mat-icon>
+            <span class="item-label">UI Showcase</span>
+          </a>
+          <a class="menu-item top" routerLink="/theme-studio" routerLinkActive="active">
+            <mat-icon class="item-icon">tune</mat-icon>
+            <span class="item-label">Studio de thème</span>
+          </a>
+          <a class="menu-item top" routerLink="/showcases" routerLinkActive="active">
+            <mat-icon class="item-icon">devices</mat-icon>
+            <span class="item-label">Showcases</span>
+          </a>
+        </div>
+
+        <div class="menu-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">widgets</mat-icon>
+            <span class="section-title">Components</span>
+          </div>
+          <div class="section-items">
+            @for (c of categories; track c.path) {
+              <a class="menu-item" [routerLink]="c.path" routerLinkActive="active">
+                <mat-icon class="item-icon">{{ c.icon }}</mat-icon>
+                <span class="item-label">{{ c.label }}</span>
+              </a>
+            }
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">dashboard_customize</mat-icon>
+            <span class="section-title">Layouts</span>
+          </div>
+          <div class="section-items">
+            <a class="menu-item" routerLink="/layouts" routerLinkActive="active">
+              <mat-icon class="item-icon">view_compact</mat-icon>
+              <span class="item-label">Galerie des layouts</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <button type="button" class="section-header clickable" (click)="pagesOpen.set(!pagesOpen())">
+            <mat-icon class="section-icon">view_quilt</mat-icon>
+            <span class="section-title">Pages</span>
+            <span class="spacer"></span>
+            <mat-icon class="chevron" [class.open]="pagesOpen()">expand_more</mat-icon>
+          </button>
+          @if (pagesOpen() || search()) {
+            <div class="section-items">
+              <a class="menu-item" routerLink="/pages" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                <mat-icon class="item-icon">grid_view</mat-icon>
+                <span class="item-label">Toutes les pages</span>
+              </a>
+              @for (g of groups; track g.id) {
+                @if (groupVisible(g)) {
+                  <button type="button" class="menu-item group-toggle" (click)="toggleGroup(g.id)">
+                    <mat-icon class="item-icon">{{ g.icon }}</mat-icon>
+                    <span class="item-label">{{ g.label }}</span>
+                    <span class="count">{{ g.pages.length }}</span>
+                    <mat-icon class="chevron small" [class.open]="isOpen(g.id)">expand_more</mat-icon>
+                  </button>
+                  @if (isOpen(g.id)) {
+                    <div class="sub-items">
+                      @for (p of g.pages; track p.path) {
+                        @if (matches(p.label) || matches(g.label)) {
+                          <a class="menu-item sub" [routerLink]="p.path" [title]="p.label">
+                            <span class="dot"></span>
+                            <span class="item-label">{{ p.label }}</span>
+                          </a>
+                        }
+                      }
+                    </div>
+                  }
+                }
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="kit-main">
+    <mat-toolbar class="kit-toolbar">
+      <button mat-icon-button (click)="nav.toggle()"><mat-icon>{{ nav.opened ? 'menu_open' : 'menu' }}</mat-icon></button>
+      <span class="toolbar-title">Catalogue UI</span>
+      <span class="spacer"></span>
+      <button type="button" class="palette-btn" (click)="palette.open()" aria-label="Rechercher (⌘K)">
+        <mat-icon>search</mat-icon><span class="pb-label">Rechercher…</span><app-kbd keys="mod+k" class="pb-kbd" />
+      </button>
+      <a mat-stroked-button class="app-link" routerLink="/harnais">
+        <mat-icon>auto_awesome</mat-icon><span>Harnais</span>
+      </a>
+      <a mat-stroked-button class="app-link" routerLink="/main">
+        <mat-icon>open_in_new</mat-icon><span>Ouvrir l'application</span>
+      </a>
+      <button mat-icon-button (click)="theme.toggle()" matTooltip="Changer de thème">
+        <mat-icon>{{ theme.mode() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      </button>
+      <app-theme-picker />
+    </mat-toolbar>
+    <div class="kit-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,121 @@
+<ex-app-shell nav="topnav" title="Candidature">
+  <div class="form-head">
+    <span class="text-overline">Recrutement · Réf. DEV-FE-2026-14</span>
+    <h1>Développeur·se front-end confirmé·e</h1>
+    <p>Abidjan, Plateau · CDI · hybride. Comptez une dizaine de minutes ; votre brouillon est enregistré à tout moment.</p>
+  </div>
+
+  @if (submitted()) {
+    <section class="card done">
+      <app-result status="success" icon="task_alt" title="Candidature envoyée">
+        <p class="result-text">Merci {{ m.first }} ! Vous recevrez une réponse sous 10 jours ouvrés à <strong>{{ m.email }}</strong>. Numéro de dossier : <code>CAND-2026-0871</code>.</p>
+        <div actions><button mat-stroked-button (click)="submitted.set(false)">Revoir ma candidature</button></div>
+      </app-result>
+    </section>
+  } @else {
+    <div class="layout">
+      <nav class="toc card" aria-label="Sections du formulaire">
+        <div class="overall"><strong>{{ total() }} %</strong><span>complété</span><mat-progress-bar mode="determinate" [value]="total()" /></div>
+        @for (s of sections; track s.id; let i = $index) {
+          <button type="button" (click)="scrollTo(s.id)" [class.full]="completion(s.id) === 100">
+            <span class="ring" [style.--p]="completion(s.id)"><mat-icon>{{ completion(s.id) === 100 ? 'check' : s.icon }}</mat-icon></span>
+            <span class="lbl">{{ s.label }}</span><small>{{ completion(s.id) }} %</small>
+          </button>
+        }
+      </nav>
+
+      <form class="main" (ngSubmit)="submit()" novalidate>
+        <section class="card section" id="sec-identity">
+          <h2><span class="num">1</span>Identité</h2>
+          <div class="form-field"><label class="field-label">Civilité</label>
+            <mat-radio-group name="civ" [(ngModel)]="m.civ" class="radios" color="primary">@for (c of ['Mme', 'M.', 'Autre']; track c) { <mat-radio-button [value]="c">{{ c }}</mat-radio-button> }</mat-radio-group></div>
+          <div class="row-2">
+            <div class="form-field" [class.invalid]="tried() && !m.first"><label class="field-label">Prénom<span class="req">*</span></label><div class="field-box"><input name="first" [(ngModel)]="m.first" autocomplete="given-name" /></div></div>
+            <div class="form-field" [class.invalid]="tried() && !m.last"><label class="field-label">Nom<span class="req">*</span></label><div class="field-box"><input name="last" [(ngModel)]="m.last" autocomplete="family-name" /></div></div>
+          </div>
+          <div class="row-3">
+            <div class="form-field"><label class="field-label">Date de naissance</label>
+              <div class="field-box"><input name="birth" [matDatepicker]="dp" [(ngModel)]="m.birth" placeholder="jj/mm/aaaa" /><mat-datepicker-toggle [for]="dp" /><mat-datepicker #dp startView="multi-year" /></div></div>
+            <div class="form-field"><label class="field-label">Nationalité</label>
+              <div class="field-box select-box"><mat-select name="nat" [(ngModel)]="m.nationality" panelClass="m3-dropdown-menu">@for (n of ['Ivoirienne', 'Sénégalaise', 'Malienne', 'Burkinabè', 'Ghanéenne', 'Autre']; track n) { <mat-option [value]="n">{{ n }}</mat-option> }</mat-select></div></div>
+            <div class="form-field"><label class="field-label">Ville</label><div class="field-box"><mat-icon>place</mat-icon><input name="city" [(ngModel)]="m.city" /></div></div>
+          </div>
+          <div class="row-2">
+            <div class="form-field" [class.invalid]="tried() && !m.email.includes('@')"><label class="field-label">E-mail<span class="req">*</span></label><div class="field-box"><mat-icon>mail</mat-icon><input name="email" type="email" [(ngModel)]="m.email" autocomplete="email" /></div>
+              @if (tried() && !m.email.includes('@')) { <span class="err"><mat-icon>error</mat-icon>Adresse e-mail requise.</span> }</div>
+            <div class="form-field"><label class="field-label">Téléphone</label><div class="field-box"><mat-icon>call</mat-icon><input name="phone" type="tel" [(ngModel)]="m.phone" autocomplete="tel" placeholder="+225 07 …" /></div></div>
+          </div>
+        </section>
+
+        <section class="card section" id="sec-experience">
+          <h2><span class="num">2</span>Expérience et compétences</h2>
+          @for (x of m.experiences; track $index; let i = $index) {
+            <fieldset class="exp">
+              <legend>Poste {{ i + 1 }}</legend>
+              @if (m.experiences.length > 1) { <button mat-icon-button type="button" class="rm" (click)="removeExperience(i)" aria-label="Supprimer ce poste"><mat-icon>delete_outline</mat-icon></button> }
+              <div class="row-2">
+                <div class="form-field"><label class="field-label">Intitulé</label><div class="field-box"><input [name]="'t' + i" [(ngModel)]="x.title" /></div></div>
+                <div class="form-field"><label class="field-label">Entreprise</label><div class="field-box"><input [name]="'c' + i" [(ngModel)]="x.company" /></div></div>
+              </div>
+              <div class="row-3 years">
+                <div class="form-field"><label class="field-label">De</label><div class="field-box"><input [name]="'f' + i" [(ngModel)]="x.from" inputmode="numeric" maxlength="4" placeholder="2020" /></div></div>
+                <div class="form-field"><label class="field-label">À</label><div class="field-box"><input [name]="'to' + i" [(ngModel)]="x.to" [disabled]="x.current" inputmode="numeric" maxlength="4" [placeholder]="x.current ? 'Aujourd’hui' : '2024'" /></div></div>
+                <mat-checkbox [name]="'cur' + i" [(ngModel)]="x.current" color="primary">Poste actuel</mat-checkbox>
+              </div>
+            </fieldset>
+          }
+          <button mat-stroked-button type="button" class="add" (click)="addExperience()"><mat-icon>add</mat-icon>Ajouter un poste</button>
+          <div class="form-field"><label class="field-label">Compétences <span class="help">(3 minimum)</span></label>
+            <app-tag-input name="skills" [(ngModel)]="m.skills" [suggestions]="skillsList" placeholder="Ajouter une compétence…" icon="psychology" [max]="10" /></div>
+          <div class="form-field"><label class="field-label">Niveau</label>
+            <div class="chips-choice">@for (l of ['Junior', 'Confirmé', 'Senior', 'Expert']; track l) { <button type="button" [class.on]="m.level === l" (click)="m.level = l">{{ l }}</button> }</div></div>
+        </section>
+
+        <section class="card section" id="sec-documents">
+          <h2><span class="num">3</span>Documents</h2>
+          <p class="sub">CV obligatoire. Lettre, diplômes et portfolio facultatifs.</p>
+          <label class="drop" [class.over]="drag()" (dragover)="$event.preventDefault(); drag.set(true)" (dragleave)="drag.set(false)" (drop)="onDrop($event)">
+            <mat-icon>cloud_upload</mat-icon>
+            <strong>Glissez vos fichiers ici</strong>
+            <span>ou <u>parcourez votre ordinateur</u> · PDF, DOCX · 5 Mo max</span>
+            <input type="file" multiple hidden (change)="addFiles($any($event.target).files)" />
+          </label>
+          @if (!m.files.length) { <button mat-button type="button" (click)="sampleFiles()" class="sample"><mat-icon>auto_fix_high</mat-icon>Utiliser des fichiers d’exemple</button> }
+          @for (f of m.files; track f.name; let i = $index) {
+            <div class="file"><img src="assets/icons-files/pdf.png" alt="" /><span><strong>{{ f.name }}</strong><small>{{ f.size }}</small></span>
+              <span class="m3-badge" [class.success]="f.kind === 'CV'" [class.neutral]="f.kind !== 'CV'">{{ f.kind }}</span>
+              <button mat-icon-button type="button" (click)="removeFile(i)" aria-label="Retirer"><mat-icon>close</mat-icon></button></div>
+          }
+          <div class="form-field"><label class="field-label">Portfolio ou GitHub</label><div class="field-box"><mat-icon>link</mat-icon><input name="pf" type="url" [(ngModel)]="m.portfolio" placeholder="https://" /></div></div>
+        </section>
+
+        <section class="card section" id="sec-terms">
+          <h2><span class="num">4</span>Prétentions et disponibilité</h2>
+          <div class="row-2">
+            <div class="form-field"><label class="field-label">Salaire mensuel brut souhaité</label><app-currency-input name="salary" [(ngModel)]="m.salary" [inWords]="true" /></div>
+            <div class="form-field"><label class="field-label">Disponible à partir du</label>
+              <div class="field-box"><input name="start" [matDatepicker]="sp" [(ngModel)]="m.start" placeholder="jj/mm/aaaa" /><mat-datepicker-toggle [for]="sp" /><mat-datepicker #sp /></div></div>
+          </div>
+          <div class="form-field"><label class="field-label">Type de contrat</label>
+            <div class="chips-choice">@for (c of contracts; track c) { <button type="button" [class.on]="m.contract === c" (click)="m.contract = c">{{ c }}</button> }</div></div>
+          <mat-slide-toggle name="remote" [(ngModel)]="m.remote" color="primary">Ouvert·e au travail hybride (2 jours sur site)</mat-slide-toggle>
+          <mat-slide-toggle name="reloc" [(ngModel)]="m.relocation" color="primary">Prêt·e à déménager à Abidjan</mat-slide-toggle>
+        </section>
+
+        <section class="card section" id="sec-sign">
+          <h2><span class="num">5</span>Signature</h2>
+          <app-signature-pad name="sig" [(ngModel)]="m.signature" [invalid]="tried() && !m.signature" height="160px" />
+          <mat-checkbox name="certify" [(ngModel)]="m.certify" color="primary">Je certifie l’exactitude des informations fournies.<span class="req">*</span></mat-checkbox>
+          @if (tried() && (!m.signature || !m.certify)) { <span class="err"><mat-icon>error</mat-icon>Signature et attestation requises.</span> }
+        </section>
+
+        <div class="card sticky-actions">
+          <span class="help">@if (draftSaved()) { <mat-icon>cloud_done</mat-icon>Brouillon enregistré à {{ draftSaved() }} } @else { <mat-icon>cloud_off</mat-icon>Non enregistré }</span>
+          <span class="spacer"></span>
+          <button mat-button type="button" (click)="saveDraft()">Enregistrer le brouillon</button>
+          <button mat-flat-button color="primary" type="submit">Envoyer ma candidature</button>
+        </div>
+      </form>
+    </div>
+  }
+</ex-app-shell>

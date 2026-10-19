@@ -1,0 +1,52 @@
+{
+  "name": "ui-kit",
+  "version": "1.0.0",
+  "description": "UI Kit Angular 100% statique extrait de lookas-web (aucun backend, aucune API).",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:dev": "ng build --configuration development",
+    "watch": "ng build --watch --configuration development",
+    "check:static": "node tools/check-static.mjs"
+  },
+  "dependencies": {
+    "@angular/animations": "^21.2.18",
+    "@angular/cdk": "^21.2.14",
+    "@angular/common": "^21.2.18",
+    "@angular/compiler": "^21.2.18",
+    "@angular/core": "^21.2.18",
+    "@angular/forms": "^21.2.18",
+    "@angular/material": "^21.2.14",
+    "@angular/platform-browser": "^21.2.18",
+    "@angular/router": "^21.2.18",
+    "@fontsource/inter": "^5.2.5",
+    "@fontsource/outfit": "^5.2.5",
+    "@fontsource/roboto": "^5.2.5",
+    "@geoman-io/leaflet-geoman-free": "^2.20.2",
+    "@material/material-color-utilities": "^0.4.0",
+    "animate.css": "^4.1.1",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
+    "leaflet.markercluster": "^1.5.3",
+    "material-icons": "^1.13.14",
+    "ng2-charts": "^10.0.0",
+    "ngx-scrollbar": "^19.1.5",
+    "ngx-skeleton-loader": "^11.2.1",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.18",
+    "@angular/cli": "^21.2.19",
+    "@angular/compiler-cli": "^21.2.18",
+    "@types/leaflet": "^1.9.22",
+    "@types/leaflet-draw": "^1.0.13",
+    "@types/leaflet.markercluster": "^1.5.6",
+    "typescript": "~5.9.3"
+  }
+}

@@ -1,0 +1,125 @@
+<!-- ═══════════════════════ TABLE AVANCÉE ═══════════════════════ -->
+<kit-section id="advanced-table" title="Table avancée" source="app-data-table (shared/components/data)"
+  description="Colonnes figées (code + raison sociale à gauche, statut à droite), redimensionnables (glisser le bord, double-clic pour ajuster), masquables (menu Colonnes : email et téléphone masqués par défaut). Tri, recherche, densité, export CSV, sélection multiple avec barre d'actions groupées (Maj+clic pour une plage), lignes dépliables, édition en ligne au double-clic (raison sociale, ville, véhicules, statut), totaux et pagination.">
+  <kit-demo label="Clients" hint="essayez : double-clic sur une ville, cocher des lignes, Supprimer puis Annuler" [code]="code.table" [flush]="true">
+    <app-data-table [rows]="rows()" [columns]="columns" rowKey="_id" title="Clients" selectable [bulkActions]="bulk" [pageSize]="8" maxHeight="560px"
+      (bulkAction)="onBulk($event)" (cellEdit)="onEdit($event)">
+      <ng-template #expanded let-row>
+        <div class="row-detail">
+          <div class="rd-col">
+            <span class="rd-label">Contact</span><strong>{{ row.contact }}</strong>
+            <span>{{ row.email }}</span><span>{{ row.telephone }}</span>
+          </div>
+          <div class="rd-col">
+            <span class="rd-label">Parc</span><strong>{{ row.vehicules }} véhicules</strong>
+            <span>{{ row.secteur }} · {{ row.ville }}</span>
+          </div>
+          <div class="rd-col">
+            <span class="rd-label">Remontée GPS (7 j)</span>
+            <div class="spark">@for (h of [62, 70, 68, 75, 80, 78, row.sante]; track $index) { <i [style.height.%]="h"></i> }</div>
+          </div>
+          <span class="spacer"></span>
+          <button mat-stroked-button><mat-icon>open_in_new</mat-icon>Ouvrir la fiche</button>
+        </div>
+      </ng-template>
+    </app-data-table>
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ LISTE DESCRIPTIVE ═══════════════════════ -->
+<kit-section id="description-list" title="Liste descriptive (clé / valeur)" source="app-description-list (shared/components/data)"
+  description="Bloc standard des fiches détail : 1 à 4 colonnes (responsive), disposition verticale ou horizontale, bordée ou rayée, valeurs typées (mono, lien, email, téléphone, badge, multi-ligne), copie en un clic, valeur vide « — »." [cols]="2">
+  <kit-demo label="Verticale, 3 colonnes" [code]="code.dl">
+    <app-description-list [items]="infos" [columns]="3" />
+  </kit-demo>
+  <div class="col">
+    <kit-demo label="Horizontale" hint="layout=&quot;horizontal&quot;">
+      <app-description-list [items]="contrat" [columns]="1" layout="horizontal" title="Contrat en cours" />
+    </kit-demo>
+    <kit-demo label="Bordée" hint="bordered">
+      <app-description-list [items]="contrat" [columns]="3" bordered />
+    </kit-demo>
+  </div>
+</kit-section>
+
+<!-- ═══════════════════════ COMPTEURS ═══════════════════════ -->
+<kit-section id="counters" title="Compteurs animés & tendances" source="app-stat-counter · app-trend (shared/components/data)"
+  description="Les valeurs s'animent à l'apparition puis à chaque mise à jour (easing, respecte prefers-reduced-motion). Formats nombre, FCFA, pourcentage, compact. Badge de tendance coloré selon que la hausse est bonne ou non (inverse).">
+  <kit-demo label="KPI animés" [code]="code.counter">
+    <div class="kpis">
+      <div class="kpi">
+        <span class="k-label"><mat-icon>payments</mat-icon>Chiffre d'affaires</span>
+        <strong><app-stat-counter [value]="kpi().ca" format="compact" suffix=" FCFA" [decimals]="1" /></strong>
+        <app-trend [value]="9.2" label="vs sept." />
+      </div>
+      <div class="kpi">
+        <span class="k-label"><mat-icon>local_shipping</mat-icon>Véhicules suivis</span>
+        <strong><app-stat-counter [value]="kpi().vehicules" /></strong>
+        <app-trend [value]="3.1" label="vs sept." />
+      </div>
+      <div class="kpi">
+        <span class="k-label"><mat-icon>wifi_tethering</mat-icon>Disponibilité</span>
+        <strong><app-stat-counter [value]="kpi().dispo" format="percent" [decimals]="1" /></strong>
+        <app-trend [value]="0" label="stable" />
+      </div>
+      <div class="kpi">
+        <span class="k-label"><mat-icon>notifications_active</mat-icon>Alertes ouvertes</span>
+        <strong><app-stat-counter [value]="kpi().alertes" /></strong>
+        <app-trend [value]="-18" inverse label="moins d'alertes = mieux" />
+      </div>
+    </div>
+    <div class="row demo-actions"><button mat-stroked-button (click)="refresh()"><mat-icon>refresh</mat-icon>Simuler une mise à jour</button></div>
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ DIFF ═══════════════════════ -->
+<kit-section id="diff" title="Comparaison de versions (diff)" source="app-text-diff (shared/components/data)"
+  description="Diff ligne à ligne (LCS) avec mots modifiés surlignés, vue unifiée ou côte à côte, numéros de ligne et lignes identiques repliées autour du contexte." [cols]="2">
+  <kit-demo label="Contrat — v1 → v2" hint="mode=&quot;split&quot;" [code]="code.diff">
+    <app-text-diff [before]="v1" [after]="v2" title="contrat-cadre.txt" mode="split" [context]="1" />
+  </kit-demo>
+  <kit-demo label="Configuration de balise" hint="unifiée">
+    <app-text-diff [before]="cfg1" [after]="cfg2" title="gt06-config.json" />
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ AUDIT ═══════════════════════ -->
+<kit-section id="audit" title="Historique des modifications (audit log)" source="app-audit-log (shared/components/data)"
+  description="Fil chronologique groupé par jour, filtres par type d'action et par auteur (avatars), détail champ par champ « avant → après » repliable, commentaires et contexte technique.">
+  <kit-demo label="Activité du compte" [code]="code.audit">
+    <app-audit-log [entries]="audit" />
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ QR / CODE-BARRES ═══════════════════════ -->
+<kit-section id="qr" title="QR code & code-barres" source="app-qr-code · app-barcode (shared/utils/qr-code.util.ts)"
+  description="Générés localement en SVG, sans service externe : QR (versions 1–40, correction L/M/Q/H, UTF-8, logo ou icône central, export PNG / SVG) et Code 128 (jeu B, ou C pour les numéros). Validés avec le décodeur natif du navigateur." [cols]="3">
+  <kit-demo label="Lien de suivi" [code]="code.qr">
+    <div class="qr-demo">
+      <app-qr-code #qr [value]="qrText()" [size]="168" icon="local_shipping" />
+      <div class="form-field w-100">
+        <div class="field-box"><mat-icon>link</mat-icon><input [value]="qrText()" (input)="qrText.set($any($event.target).value)" /></div>
+      </div>
+      <button mat-stroked-button (click)="download(qr)"><mat-icon>download</mat-icon>Télécharger en PNG</button>
+    </div>
+  </kit-demo>
+  <kit-demo label="Wi-Fi & carte de visite">
+    <div class="qr-pair">
+      <div class="qr-card"><app-qr-code [value]="wifi" [size]="120" ecc="Q" /><span>Wi-Fi atelier</span></div>
+      <div class="qr-card"><app-qr-code [value]="vcard" [size]="120" color="#4f6bed" /><span>vCard contact</span></div>
+    </div>
+  </kit-demo>
+  <kit-demo label="Étiquette de balise" hint="Code 128">
+    <div class="label-card">
+      <div class="lc-head"><mat-icon>router</mat-icon><strong>Balise GT06-N</strong><span class="spacer"></span><span class="lc-tag">4G</span></div>
+      <div class="lc-body">
+        <app-qr-code value="IMEI:358240051111110" [size]="84" [quiet]="1" />
+        <div class="lc-info">
+          <span>IMEI</span><strong>358240051111110</strong>
+          <span>Véhicule</span><strong>CI-4521-AB</strong>
+        </div>
+      </div>
+      <app-barcode value="358240051111110" [height]="44" [moduleWidth]="1.4" />
+    </div>
+  </kit-demo>
+</kit-section>

@@ -1,0 +1,235 @@
+<kit-doc-page title="Feedback" icon="notifications_active"
+  subtitle="Retours visuels : bannières d'alerte, snackbars (snackbar-success/error/info), dialogs génériques du ModalService, ConfirmDialog, CrudDialog, dialogs de compte, drawers, indicateurs de chargement, skeletons et états d'erreur."
+  [toc]="toc">
+
+  <!-- ═══════════════ ALERT ═══════════════ -->
+  <kit-section id="alert" title="Alert" source="bannières de modules (.success-banner, .readonly-banner, .run-banner…) · .alert-client"
+    description="Bannières inline normalisées à partir des bannières des modules (fond « -color-light », icône, texte, action optionnelle). Cliquez sur la croix pour fermer.">
+    <kit-demo label="Variantes">
+      <div class="col">
+        @if (!dismissed().has('info')) {
+          <div class="kit-alert info"><mat-icon>info</mat-icon><div class="a-body"><strong>Synchronisation planifiée</strong><span>La prochaine synchronisation Wialon aura lieu ce soir à 22:00.</span></div>
+            <button mat-icon-button (click)="dismiss('info')"><mat-icon>close</mat-icon></button></div>
+        }
+        @if (!dismissed().has('success')) {
+          <div class="kit-alert success"><mat-icon>check_circle</mat-icon><div class="a-body"><strong>Proforma acceptée</strong><span>Le dossier client a été initialisé automatiquement.</span></div>
+            <button mat-icon-button (click)="dismiss('success')"><mat-icon>close</mat-icon></button></div>
+        }
+        @if (!dismissed().has('warning')) {
+          <div class="kit-alert warning"><mat-icon>warning</mat-icon><div class="a-body"><strong>Lecture seule</strong><span>Cet exercice comptable est clôturé : les écritures ne sont plus modifiables.</span></div>
+            <button mat-stroked-button class="a-action">Rouvrir</button><button mat-icon-button (click)="dismiss('warning')"><mat-icon>close</mat-icon></button></div>
+        }
+        @if (!dismissed().has('error')) {
+          <div class="kit-alert error"><mat-icon>error</mat-icon><div class="a-body"><strong>3 balises hors ligne depuis plus de 48 h</strong><span>Vérifiez l'alimentation ou planifiez une intervention.</span></div>
+            <button mat-flat-button color="warn" class="a-action">Planifier</button><button mat-icon-button (click)="dismiss('error')"><mat-icon>close</mat-icon></button></div>
+        }
+        @if (dismissed().size) { <button mat-button (click)="restore()"><mat-icon>restart_alt</mat-icon> Réafficher les alertes</button> }
+      </div>
+    </kit-demo>
+    <div class="grid-2">
+      <kit-demo label="Compactes">
+        <div class="col">
+          <div class="kit-alert info compact"><mat-icon>info</mat-icon><span>12 clients sans gestionnaire attitré.</span></div>
+          <div class="kit-alert warning compact"><mat-icon>schedule</mat-icon><span>Échéance dans 3 jours.</span></div>
+        </div>
+      </kit-demo>
+      <kit-demo label="Alerte bloquante (.alert-client)">
+        <div class="alert-client">Ce client est suspendu pour impayés — aucune nouvelle installation possible.</div>
+      </kit-demo>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ TOAST ═══════════════ -->
+  <kit-section id="toast" title="Toast / Snackbar" source="MatSnackBar · .snackbar-success / -error / -info (styles.scss)" [cols]="2">
+    <kit-demo label="Types" [code]="code.snackbar">
+      <div class="row">
+        <button mat-stroked-button (click)="toast('plain')">Neutre</button>
+        <button mat-stroked-button (click)="toast('success')"><mat-icon>check_circle</mat-icon> Succès</button>
+        <button mat-stroked-button (click)="toast('error')"><mat-icon>error</mat-icon> Erreur</button>
+        <button mat-stroked-button (click)="toast('info')"><mat-icon>info</mat-icon> Info</button>
+        <button mat-stroked-button (click)="toast('action')"><mat-icon>undo</mat-icon> Avec action</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Positions">
+      <div class="row">
+        <button mat-button (click)="toastPosition('top', 'end')">Haut droite</button>
+        <button mat-button (click)="toastPosition('top', 'center')">Haut centre</button>
+        <button mat-button (click)="toastPosition('bottom', 'start')">Bas gauche</button>
+        <button mat-button (click)="toastPosition('bottom', 'center')">Bas centre (défaut)</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ MODAL ═══════════════ -->
+  <kit-section id="modal" title="Modal" source="ModalService · CrudDialogComponent · dialogs de compte" [cols]="3">
+    <kit-demo label="ModalService (génériques)" [hint]="'résultat : ' + lastResult()" [code]="code.modal">
+      <div class="row">
+        <button mat-stroked-button (click)="legacyAlert()">alert()</button>
+        <button mat-stroked-button (click)="legacyConfirm()">confirm()</button>
+        <button mat-stroked-button (click)="legacyPrompt()">prompt()</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Messages poussés">
+      <div class="row">
+        <button mat-stroked-button (click)="pushMessage()"><mat-icon>notifications</mat-icon> Push message</button>
+        <button mat-stroked-button (click)="priorityMessage()"><mat-icon>campaign</mat-icon> Message prioritaire</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Formulaire (CrudDialog)">
+      <button mat-flat-button color="primary" (click)="crudDialog()"><mat-icon>add</mat-icon> Nouvelle note</button>
+    </kit-demo>
+    <kit-demo label="Compte">
+      <div class="row">
+        <button mat-stroked-button (click)="profil()"><mat-icon>badge</mat-icon> Profil</button>
+        <button mat-stroked-button (click)="resetPassword()"><mat-icon>lock_reset</mat-icon> Mot de passe</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Connexion">
+      <div class="row">
+        <button mat-stroked-button (click)="googleAuth()"><mat-icon>login</mat-icon> Connexion requise</button>
+        <button mat-stroked-button (click)="googleAuth(true)">… avec erreur</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Overlay plein écran">
+      <button mat-stroked-button (click)="showOverlay()"><mat-icon>hourglass_top</mat-icon> Afficher 2 s</button>
+      <app-overlay-spiner [progress]="overlay()" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ DIALOG ═══════════════ -->
+  <kit-section id="dialog" title="Dialog" source="ConfirmDialogComponent (shared/components/confirm-dialog)" [cols]="2">
+    <kit-demo label="Types" [hint]="'résultat : ' + lastResult()" [code]="code.confirm">
+      <div class="row">
+        <button mat-flat-button color="warn" (click)="confirmDialog('danger')"><mat-icon>delete</mat-icon> Danger</button>
+        <button mat-stroked-button (click)="confirmDialog('warning')"><mat-icon>help_outline</mat-icon> Warning</button>
+        <button mat-stroked-button color="primary" (click)="confirmDialog('info')"><mat-icon>info</mat-icon> Info</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Aperçu statique (contenu de dialog)">
+      <div class="dialog-preview">
+        <h2><mat-icon class="icon-danger">warning</mat-icon> Supprimer le produit</h2>
+        <p>Êtes-vous sûr de vouloir supprimer le produit « PROD-001 » ? Cette action est irréversible.</p>
+        <div class="dp-actions"><button mat-button>Annuler</button><button mat-raised-button color="warn">Supprimer</button></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CONFIRMATION ═══════════════ -->
+  <kit-section id="confirm" title="Confirmation dialog" source="ConfirmComponent (core) · ConfirmBottomSheetComponent" [cols]="2">
+    <kit-demo label="Carte de confirmation (statique)">
+      <div class="confirm-card-preview">
+        <div class="icon-badge"><mat-icon>help_outline</mat-icon></div>
+        <h2 class="confirm-title">Valeur</h2>
+        <p class="confirm-message">Voulez-vous supprimer la valeur ?</p>
+        <div class="confirm-actions"><button mat-button>Annuler</button><button mat-flat-button color="primary">Confirmer</button></div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Bottom sheet" [hint]="'résultat : ' + lastResult()">
+      <button mat-stroked-button (click)="bottomConfirm()"><mat-icon>logout</mat-icon> Se déconnecter…</button>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ DRAWER ═══════════════ -->
+  <kit-section id="drawer" title="Drawer" source="mat-sidenav position=&quot;end&quot; (drawer droit du shell, filtres)"
+    description="Drawer latéral dans un conteneur de démonstration. La version réelle du shell (compte / notifications / tâches du jour) s'ouvre depuis la barre d'outils de l'application.">
+    <kit-demo label="Drawer droit" [flush]="true" [code]="code.drawer">
+      <mat-sidenav-container class="drawer-demo">
+        <mat-sidenav #drawer position="end" [mode]="drawerMode()" class="demo-drawer">
+          <div class="dd-inner">
+            <div class="dd-head"><div class="dd-icon"><mat-icon>tune</mat-icon></div><div><strong>Filtres avancés</strong><span>Clients</span></div><span class="spacer"></span>
+              <button mat-icon-button (click)="drawer.close()"><mat-icon>close</mat-icon></button></div>
+            <div class="dd-body">
+              <div class="form-field"><label class="field-label">Ville</label><div class="field-box select-box"><mat-icon>location_on</mat-icon>
+                <mat-select value="Abidjan" panelClass="m3-dropdown-menu"><mat-option value="Abidjan">Abidjan</mat-option><mat-option value="Bouaké">Bouaké</mat-option></mat-select></div></div>
+              <mat-checkbox color="primary" [checked]="true">Clients actifs uniquement</mat-checkbox>
+              <mat-checkbox color="primary">Avec impayés</mat-checkbox>
+            </div>
+            <div class="dd-foot"><button mat-button (click)="drawer.close()">Annuler</button><button mat-flat-button color="primary" (click)="drawer.close()">Appliquer</button></div>
+          </div>
+        </mat-sidenav>
+        <mat-sidenav-content class="dd-content">
+          <div class="row">
+            <button mat-flat-button color="primary" (click)="drawer.toggle()"><mat-icon>view_sidebar</mat-icon> {{ drawer.opened ? 'Fermer' : 'Ouvrir' }} le drawer</button>
+            <mat-button-toggle-group [value]="drawerMode()" (change)="drawerMode.set($event.value)">
+              <mat-button-toggle value="over">over</mat-button-toggle><mat-button-toggle value="side">side</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <p class="muted">Contenu principal de la page…</p>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ TOOLTIP ═══════════════ -->
+  <kit-section id="tooltip" title="Tooltip" source="matTooltip">
+    <kit-demo label="Positions">
+      <div class="row">
+        <button mat-stroked-button matTooltip="Infobulle au-dessus" matTooltipPosition="above">Above</button>
+        <button mat-stroked-button matTooltip="Infobulle en dessous" matTooltipPosition="below">Below</button>
+        <button mat-stroked-button matTooltip="Infobulle à gauche" matTooltipPosition="left">Left</button>
+        <button mat-stroked-button matTooltip="Infobulle à droite (rail)" matTooltipPosition="right">Right</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ LOADING ═══════════════ -->
+  <kit-section id="loading" title="Loading" source="mat-spinner · mat-progress-bar · .loading-center" [cols]="3">
+    <kit-demo label="Spinners">
+      <div class="row lg"><mat-spinner diameter="20"></mat-spinner><mat-spinner diameter="40"></mat-spinner><mat-spinner diameter="60"></mat-spinner></div>
+    </kit-demo>
+    <kit-demo label="Barre indéterminée (drawer, en-tête)">
+      <div class="col"><mat-progress-bar mode="indeterminate"></mat-progress-bar><mat-progress-bar mode="query"></mat-progress-bar><mat-progress-bar mode="buffer" value="40" bufferValue="70"></mat-progress-bar></div>
+    </kit-demo>
+    <kit-demo label="Barre déterminée" hint="cliquez">
+      <div class="col"><mat-progress-bar mode="determinate" [value]="progress()"></mat-progress-bar>
+        <button mat-stroked-button (click)="bumpProgress()">Progression : {{ progress() }} %</button></div>
+    </kit-demo>
+    <kit-demo label="Zone centrée (.loading-center)">
+      <div class="loading-center small"><mat-spinner diameter="40"></mat-spinner></div>
+    </kit-demo>
+    <kit-demo label="Chargement avec libellé">
+      <div class="loading-label"><mat-spinner diameter="28"></mat-spinner><span>Chargement des factures…</span></div>
+    </kit-demo>
+    <kit-demo label="Bouton en cours">
+      <button mat-flat-button color="primary" disabled><mat-spinner diameter="18" class="btn-spin"></mat-spinner> Enregistrement…</button>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ SKELETON ═══════════════ -->
+  <kit-section id="skeleton" title="Skeleton" source="app-skeleton (shared) · ngx-skeleton-loader (tâches, fichiers)" [cols]="2">
+    <kit-demo label="variant=&quot;line&quot;" [code]="code.skeleton"><app-skeleton variant="line" [count]="4" /></kit-demo>
+    <kit-demo label="variant=&quot;avatar&quot;"><app-skeleton variant="avatar" [count]="3" /></kit-demo>
+    <kit-demo label="variant=&quot;table-row&quot;"><app-skeleton variant="table-row" [count]="3" /></kit-demo>
+    <kit-demo label="variant=&quot;card&quot;"><app-skeleton variant="card" [count]="2" /></kit-demo>
+    <kit-demo label="ngx-skeleton-loader">
+      <ngx-skeleton-loader count="3" appearance="line" animation="progress"></ngx-skeleton-loader>
+      <div class="row"><ngx-skeleton-loader appearance="circle" [theme]="{ width: '48px', height: '48px' }"></ngx-skeleton-loader>
+        <div class="w-100"><ngx-skeleton-loader [theme]="{ width: '60%' }"></ngx-skeleton-loader><ngx-skeleton-loader [theme]="{ width: '35%' }"></ngx-skeleton-loader></div></div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ ERROR ═══════════════ -->
+  <kit-section id="error" title="Error state" description="États d'erreur pleine zone, inline et de champ." [cols]="3">
+    <kit-demo label="Erreur de chargement">
+      <div class="error-block">
+        <div class="err-icon"><mat-icon>cloud_off</mat-icon></div>
+        <h3>Impossible de charger les données</h3>
+        <p>Le service est momentanément indisponible.</p>
+        <button mat-flat-button color="primary"><mat-icon>refresh</mat-icon> Réessayer</button>
+      </div>
+    </kit-demo>
+    <kit-demo label="Ressource introuvable">
+      <app-empty-state icon="search_off" title="Client introuvable" subtitle="Ce client a peut-être été supprimé ou fusionné." actionLabel="Retour à la liste" />
+    </kit-demo>
+    <kit-demo label="Accès refusé">
+      <div class="error-block">
+        <div class="err-icon warn"><mat-icon>lock</mat-icon></div>
+        <h3>Accès refusé</h3>
+        <p>Votre groupe n'a pas la permission « Finance ».</p>
+        <button mat-stroked-button>Contacter l'administrateur</button>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <app-feedback-advanced />
+</kit-doc-page>

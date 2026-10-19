@@ -1,0 +1,88 @@
+<div class="ig">
+  @if (filters() || switcher() || selected().size) {
+    <div class="ig-bar">
+      @if (selected().size) {
+        <div class="ig-selbar">
+          <button type="button" class="ig-icon" (click)="clearSelection()" matTooltip="Désélectionner"><mat-icon>close</mat-icon></button>
+          <strong>{{ selected().size }} sélectionnée(s)</strong>
+          <button type="button" class="ig-link" (click)="selectAll()">Tout sélectionner ({{ filtered().length }})</button>
+          <span class="spacer"></span>
+          <ng-content select="[selectionActions]" />
+        </div>
+      } @else {
+        @if (filters() && categories().length) {
+          <div class="ig-chips" role="tablist">
+            <button type="button" role="tab" [class.on]="!category()" (click)="setCategory(null)">Toutes <em>{{ images().length }}</em></button>
+            @for (c of categories(); track c.name) {
+              <button type="button" role="tab" [class.on]="category() === c.name" (click)="setCategory(c.name)">{{ c.name }} <em>{{ c.count }}</em></button>
+            }
+          </div>
+        }
+        <span class="spacer"></span>
+        @if (switcher()) {
+          <div class="ig-switch" role="radiogroup" aria-label="Disposition">
+            <button type="button" [class.on]="layout() === 'grid'" (click)="layout.set('grid')" matTooltip="Grille"><mat-icon>grid_view</mat-icon></button>
+            <button type="button" [class.on]="layout() === 'justified'" (click)="layout.set('justified')" matTooltip="Lignes justifiées"><mat-icon>view_compact</mat-icon></button>
+            <button type="button" [class.on]="layout() === 'masonry'" (click)="layout.set('masonry')" matTooltip="Masonry"><mat-icon>dashboard</mat-icon></button>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <div #stage class="ig-stage">
+    @switch (layout()) {
+      @case ('grid') {
+        <div class="ig-grid" [style.grid-template-columns]="'repeat(auto-fill, minmax(min(100%, ' + minWidth() + 'px), 1fr))'" [style.gap.px]="gap()">
+          @for (img of visible(); track img.url; let i = $index) {
+            <ng-container *ngTemplateOutlet="tile; context: { img, i, ratio: aspectRatio() }" />
+          }
+        </div>
+      }
+      @case ('justified') {
+        <div class="ig-rows" [style.gap.px]="gap()">
+          @for (row of rows(); track $index) {
+            <div class="ig-row" [style.gap.px]="gap()" [style.height.px]="row.height">
+              @for (c of row.items; track c.img.url) {
+                <div class="ig-cell" [style.width.px]="c.w">
+                  <ng-container *ngTemplateOutlet="tile; context: { img: c.img, i: c.index, ratio: null }" />
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+      @default {
+        <app-masonry-grid [items]="visible()" [minColumnWidth]="minWidth() + 40" [gap]="gap()" [trackBy]="trackUrl">
+          <ng-template #item let-img let-i="index">
+            <ng-container *ngTemplateOutlet="tile; context: { img, i, ratio: (img.width ?? 4) + ' / ' + (img.height ?? 3) }" />
+          </ng-template>
+        </app-masonry-grid>
+      }
+    }
+    @if (!visible().length) {
+      <div class="ig-empty"><mat-icon>hide_image</mat-icon><strong>Aucune image</strong><span>Aucune image dans cette catégorie.</span></div>
+    }
+  </div>
+
+  @if (remaining()) {
+    <div class="ig-more"><button type="button" (click)="more()"><mat-icon>expand_more</mat-icon>Afficher plus <em>{{ remaining() }} restante(s)</em></button></div>
+  }
+</div>
+
+<ng-template #tile let-img="img" let-i="i" let-ratio="ratio">
+  <figure class="ig-tile" [class.sel]="selected().has(img)" [style.aspect-ratio]="ratio" tabindex="0" role="button"
+    [attr.aria-label]="img.title || img.alt || 'Image ' + (i + 1)" (click)="click(img, i, $event)" (keydown.enter)="open(i)" (keydown.space)="selectable() ? toggle(img, $event) : open(i); $event.preventDefault()">
+    <img [src]="img.url" [alt]="img.alt || img.title || ''" loading="lazy" decoding="async" draggable="false" />
+    <figcaption>
+      @if (img.title) { <strong>{{ img.title }}</strong> }
+      @if (img.caption) { <span>{{ img.caption }}</span> }
+    </figcaption>
+    <span class="ig-zoom"><mat-icon>zoom_in</mat-icon></span>
+    @if (selectable()) {
+      <button type="button" class="ig-check" [class.on]="selected().has(img)" (click)="toggle(img, $event)" [attr.aria-pressed]="selected().has(img)" aria-label="Sélectionner">
+        <mat-icon>check</mat-icon>
+      </button>
+    }
+  </figure>
+</ng-template>

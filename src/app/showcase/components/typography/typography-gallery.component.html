@@ -1,0 +1,368 @@
+<kit-doc-page title="Typographie" icon="text_fields" eyebrow="Fondations"
+  subtitle="Tous les concepts typographiques du kit : familles de polices, échelle et hiérarchie, graisses, interlignage, interlettrage, longueur de ligne, couleur et contraste, chiffres, troncature, styles en ligne, règles de la typographie française, tailles fluides, accessibilité, et un testeur pour composer vos propres styles."
+  [toc]="toc">
+
+  <!-- ═══════════════════════ FAMILLES ═══════════════════════ -->
+  <kit-section id="families" title="Familles de polices" source="styles/_typography.scss · --font-heading / --font-body / --font-mono / --font-brand"
+    description="Toutes les polices sont servies localement (@fontsource et assets/fonts) : aucune requête vers Google Fonts. Modifiez le texte d'aperçu pour tester vos propres contenus.">
+    <div class="form-field sample-input">
+      <label class="field-label">Texte d'aperçu</label>
+      <div class="field-box"><mat-icon>edit</mat-icon><input [value]="fontSample()" (input)="fontSample.set($any($event.target).value)" /></div>
+    </div>
+    <div class="families">
+      @for (f of families; track f.name) {
+        <article class="family">
+          <header>
+            <div class="fam-big" [style.font-family]="f.css">Aa</div>
+            <div class="fam-meta">
+              <strong>{{ f.name }}</strong>
+              <span>{{ f.role }}</span>
+              <code (click)="copy('font-family: ' + f.css + ';', 'Déclaration')" title="Copier">font-family: {{ f.css }}</code>
+            </div>
+            @if (loaded()[f.name] !== undefined) {
+              <span class="fam-status" [class.ok]="loaded()[f.name]"><mat-icon>{{ loaded()[f.name] ? 'check_circle' : 'error' }}</mat-icon>{{ loaded()[f.name] ? 'Chargée' : 'Repli système' }}</span>
+            }
+          </header>
+          <p class="fam-sample" [style.font-family]="f.css">{{ fontSample() }}</p>
+          <p class="fam-glyphs" [style.font-family]="f.css">{{ glyphs }}</p>
+          <footer>
+            <span class="fam-weights">@for (w of f.weights; track w) { <span [style.font-family]="f.css" [style.font-weight]="w" [title]="weightNames[w]">{{ w }}</span> }</span>
+            @if (f.italic) { <span class="chip-mini" [style.font-family]="f.css"><i>Italique</i></span> }
+            <span class="spacer"></span>
+            <span class="muted">{{ f.source }}</span>
+          </footer>
+        </article>
+      }
+    </div>
+    <kit-demo label="Pairing recommandé" hint="Outfit pour l'accroche, Inter pour la lecture, Space Mono pour les identifiants" [code]="code.families">
+      <div class="pairing">
+        <span class="text-overline">Facture</span>
+        <h3 class="text-h3">Abonnement Premium — octobre</h3>
+        <p class="text-body">Prestations de géolocalisation pour 48 véhicules, maintenance des balises incluse.</p>
+        <div class="pairing-foot"><span class="text-mono">FAC-2026-0981</span><strong class="text-h4 text-tabular">1 250 000 FCFA</strong></div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ ÉCHELLE ═══════════════════════ -->
+  <kit-section id="scale" title="Échelle typographique" source="classes .text-* · variables --fs-*"
+    description="Treize styles nommés couvrent toute l'interface ; ils remplacent les tailles en dur. Les classes gagnent sur les règles globales h1–h4 : on peut donc donner l'apparence d'un h3 à un h2 sans casser la sémantique. Cliquez une ligne pour copier sa classe.">
+    <div class="scale">
+      <div class="scale-head"><span>Style</span><span>Aperçu</span><span>Taille / interligne</span><span>Graisse</span><span>Interlettrage</span></div>
+      @for (s of scale; track s.cls; let i = $index) {
+        <button type="button" class="scale-row" (click)="copy(s.cls, 'Classe « ' + s.cls + ' »')">
+          <span class="sc-name"><strong>{{ s.name }}</strong><code>.{{ s.cls }}</code></span>
+          <span class="sc-sample" [class]="'sc-sample ' + s.cls">{{ s.sample }}</span>
+          <span class="sc-num">{{ s.size }} px / {{ s.lh }}@if (ratio(i)) { <em>× {{ ratio(i) }}</em> }</span>
+          <span class="sc-num">{{ s.weight }} · {{ s.family }}</span>
+          <span class="sc-num">{{ s.tracking }}</span>
+          <span class="sc-usage">{{ s.usage }}</span>
+        </button>
+      }
+    </div>
+    <kit-demo label="Variables et classes" [code]="code.scale">
+      <div class="vars">
+        @for (v of ['--font-heading', '--font-body', '--font-mono', '--fs-display', '--fs-h1', '--fs-h2', '--fs-h3', '--fs-body', '--fs-label', '--lh-heading', '--lh-body', '--measure']; track v) {
+          <button type="button" class="var-chip" (click)="copy('var(' + v + ')', 'Variable')"><code>{{ v }}</code></button>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ HIÉRARCHIE ═══════════════════════ -->
+  <kit-section id="hierarchy" title="Hiérarchie & rythme vertical" source="taille · graisse · couleur · espacement"
+    description="La hiérarchie ne repose pas que sur la taille : graisse, couleur et espace au-dessus d'un titre (plus grand qu'en dessous) indiquent ce qui va ensemble. Un seul h1 par page, des niveaux sans saut (h2 → h3, jamais h2 → h4)." [cols]="2">
+    <kit-demo label="À faire" hint="contraste de tailles net, espace proximal">
+      <div class="hier good">
+        <span class="text-overline">Client · CLI-1040</span>
+        <h1 class="text-page-title">Transports Yao & Fils</h1>
+        <p class="text-body-sm">Client depuis mars 2019 · 48 véhicules · Abidjan</p>
+        <h2 class="text-h4 h-gap">Contrat en cours</h2>
+        <p class="text-body">Offre Premium Flotte, renouvelée par tacite reconduction au 28 février 2027.</p>
+        <h2 class="text-h4 h-gap">Dernière intervention</h2>
+        <p class="text-body">Remplacement d'une balise sur CI-4521-AB le 14 octobre.</p>
+      </div>
+    </kit-demo>
+    <kit-demo label="À éviter" hint="tout se ressemble, espacements égaux">
+      <div class="hier bad">
+        <span>Client · CLI-1040</span>
+        <span class="b-title">Transports Yao & Fils</span>
+        <span>Client depuis mars 2019 · 48 véhicules · Abidjan</span>
+        <span class="b-title">Contrat en cours</span>
+        <span>Offre Premium Flotte, renouvelée par tacite reconduction au 28 février 2027.</span>
+        <span class="b-title">Dernière intervention</span>
+        <span>Remplacement d'une balise sur CI-4521-AB le 14 octobre.</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ GRAISSES ═══════════════════════ -->
+  <kit-section id="weights" title="Graisses" source="font-weight 100–900"
+    description="Seules les graisses réellement embarquées s'affichent correctement ; les autres sont simulées par le navigateur (« faux gras »). Usage : 400 texte, 500 valeurs, 600 libellés et titres secondaires, 700 titres.">
+    <div class="weight-tabs">
+      @for (f of families; track f.name) {
+        <button type="button" [class.on]="weightFamily() === f.css" (click)="weightFamily.set(f.css)">{{ f.name }}</button>
+      }
+    </div>
+    <div class="weights">
+      @for (w of [100, 200, 300, 400, 500, 600, 700, 800, 900]; track w) {
+        <div class="weight" [class.synth]="!weightsFor().includes(w)">
+          <span class="w-num">{{ w }}</span>
+          <span class="w-sample" [style.font-family]="weightFamily()" [style.font-weight]="w">Flotte 2026</span>
+          <span class="w-name">{{ weightNames[w] }}@if (!weightsFor().includes(w)) { · simulée }</span>
+        </div>
+      }
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ INTERLIGNAGE ═══════════════════════ -->
+  <kit-section id="line-height" title="Interlignage" source="line-height · --lh-tight / --lh-heading / --lh-body / --lh-relaxed"
+    description="Plus le texte est petit et long, plus l'interligne doit être généreux : 1,15–1,3 pour les titres, 1,5–1,6 pour le texte d'interface, 1,7 pour la lecture longue. Sans unité, il s'adapte à la taille de police.">
+    <div class="lh-grid">
+      @for (lh of lineHeights; track lh) {
+        <div class="lh-card" [class.rec]="lh === 1.55">
+          <div class="lh-head"><code>line-height: {{ lh }}</code>@if (lh === 1.55) { <span class="badge ok">Recommandé</span> }@if (lh === 1) { <span class="badge bad">Trop serré</span> }@if (lh === 2) { <span class="badge warn">Trop aéré</span> }</div>
+          <p [style.line-height]="lh">{{ paragraph }}</p>
+        </div>
+      }
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ INTERLETTRAGE ═══════════════════════ -->
+  <kit-section id="tracking" title="Interlettrage" source="letter-spacing (em)"
+    description="Les grands titres gagnent à être légèrement resserrés (−0,01 à −0,03 em) ; les petites capitales et surtitres doivent être espacés (+0,04 à +0,1 em) pour rester lisibles. Le texte courant reste à 0." [cols]="2">
+    <kit-demo label="Titre (Outfit 28)">
+      @for (t of trackings; track t) {
+        <div class="tr-row"><code>{{ t > 0 ? '+' : '' }}{{ t }} em</code><span class="tr-title" [style.letter-spacing.em]="t">Rapport mensuel</span></div>
+      }
+    </kit-demo>
+    <kit-demo label="Majuscules (Inter 11)">
+      @for (t of trackings; track t) {
+        <div class="tr-row"><code>{{ t > 0 ? '+' : '' }}{{ t }} em</code><span class="tr-caps" [style.letter-spacing.em]="t">Véhicules en ligne</span>@if (t === 0.04 || t === 0.1) { <mat-icon class="ok-ic">check</mat-icon> }</div>
+      }
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MESURE ═══════════════════════ -->
+  <kit-section id="measure" title="Longueur de ligne (mesure)" source="max-width en ch · .text-measure (68ch)"
+    description="Entre 45 et 75 caractères par ligne pour un texte confortable. Au-delà, l'œil peine à retrouver le début de la ligne suivante ; en deçà, le rythme est haché. Faites varier la largeur.">
+    <kit-demo label="Ajustez la mesure">
+      <div class="measure-ctrl">
+        <mat-slider min="25" max="120" step="1" discrete class="measure-slider"><input matSliderThumb [value]="measure()" (valueChange)="measure.set($event)" /></mat-slider>
+        <span class="badge" [class.ok]="measureState() === 'confortable'" [class.warn]="measureState() !== 'confortable'">{{ measure() }} ch · {{ measureState() }}</span>
+      </div>
+      <p class="measure-text text-body-lg" [style.max-width.ch]="measure()">{{ paragraph }} {{ paragraph }}</p>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ COULEUR & CONTRASTE ═══════════════════════ -->
+  <kit-section id="color" title="Couleur du texte & contraste" source="--text-primary / --text-secondary / --text-muted · WCAG 2.1"
+    description="Ratios calculés en direct sur le fond des cartes, pour le thème actif (basculez clair / sombre pour comparer). AA exige 4,5 : 1 pour le texte courant et 3 : 1 pour le texte de 18 px et plus (ou 14 px gras).">
+    <div class="contrast-table">
+      @for (c of contrasts(); track c.token) {
+        <div class="ct-row">
+          <span class="ct-swatch" [style.background]="c.color"></span>
+          <code>{{ c.token }}</code>
+          <span class="ct-sample" [style.color]="c.color">Texte d'exemple — 14 px</span>
+          <span class="ct-ratio">{{ fmtRatio(c.ratio) }}</span>
+          <span class="badge" [class.ok]="level(c.ratio).tone === 'success'" [class.warn]="level(c.ratio).tone === 'warning'" [class.bad]="level(c.ratio).tone === 'error'">{{ level(c.ratio).label }}</span>
+        </div>
+      }
+    </div>
+    <p class="muted">Pour du texte coloré, utilisez les variantes <b>-text</b> (<code>--success-color-text</code>, <code>--warning-color-text</code>…) : les couleurs vives de base sont faites pour les fonds, pastilles et icônes, pas pour le texte courant.</p>
+    <p class="muted">Règle : <b>--text-muted</b> est réservé aux informations accessoires (horodatages, aides) — jamais à un contenu indispensable. Une couleur ne doit pas être le seul porteur d'information (ajoutez une icône ou un libellé).</p>
+  </kit-section>
+
+  <!-- ═══════════════════════ ALIGNEMENT ═══════════════════════ -->
+  <kit-section id="alignment" title="Alignement, césure & retour à la ligne" source="text-align · hyphens · text-wrap"
+    description="Alignez à gauche le texte courant ; le justifié crée des « rivières » d'espaces sans césure. Centrez seulement les textes très courts. text-wrap: balance équilibre les titres sur plusieurs lignes, pretty évite les veuves." [cols]="3">
+    <kit-demo label="Gauche (par défaut)"><p class="al-p">{{ paragraph }}</p></kit-demo>
+    <kit-demo label="Justifié sans césure" hint="rivières"><p class="al-p" style="text-align: justify">{{ paragraph }}</p></kit-demo>
+    <kit-demo label="Justifié + césure" hint=".text-hyphens"><p class="al-p text-hyphens" lang="fr" style="text-align: justify">{{ paragraph }}</p></kit-demo>
+    <kit-demo label="Titre sans équilibrage"><h3 class="text-h3 al-title">Suivi de flotte en temps réel pour les entreprises ivoiriennes</h3></kit-demo>
+    <kit-demo label="Titre équilibré" hint=".text-balance"><h3 class="text-h3 al-title text-balance">Suivi de flotte en temps réel pour les entreprises ivoiriennes</h3></kit-demo>
+    <kit-demo label="Centré (court uniquement)"><div class="al-center"><mat-icon>inbox</mat-icon><strong class="text-h4">Aucun résultat</strong><span class="text-body-sm">Modifiez vos filtres pour élargir la recherche.</span></div></kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ CHIFFRES ═══════════════════════ -->
+  <kit-section id="numbers" title="Chiffres & formats" source="font-variant-numeric · Intl (fr-FR)"
+    description="Dans les tableaux et compteurs, utilisez les chiffres tabulaires (.text-tabular) : chaque chiffre a la même largeur, les colonnes s'alignent et les valeurs ne « sautent » pas en changeant. Formatez toujours avec Intl en fr-FR." [cols]="2">
+    <kit-demo label="Proportionnels vs tabulaires" [code]="code.numbers">
+      <div class="nums">
+        <div><span class="text-overline">Proportionnels</span>@for (a of amounts; track a) { <span class="num-cell prop">{{ fcfa(a) }}</span> }</div>
+        <div><span class="text-overline">Tabulaires</span>@for (a of amounts; track a) { <span class="num-cell text-tabular">{{ fcfa(a) }}</span> }</div>
+      </div>
+    </kit-demo>
+    <kit-demo label="Formats français (Intl)">
+      <table class="fmt-table">
+        @for (f of formats; track f.label) { <tr><td>{{ f.label }}</td><td class="fmt-val">{{ f.value }}</td><td><code>{{ f.code }}</code></td></tr> }
+      </table>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TRONCATURE ═══════════════════════ -->
+  <kit-section id="overflow" title="Troncature & mots longs" source=".text-truncate · .text-clamp-2/3 · .text-break"
+    description="Tronquez sur une ligne dans les tableaux et listes (avec infobulle du texte complet), sur 2–3 lignes dans les cartes. Les URL, IMEI et identifiants sans espace doivent pouvoir se couper (.text-break) pour ne pas déborder.">
+    <div class="trunc-ctrl">
+      <span class="text-label">Largeur du conteneur</span>
+      <mat-slider min="160" max="560" step="10" class="trunc-slider"><input matSliderThumb [value]="truncWidth()" (valueChange)="truncWidth.set($event)" /></mat-slider>
+      <code>{{ truncWidth() }} px</code>
+    </div>
+    <div class="trunc-grid">
+      <div class="trunc-box" [style.width.px]="truncWidth()"><span class="text-overline">.text-truncate</span><p class="text-truncate" [title]="longText">{{ longText }}</p></div>
+      <div class="trunc-box" [style.width.px]="truncWidth()"><span class="text-overline">.text-clamp-2</span><p class="text-clamp-2">{{ longText }}</p></div>
+      <div class="trunc-box" [style.width.px]="truncWidth()"><span class="text-overline">Sans .text-break</span><p class="overflowing">{{ longToken }}</p></div>
+      <div class="trunc-box" [style.width.px]="truncWidth()"><span class="text-overline">.text-break</span><p class="text-break text-mono">{{ longToken }}</p></div>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════════════ STYLES EN LIGNE ═══════════════════════ -->
+  <kit-section id="inline" title="Styles en ligne" source="strong · em · mark · code · kbd · abbr · sup · sub · small · del · a"
+    description="Utilisez les balises sémantiques (lues par les lecteurs d'écran) plutôt que des styles visuels seuls." [cols]="2">
+    <kit-demo label="Balises sémantiques" [code]="code.inline">
+      <div class="inline-list">
+        <p><strong>Gras</strong> — importance (<code>&lt;strong&gt;</code>)</p>
+        <p><em>Italique</em> — emphase, termes étrangers (<code>&lt;em&gt;</code>)</p>
+        <p><mark>Surligné</mark> — résultat de recherche (<code>&lt;mark&gt;</code>)</p>
+        <p><code>CI-4521-AB</code> — code, identifiant (<code>&lt;code&gt;</code>)</p>
+        <p>Appuyez sur <kbd>Ctrl</kbd> + <kbd>K</kbd> — touches (<code>&lt;kbd&gt;</code>)</p>
+        <p><abbr title="Global Positioning System">GPS</abbr> — abréviation expliquée (<code>&lt;abbr&gt;</code>)</p>
+        <p>1<sup>er</sup> trimestre, CO<sub>2</sub> — exposant / indice</p>
+        <p><del>45 000 F</del> 39 000 F — prix barré (<code>&lt;del&gt;</code>)</p>
+        <p><small>Mentions légales et conditions</small> (<code>&lt;small&gt;</code>)</p>
+      </div>
+    </kit-demo>
+    <kit-demo label="Liens">
+      <div class="inline-list links">
+        <p>Lien <a href="#" (click)="$event.preventDefault()">dans le texte</a> : souligné, couleur primaire.</p>
+        <p>Lien <a class="visited" href="#" (click)="$event.preventDefault()">déjà visité</a>.</p>
+        <p>Lien <a class="focus" href="#" (click)="$event.preventDefault()">au focus clavier</a> : anneau visible.</p>
+        <p>Lien <a href="https://example.com" target="_blank" rel="noopener">externe<mat-icon>open_in_new</mat-icon></a> : icône + nouvel onglet.</p>
+        <p class="muted">Ne jamais utiliser « cliquez ici » : le libellé doit décrire la destination.</p>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ PROSE ═══════════════════════ -->
+  <kit-section id="prose" title="Listes, citations & contenu éditorial" source=".kit-markdown (rendu Markdown / contenu riche)"
+    description="La classe .kit-markdown met en forme un contenu long (aide, CGU, notes, rendu Markdown) : titres, paragraphes, listes, tâches, citations, code, séparateurs." [cols]="2">
+    <kit-demo label="Article (.kit-markdown)">
+      <article class="kit-markdown prose">
+        <h2>Installer une balise GPS</h2>
+        <p>Avant toute intervention, vérifiez que le véhicule est <strong>à l’arrêt, contact coupé</strong>. L’installation prend environ <em>45 minutes</em>.</p>
+        <h3>Étapes</h3>
+        <ol><li>Débrancher la batterie</li><li>Raccorder la balise au <code>+APC</code> et à la masse</li><li>Tester la remontée GPS</li></ol>
+        <ul><li class="task"><span class="box on"></span>Photos avant / après</li><li class="task"><span class="box"></span>PV signé par le client</li></ul>
+        <blockquote>Ne jamais quitter le site sans avoir vérifié la première position sur la plateforme.</blockquote>
+        <hr>
+        <p>Besoin d’aide ? Consultez <a href="#" (click)="$event.preventDefault()">le guide technique</a>.</p>
+      </article>
+    </kit-demo>
+    <kit-demo label="Liste de définitions & citation mise en avant">
+      <dl class="defs">
+        <dt>Géofence</dt><dd>Zone géographique virtuelle déclenchant une alerte à l’entrée ou à la sortie d’un véhicule.</dd>
+        <dt>APC</dt><dd>Alimentation après contact : présente uniquement moteur allumé.</dd>
+        <dt>Coupe-moteur</dt><dd>Relais permettant d’immobiliser un véhicule à distance.</dd>
+      </dl>
+      <figure class="pullquote">
+        <blockquote>« Depuis l’installation, nos coûts de carburant ont baissé de 18 %. »</blockquote>
+        <figcaption>— Jean Kouassi, Transports Yao & Fils</figcaption>
+      </figure>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ FRANÇAIS ═══════════════════════ -->
+  <kit-section id="french" title="Règles de la typographie française" source="shared/utils/french-typography.util.ts"
+    description="Espaces insécables avant les ponctuations hautes, guillemets en chevrons, apostrophe courbe, points de suspension, tirets, séparateurs de milliers, majuscules accentuées. Le correcteur ci-dessous applique ces règles à n'importe quel texte saisi (◦ = espace insécable, · = espace fine insécable).">
+    <div class="fr-rules">
+      @for (r of frRules; track r.rule) {
+        <div class="fr-rule">
+          <span class="fr-label">{{ r.rule }}</span>
+          <span class="fr-bad"><mat-icon>close</mat-icon>{{ r.bad }}</span>
+          <span class="fr-good"><mat-icon>check</mat-icon>{{ r.good }}</span>
+        </div>
+      }
+    </div>
+    <kit-demo label="Correcteur typographique" [code]="code.french">
+      <div class="fr-tool">
+        <div class="form-field">
+          <label class="field-label">Texte saisi</label>
+          <div class="field-box textarea-box"><textarea rows="3" [value]="frInput()" (input)="frInput.set($any($event.target).value)"></textarea></div>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Résultat corrigé</label>
+          <div class="fr-out">@for (p of frReveal(); track $index) {@if (p.kind === 'text') {<span>{{ p.t }}</span>} @else {<span class="sp" [class.fine]="p.kind === 'nnbsp'" [title]="p.kind === 'nbsp' ? 'Espace insécable U+00A0' : 'Espace fine insécable U+202F'"> </span>}}</div>
+          <div class="row"><button mat-stroked-button (click)="copy(frOutput(), 'Texte corrigé')"><mat-icon>content_copy</mat-icon>Copier le texte corrigé</button>
+            <span class="legend"><span class="sp"> </span> insécable · <span class="sp fine"> </span> fine insécable</span></div>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ RESPONSIVE ═══════════════════════ -->
+  <kit-section id="fluid" title="Typographie responsive (fluide)" source="clamp() · unités cqi / vw"
+    description="Plutôt que des paliers fixes, clamp(min, préférée, max) fait varier la taille en continu avec la largeur, sans jamais descendre sous un minimum lisible. Ici la taille suit la largeur du conteneur (container queries) : déplacez le curseur.">
+    <kit-demo label="Simulateur de largeur" [code]="code.fluid">
+      <div class="trunc-ctrl">
+        <span class="text-label">Largeur</span>
+        <mat-slider min="320" max="1100" step="10" class="trunc-slider"><input matSliderThumb [value]="fluidWidth()" (valueChange)="fluidWidth.set($event)" /></mat-slider>
+        <code>{{ fluidWidth() }} px · {{ fluidWidth() < 600 ? 'mobile' : fluidWidth() < 960 ? 'tablette' : 'bureau' }}</code>
+      </div>
+      <div class="fluid-frame" [style.width.px]="fluidWidth()">
+        <div class="fluid-in">
+          <span class="fl-over">Nouveau</span>
+          <h2 class="fl-title">Votre flotte, en temps réel</h2>
+          <p class="fl-body">Localisez chaque véhicule, recevez les alertes et analysez vos coûts depuis un seul tableau de bord.</p>
+          <code class="fl-meta">titre : clamp(24px, 3.2cqi + 12px, 44px)</code>
+        </div>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ ACCESSIBILITÉ ═══════════════════════ -->
+  <kit-section id="a11y" title="Accessibilité typographique" source="WCAG 2.1 — 1.4.3, 1.4.4, 1.4.8, 1.4.12" [cols]="3">
+    @for (r of [
+      ['format_size', 'Taille minimale', '14 px pour le texte d’interface, 12 px uniquement pour les mentions secondaires ; jamais en dessous de 11 px.'],
+      ['zoom_in', 'Zoom à 200 %', 'Le contenu doit rester lisible sans défilement horizontal : préférez des largeurs fluides et laissez les lignes se replier.'],
+      ['contrast', 'Contraste', '4,5 : 1 minimum pour le texte courant, 3 : 1 pour le grand texte et les icônes porteuses de sens.'],
+      ['format_line_spacing', 'Espacement ajustable', 'Supporter un interligne de 1,5, un espacement de paragraphes de 2× et un interlettrage de 0,12 em sans perte de contenu.'],
+      ['text_rotation_none', 'Pas de texte en image', 'Le texte doit rester du texte : traduisible, copiable, agrandissable et lisible par les lecteurs d’écran.'],
+      ['title', 'Titres sémantiques', 'Une hiérarchie h1 → h2 → h3 sans saut permet aux lecteurs d’écran de naviguer par titres.'],
+      ['text_decrease', 'Majuscules avec parcimonie', 'Les longs passages en capitales sont plus lents à lire ; réservez-les aux surtitres courts.'],
+      ['language', 'Langue déclarée', 'lang="fr" sur la page (et sur les passages en d’autres langues) : prononciation et césure correctes.'],
+      ['motion_photos_off', 'Animations de texte', 'Respecter prefers-reduced-motion pour les compteurs et textes animés.']
+    ]; track r[1]) {
+      <div class="a11y-card"><mat-icon>{{ r[0] }}</mat-icon><strong>{{ r[1] }}</strong><span>{{ r[2] }}</span></div>
+    }
+  </kit-section>
+
+  <!-- ═══════════════════════ TESTEUR ═══════════════════════ -->
+  <kit-section id="playground" title="Testeur typographique" source="génère la déclaration CSS"
+    description="Composez un style et copiez la déclaration CSS correspondante.">
+    <div class="pg">
+      <div class="pg-ctrls">
+        <div class="form-field"><label class="field-label">Police</label>
+          <div class="field-box select-box"><select [value]="pg.family()" (change)="pg.family.set($any($event.target).value)">@for (f of families; track f.name) { <option [value]="f.css">{{ f.name }}</option> }</select></div></div>
+        <div class="form-field"><label class="field-label">Taille · {{ pg.size() }} px</label>
+          <mat-slider min="10" max="64" step="1"><input matSliderThumb [value]="pg.size()" (valueChange)="pg.size.set($event)" /></mat-slider></div>
+        <div class="form-field"><label class="field-label">Graisse · {{ pg.weight() }}</label>
+          <mat-slider min="100" max="900" step="100"><input matSliderThumb [value]="pg.weight()" (valueChange)="pg.weight.set($event)" /></mat-slider></div>
+        <div class="form-field"><label class="field-label">Interligne · {{ pg.lh() }}</label>
+          <mat-slider min="0.9" max="2.2" step="0.05"><input matSliderThumb [value]="pg.lh()" (valueChange)="pg.lh.set($event)" /></mat-slider></div>
+        <div class="form-field"><label class="field-label">Interlettrage · {{ pg.tracking() }} em</label>
+          <mat-slider min="-0.05" max="0.2" step="0.01"><input matSliderThumb [value]="pg.tracking()" (valueChange)="pg.tracking.set($event)" /></mat-slider></div>
+        <div class="form-field"><label class="field-label">Casse</label>
+          <mat-button-toggle-group [value]="pg.transform()" (change)="pg.transform.set($event.value)">
+            <mat-button-toggle value="none">Aa</mat-button-toggle><mat-button-toggle value="uppercase">AA</mat-button-toggle><mat-button-toggle value="capitalize">Ab Cd</mat-button-toggle>
+          </mat-button-toggle-group>
+          <mat-slide-toggle [checked]="pg.italic()" (change)="pg.italic.set($event.checked)">Italique</mat-slide-toggle></div>
+      </div>
+      <div class="pg-out">
+        <div class="pg-preview" contenteditable="true" spellcheck="false" (input)="pg.text.set($any($event.target).innerText)"
+          [style.font-family]="pg.family()" [style.font-size.px]="pg.size()" [style.font-weight]="pg.weight()" [style.line-height]="pg.lh()"
+          [style.letter-spacing.em]="pg.tracking()" [style.text-transform]="pg.transform()" [style.font-style]="pg.italic() ? 'italic' : 'normal'">{{ 'Suivez chaque véhicule, en temps réel.' }}</div>
+        <div class="pg-css"><pre>{{ pgCss() }}</pre><button mat-icon-button (click)="copy(pgCss(), 'CSS')" aria-label="Copier le CSS"><mat-icon>content_copy</mat-icon></button></div>
+      </div>
+    </div>
+  </kit-section>
+</kit-doc-page>

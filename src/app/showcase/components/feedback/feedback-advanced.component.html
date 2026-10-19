@@ -1,0 +1,98 @@
+<!-- ═══════════════════════ UPLOAD MULTIPLE ═══════════════════════ -->
+<kit-section id="upload-queue" title="Envoi multiple avec progression" source="app-upload-queue (shared/components/feedback)"
+  description="Zone de dépôt (glisser, cliquer, coller), validation type / taille / nombre, progression par fichier et globale, envois parallèles limités, annuler, réessayer, retirer, vider. L'envoi est délégué à une fonction Observable fournie par l'hôte (simulé ici ; un nom contenant « erreur » échoue)." [cols]="2">
+  <kit-demo label="Pièces jointes d'un dossier" [code]="code.upload">
+    <app-upload-queue #q accept="image/*,application/pdf,audio/*,video/*,.xlsx" [maxSize]="25 * 1024 * 1024" (completed)="onDone($event)" />
+    <div class="row demo-actions">
+      <button mat-stroked-button (click)="addSamples(q)"><mat-icon>auto_awesome</mat-icon>Ajouter des fichiers d'exemple</button>
+      <span class="muted">6 fichiers dont 1 en erreur, 2 refusés</span>
+    </div>
+  </kit-demo>
+  <kit-demo label="Photos uniquement, 3 max">
+    <app-upload-queue accept="image/*" [maxFiles]="3" [maxSize]="5 * 1024 * 1024" hint="JPG ou PNG · 5 Mo max · 3 photos" />
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ BANNIÈRES ═══════════════════════ -->
+<kit-section id="banner" title="Bannière globale & hors ligne" source="app-banner · app-offline-banner · NetworkStatusService"
+  description="Message pleine largeur en haut de l'application : maintenance planifiée, incident, information, nouveauté. Fermeture mémorisée (dismissKey). L'indicateur hors ligne s'appuie sur les événements online / offline du navigateur et affiche « Connexion rétablie » au retour.">
+  <kit-demo label="Tons" [code]="code.banner">
+    <div class="col banners">
+      @for (k of [bannerKey()]; track k) {
+        <app-banner tone="maintenance" title="Maintenance planifiée" actionLabel="Détails" icon="engineering">La plateforme sera indisponible dimanche 19 octobre de 2 h à 4 h.</app-banner>
+        <app-banner tone="error" title="Incident en cours" icon="sync" spin actionLabel="Suivre l'incident">La remontée GPS des balises Teltonika est retardée (≈ 10 min).</app-banner>
+        <app-banner tone="warning" title="Abonnement bientôt expiré" actionLabel="Renouveler">Votre offre Premium expire dans 5 jours.</app-banner>
+        <app-banner tone="info">Nouvelle version disponible : actualisez la page pour en profiter.</app-banner>
+        <app-banner tone="success" compact>Synchronisation terminée — 1 248 véhicules à jour.</app-banner>
+        <app-banner tone="promo" title="Nouveau : rapports carburant" actionLabel="Découvrir">Suivez la consommation de chaque véhicule.</app-banner>
+      }
+    </div>
+    <div class="row demo-actions"><button mat-button (click)="resetBanners()"><mat-icon>restart_alt</mat-icon>Réafficher les bannières</button></div>
+  </kit-demo>
+  <kit-demo label="Indicateur hors ligne" hint="simulé — ou coupez réellement votre connexion">
+    <div class="offline-demo">
+      <app-offline-banner />
+      <div class="fake-page"><i></i><i></i><i class="short"></i></div>
+    </div>
+    <div class="row demo-actions">
+      <button mat-stroked-button (click)="net.simulate(false)" [disabled]="!net.online()"><mat-icon>wifi_off</mat-icon>Passer hors ligne</button>
+      <button mat-stroked-button (click)="net.simulate(true)" [disabled]="net.online()"><mat-icon>wifi</mat-icon>Rétablir</button>
+      <span class="muted">État : {{ net.online() ? 'en ligne' : 'hors ligne' }}</span>
+    </div>
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ RÉSULTAT ═══════════════════════ -->
+<kit-section id="result" title="Page de résultat" source="app-result (shared/components/feedback)"
+  description="Écran de fin d'action (paiement, validation, envoi) ou d'erreur (403, 404, 500) : pictogramme, titre, sous-titre, récapitulatif libre et actions." [cols]="2">
+  <kit-demo label="Paiement confirmé" [code]="code.result">
+    <app-result status="success" title="Paiement confirmé" subtitle="Un reçu a été envoyé à jean.kouassi@transports-yao.ci.">
+      <div class="receipt">
+        <div><span>Référence</span><b>PAY-2026-10-0412</b></div>
+        <div><span>Facture</span><b>FAC-2026-0981</b></div>
+        <div><span>Moyen</span><b>Orange Money</b></div>
+        <div class="total"><span>Montant</span><b>1 250 000 FCFA</b></div>
+      </div>
+      <div actions>
+        <button mat-stroked-button><mat-icon>download</mat-icon>Reçu PDF</button>
+        <button mat-flat-button>Retour au tableau de bord</button>
+      </div>
+    </app-result>
+  </kit-demo>
+  <kit-demo label="Tous les statuts">
+    <div class="status-pick">
+      @for (s of statuses; track s) { <button type="button" [class.on]="result() === s" (click)="result.set(s)">{{ s }}</button> }
+    </div>
+    <app-result [status]="result()" [compact]="true">
+      <div actions>
+        @switch (result()) {
+          @case ('error') { <button mat-flat-button><mat-icon>refresh</mat-icon>Réessayer</button> }
+          @case ('403') { <button mat-flat-button>Demander l'accès</button> }
+          @case ('404') { <button mat-flat-button>Retour à l'accueil</button> }
+          @case ('500') { <button mat-flat-button><mat-icon>refresh</mat-icon>Recharger</button><button mat-stroked-button>Contacter le support</button> }
+          @case ('pending') { <button mat-stroked-button>Continuer en arrière-plan</button> }
+          @default { <button mat-flat-button>Continuer</button> }
+        }
+      </div>
+    </app-result>
+  </kit-demo>
+</kit-section>
+
+<!-- ═══════════════════════ ANNULATION ═══════════════════════ -->
+<kit-section id="undo" title="Snackbar « Annuler »" source="UndoService (shared/components/feedback)"
+  description="Alternative à la boîte de confirmation : l'élément disparaît immédiatement, un snackbar propose « Annuler » avec compte à rebours ; la suppression n'est réellement exécutée (commit) qu'à l'expiration. Une nouvelle action valide la précédente." [cols]="2">
+  <kit-demo label="Supprimer avec annulation" [code]="code.undo">
+    <ul class="undo-list">
+      @for (it of items(); track it.id) {
+        <li><mat-icon>{{ it.icon }}</mat-icon><div><strong>{{ it.nom }}</strong><span>{{ it.meta }}</span></div>
+          <button mat-icon-button (click)="remove(it)" aria-label="Supprimer"><mat-icon>delete_outline</mat-icon></button></li>
+      } @empty {
+        <li class="empty">Tout a été supprimé. <button mat-button (click)="items.set(initialItems)">Restaurer la démo</button></li>
+      }
+    </ul>
+  </kit-demo>
+  <kit-demo label="Actions réellement exécutées (commit)">
+    @if (commits().length) { <ul class="event-log">@for (c of commits(); track c) { <li>{{ c }}</li> }</ul> }
+    @else { <span class="muted">Supprimez un élément puis laissez le compte à rebours s'écouler : la suppression est validée ici. Cliquez « Annuler » pour la rétablir.</span> }
+  </kit-demo>
+</kit-section>

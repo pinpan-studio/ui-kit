@@ -1,0 +1,127 @@
+<div class="thread" #scroller role="log" aria-live="polite">
+  @for (r of rows(); track r.key) {
+    @if (r.kind === 'day') {
+      <div class="day"><span>{{ r.label }}</span></div>
+    } @else {
+      @let m = $any(r).m;
+      @if (m.system) {
+        <div class="system">{{ m.text }}</div>
+      } @else {
+        <div class="msg" [class.mine]="$any(r).mine" [class.first]="$any(r).first" [class.last]="$any(r).last">
+          @if (!$any(r).mine) {
+            <span class="ava-slot">@if ($any(r).last) { <span class="ava" [style.background]="person(m.from).color">{{ initials(person(m.from).name) }}</span> }</span>
+          }
+          <div class="col">
+            @if ($any(r).first && !$any(r).mine && isGroup()) { <span class="author" [style.color]="person(m.from).color">{{ person(m.from).name }}</span> }
+            <div class="bubble-wrap">
+              <div class="bubble" [class.deleted]="m.deleted" [class.media-only]="!m.text && !m.voice && !others(m).length && images(m).length && !m.replyTo">
+                @if (m.deleted) {
+                  <span class="del"><mat-icon>block</mat-icon>Message supprimé</span>
+                } @else {
+                  @if (quoted(m.replyTo); as q) {
+                    <div class="quote"><strong>{{ q.from === me ? 'Vous' : person(q.from).name }}</strong><span>{{ chat.preview(q) }}</span></div>
+                  }
+                  @if (images(m).length) {
+                    <div class="pics" [attr.data-n]="images(m).length > 3 ? 3 : images(m).length">
+                      @for (a of images(m).slice(0, 3); track a.id; let i = $index) {
+                        <button type="button" (click)="open(images(m), a)" [attr.aria-label]="'Agrandir ' + a.name"><img [src]="a.url" [alt]="a.name" loading="lazy" />
+                          @if (i === 2 && images(m).length > 3) { <span class="more">+{{ images(m).length - 3 }}</span> }</button>
+                      }
+                    </div>
+                  }
+                  @for (a of others(m); track a.id) {
+                    <button type="button" class="file" (click)="open(others(m), a)" [disabled]="!a.url">
+                      <img [src]="'assets/icons-files/' + kinds[a.kind].img" alt="" /><span><strong>{{ a.name }}</strong><small>{{ kinds[a.kind].label }} · {{ size(a.size) }}</small></span>
+                    </button>
+                  }
+                  @if (m.voice) { <div class="voice"><app-audio-player [tracks]="[{ title: 'Note vocale', src: m.voice.src, blob: m.voice.blob }]" variant="compact" /></div> }
+                  @if (m.text) { <p class="text" [innerHTML]="md(m.text)"></p> }
+                }
+                <span class="meta">{{ m.at | date: 'HH:mm' }}
+                  @if ($any(r).mine && !m.deleted) {
+                    <mat-icon class="tick" [class.read]="m.status === 'read'" [matTooltip]="m.status === 'read' ? 'Lu' : m.status === 'delivered' ? 'Distribué' : m.status === 'sent' ? 'Envoyé' : 'Envoi…'">
+                      {{ m.status === 'sending' ? 'schedule' : m.status === 'sent' ? 'done' : 'done_all' }}</mat-icon>
+                  }
+                </span>
+              </div>
+              @if (!m.deleted) {
+                <div class="hover-actions">
+                  @for (e of quick.slice(0, compact() ? 3 : 5); track e) { <button type="button" class="qe" (click)="react(m, e)" [attr.aria-label]="'Réagir ' + e">{{ e }}</button> }
+                  <button type="button" (click)="reply(m)" matTooltip="Répondre" aria-label="Répondre"><mat-icon>reply</mat-icon></button>
+                  <button type="button" [matMenuTriggerFor]="more" aria-label="Plus d’actions"><mat-icon>more_horiz</mat-icon></button>
+                  <mat-menu #more="matMenu" class="m3-dropdown-menu">
+                    <button mat-menu-item (click)="reply(m)"><mat-icon>reply</mat-icon>Répondre</button>
+                    @if (m.text) { <button mat-menu-item (click)="copy(m)"><mat-icon>content_copy</mat-icon>Copier le texte</button> }
+                    <button mat-menu-item><mat-icon>forward</mat-icon>Transférer</button>
+                    @if ($any(r).mine) { <mat-divider /><button mat-menu-item class="danger" (click)="remove(m)"><mat-icon>delete</mat-icon>Supprimer</button> }
+                  </mat-menu>
+                </div>
+              }
+            </div>
+            @if (m.reactions?.length) {
+              <div class="reactions">
+                @for (x of m.reactions; track x.emoji) {
+                  <button type="button" [class.on]="mine(x)" (click)="react(m, x.emoji)" [matTooltip]="reactors(x)">{{ x.emoji }}<b>{{ x.by.length }}</b></button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  } @empty {
+    <div class="empty"><mat-icon>waving_hand</mat-icon><strong>Démarrez la conversation</strong><span>Envoyez un premier message.</span></div>
+  }
+  @if (typing(); as p) {
+    <div class="msg first last typing-row">
+      <span class="ava-slot"><span class="ava" [style.background]="p.color">{{ initials(p.name) }}</span></span>
+      <div class="col"><div class="bubble typing" [attr.aria-label]="p.name + ' écrit…'"><i></i><i></i><i></i></div></div>
+    </div>
+  }
+</div>
+
+<footer class="composer">
+  @if (replyTo(); as q) {
+    <div class="reply-bar"><mat-icon>reply</mat-icon><div><strong>Réponse à {{ q.from === me ? 'vous-même' : person(q.from).name }}</strong><span>{{ chat.preview(q) }}</span></div>
+      <button mat-icon-button (click)="replyTo.set(null)" aria-label="Annuler la réponse"><mat-icon>close</mat-icon></button></div>
+  }
+  @if (pending().length) {
+    <div class="pending">
+      @for (a of pending(); track a.id) {
+        <span class="pj">
+          @if (a.kind === 'image' && a.url) { <img [src]="a.url" alt="" /> } @else { <img class="ic" [src]="'assets/icons-files/' + kinds[a.kind].img" alt="" /> }
+          <span class="pj-name">{{ a.name }}</span>
+          <button type="button" (click)="unattach(a)" [attr.aria-label]="'Retirer ' + a.name"><mat-icon>close</mat-icon></button>
+        </span>
+      }
+    </div>
+  }
+  @if (recording()) {
+    <div class="rec">
+      <button mat-icon-button (click)="cancelRecord()" matTooltip="Annuler" aria-label="Annuler l’enregistrement"><mat-icon>delete</mat-icon></button>
+      <span class="rec-dot"></span><span class="rec-time">{{ recLabel() }}</span>
+      <span class="rec-wave">@for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]; track i) { <i [style.animation-delay.ms]="i * 70"></i> }</span>
+      <button mat-flat-button color="primary" (click)="toggleRecord()"><mat-icon>send</mat-icon>Envoyer</button>
+    </div>
+  } @else {
+    <div class="box">
+      <button mat-icon-button [matMenuTriggerFor]="attachMenu" matTooltip="Joindre" aria-label="Joindre"><mat-icon>add_circle_outline</mat-icon></button>
+      <mat-menu #attachMenu="matMenu" class="m3-dropdown-menu">
+        <button mat-menu-item (click)="local.click()"><mat-icon>add_photo_alternate</mat-icon>Photos et fichiers</button>
+        <button mat-menu-item (click)="attachFromDrive()"><mat-icon>folder_open</mat-icon>Depuis mes fichiers</button>
+      </mat-menu>
+      <input #local type="file" hidden multiple (change)="attachLocal($any($event.target).files); local.value = ''" />
+      <textarea #field rows="1" [placeholder]="compact() ? 'Message…' : 'Écrire un message…'" title="Entrée pour envoyer · Maj + Entrée pour aller à la ligne"
+        [value]="draft()" (input)="draft.set($any($event.target).value); autosize($any($event.target))" (keydown)="onKey($event)" aria-label="Message"></textarea>
+      <button mat-icon-button [matMenuTriggerFor]="emojiMenu" matTooltip="Emoji" aria-label="Emoji"><mat-icon>sentiment_satisfied</mat-icon></button>
+      <mat-menu #emojiMenu="matMenu" class="m3-dropdown-menu">
+        <div class="emoji-grid" (click)="$event.stopPropagation()">@for (e of emojis; track e) { <button type="button" (click)="insertEmoji(e)">{{ e }}</button> }</div>
+      </mat-menu>
+      @if (canSend()) {
+        <button mat-icon-button class="send" (click)="send()" aria-label="Envoyer"><mat-icon>send</mat-icon></button>
+      } @else {
+        <button mat-icon-button (click)="toggleRecord()" matTooltip="Note vocale" aria-label="Enregistrer une note vocale"><mat-icon>mic</mat-icon></button>
+      }
+    </div>
+  }
+</footer>

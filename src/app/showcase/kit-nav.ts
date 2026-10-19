@@ -1,0 +1,50 @@
+/** Navigation du catalogue (sidebar du layout "kit" + sommaire du UI Showcase). */
+export interface KitNavItem { label: string; path: string; icon: string; fragment?: string; description?: string; }
+
+export const COMPONENT_CATEGORIES: KitNavItem[] = [
+  { label: 'Typographie', path: '/components/typography', icon: 'text_fields', description: 'Familles, échelle, hiérarchie, graisses, interlignage, interlettrage, mesure, contraste, chiffres, troncature, typographie française, tailles fluides, testeur.' },
+  { label: 'Formulaires', path: '/components/forms', icon: 'edit_note', description: 'Input, textarea, select, autocomplete, dates, checkbox, radio, toggle, upload, recherche, validation.' },
+  { label: 'Champs avancés', path: '/components/fields', icon: 'dynamic_form', description: 'OTP, nombre +/−, montant FCFA, intervalle, notation, couleur, texte riche, Markdown, signature, tree-select, transfert, tags, adresse, mot de passe, copie.' },
+  { label: 'Boutons', path: '/components/buttons', icon: 'smart_button', description: 'Primary, secondary, outline, ghost, danger, success, icône, loading, disabled.' },
+  { label: 'Navigation', path: '/components/navigation', icon: 'explore', description: 'Header, sidebar, navbar, onglets, breadcrumb, pagination, stepper, menus.' },
+  { label: 'Data display', path: '/components/data', icon: 'table_chart', description: 'Tables (dont table avancée), cartes, listes, liste descriptive, timeline, badges, avatars, compteurs, graphiques, diff, audit log, QR code.' },
+  { label: 'Feedback', path: '/components/feedback', icon: 'notifications_active', description: 'Alertes, toasts, modales, drawers, confirmation, loaders, skeletons, erreurs, upload multiple, bannière hors ligne, page de résultat, annulation.' },
+  { label: 'Planning', path: '/components/planning', icon: 'view_timeline', description: 'Kanban, Gantt, notes, vue groupée, calendrier, agenda — modèle générique et filtres optionnels.' },
+  { label: 'Cartes', path: '/components/maps', icon: 'map', description: 'Leaflet flat : fonds gratuits, marqueurs, clustering, trajets, zones, dessin (Leaflet Draw, Geoman), mode sombre.' },
+  { label: 'Médias', path: '/components/media', icon: 'perm_media', description: 'Lecteur vidéo, YouTube, lecteur audio, PDF, visionneuse de fichiers, carrousel, recadrage d’image.' },
+  { label: 'Interactions', path: '/components/interactions', icon: 'touch_app', description: 'Palette de commandes ⌘K, raccourcis clavier, popover riche, visite guidée, centre de notifications, menu contextuel.' },
+  { label: 'Material & CDK', path: '/components/material', icon: 'extension', description: 'Accordion, tree, drag & drop, chips input, card, grid list, bottom sheet, virtual scroll, ripple.' },
+  { label: 'Layout', path: '/components/layout', icon: 'dashboard_customize', description: 'Page layout, dashboard, colonnes, sidebar, pleine largeur, sections, conteneurs responsive.' },
+];
+
+/** Sommaire du UI Showcase (ancres + liens vers les galeries détaillées). */
+export const SHOWCASE_SECTIONS: KitNavItem[] = [
+  { label: 'Studio de thème', path: '/theme-studio', icon: 'tune' },
+  { label: 'Colors', path: '/ui-showcase', fragment: 'colors', icon: 'palette' },
+  { label: 'Typography', path: '/components/typography', icon: 'text_fields' },
+  { label: 'Icons', path: '/ui-showcase', fragment: 'icons', icon: 'emoji_symbols' },
+  { label: 'Buttons', path: '/components/buttons', icon: 'smart_button' },
+  { label: 'Inputs', path: '/components/forms', fragment: 'input', icon: 'input' },
+  { label: 'Selects', path: '/components/forms', fragment: 'select', icon: 'arrow_drop_down_circle' },
+  { label: 'Forms', path: '/components/forms', fragment: 'validation', icon: 'fact_check' },
+  { label: 'Tables', path: '/components/data', fragment: 'table', icon: 'table_rows' },
+  { label: 'Cards', path: '/components/data', fragment: 'cards', icon: 'view_agenda' },
+  { label: 'Modals', path: '/components/feedback', fragment: 'modal', icon: 'open_in_new' },
+  { label: 'Drawers', path: '/components/feedback', fragment: 'drawer', icon: 'view_sidebar' },
+  { label: 'Alerts', path: '/components/feedback', fragment: 'alert', icon: 'report' },
+  { label: 'Toasts', path: '/components/feedback', fragment: 'toast', icon: 'chat_bubble' },
+  { label: 'Navigation', path: '/components/navigation', icon: 'explore' },
+  { label: 'Pagination', path: '/components/navigation', fragment: 'pagination', icon: 'last_page' },
+  { label: 'Accordion', path: '/components/material', fragment: 'accordion', icon: 'expand_circle_down' },
+  { label: 'Tree', path: '/components/material', fragment: 'tree', icon: 'account_tree' },
+  { label: 'Drag & drop', path: '/components/material', fragment: 'drag-drop', icon: 'drag_indicator' },
+  { label: 'Loading', path: '/components/feedback', fragment: 'loading', icon: 'hourglass_top' },
+  { label: 'Empty states', path: '/components/data', fragment: 'empty', icon: 'inbox' },
+  { label: 'Error states', path: '/components/feedback', fragment: 'error', icon: 'error' },
+  { label: 'Kanban', path: '/components/planning', fragment: 'kanban', icon: 'view_kanban' },
+  { label: 'Timeline', path: '/components/planning', fragment: 'timeline', icon: 'view_timeline' },
+  { label: 'Agenda', path: '/components/planning', fragment: 'agenda', icon: 'calendar_month' },
+  { label: 'Maps', path: '/components/maps', icon: 'map' },
+  { label: 'Layouts', path: '/layouts', icon: 'dashboard_customize' },
+  { label: 'Pages', path: '/pages', icon: 'view_quilt' },
+];

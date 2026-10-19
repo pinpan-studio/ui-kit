@@ -1,0 +1,122 @@
+@let msg = message();
+
+@if (msg.role === 'user') {
+  <!-- ── Message utilisateur : bulle alignée à droite ── -->
+  <div class="user-row">
+    @if (msg.attachments?.length) {
+      <div class="attachments">
+        @for (a of msg.attachments; track a.name) {
+          <div class="attachment"><mat-icon>{{ attachmentIcon(a.kind) }}</mat-icon><span class="name">{{ a.name }}</span><span class="size">{{ a.size }}</span></div>
+        }
+      </div>
+    }
+    <div class="bubble">
+      @for (b of msg.blocks; track $index) {
+        @if (b.type === 'text') { <p>{{ b.text }}</p> }
+      }
+    </div>
+    <div class="user-actions">
+      <span class="time">{{ msg.time }}</span>
+      <button mat-icon-button class="mini" matTooltip="Copier" (click)="copy.emit(plainText())"><mat-icon>content_copy</mat-icon></button>
+    </div>
+  </div>
+} @else {
+  <!-- ── Réponse de l'assistant ── -->
+  <div class="assistant-row">
+    <div class="avatar" [class.pulse]="msg.streaming"><mat-icon>auto_awesome</mat-icon></div>
+
+    <div class="body">
+      @for (g of groups(); track $index) {
+        @if (g.kind === 'tools') {
+          <!-- Étapes d'outils regroupées -->
+          <div class="steps" [class.open]="isOpen(g.start)">
+            <button type="button" class="steps-head" (click)="toggle(g.start)" [attr.aria-expanded]="isOpen(g.start)">
+              @if (runningTools(g.items)) { <mat-spinner diameter="14" strokeWidth="2"></mat-spinner> }
+              @else { <mat-icon class="lead">checklist</mat-icon> }
+              <span>{{ g.items.length }} étape{{ g.items.length > 1 ? 's' : '' }}</span>
+              <span class="preview">{{ g.items[g.items.length - 1].label }} · {{ g.items[g.items.length - 1].target }}</span>
+              <mat-icon class="chevron">expand_more</mat-icon>
+            </button>
+            @if (isOpen(g.start)) {
+              <ol class="steps-list">
+                @for (t of g.items; track $index) {
+                  <li class="step" [class]="t.status">
+                    <span class="step-icon"><mat-icon>{{ toolIcons[t.tool] }}</mat-icon></span>
+                    <div class="step-main">
+                      <div class="step-title"><strong>{{ t.label }}</strong><code>{{ t.target }}</code></div>
+                      @if (t.output) { <div class="step-output">{{ t.output }}</div> }
+                    </div>
+                    @if (t.status === 'running') { <mat-spinner diameter="14" strokeWidth="2"></mat-spinner> }
+                    @else if (t.status === 'done') { <mat-icon class="state ok">check_circle</mat-icon> }
+                    @else { <mat-icon class="state ko">error</mat-icon> }
+                  </li>
+                }
+              </ol>
+            }
+          </div>
+        } @else {
+          @let b = g.block;
+          @if (b.type === 'thinking') {
+            <div class="thinking" [class.open]="isOpen(g.index)">
+              <button type="button" class="thinking-head" (click)="toggle(g.index)" [attr.aria-expanded]="isOpen(g.index)">
+                <mat-icon class="lead">psychology</mat-icon>
+                <span [class.shimmer]="b.running">{{ b.running ? 'Réflexion en cours…' : 'Réflexion pendant ' + b.duration }}</span>
+                <mat-icon class="chevron">expand_more</mat-icon>
+              </button>
+              @if (isOpen(g.index)) { <p class="thinking-text">{{ b.text }}</p> }
+            </div>
+          } @else if (b.type === 'text') {
+            <p class="text">@for (s of segments(b.text); track $index) {@if (s.code) {<code>{{ s.text }}</code>} @else if (s.bold) {<strong>{{ s.text }}</strong>} @else {<span>{{ s.text }}</span>}}@if (msg.streaming && $last) {<span class="caret"></span>}</p>
+          } @else if (b.type === 'list') {
+            <ul class="list">
+              @for (item of b.items; track $index) {
+                <li>@for (s of segments(item); track $index) {@if (s.code) {<code>{{ s.text }}</code>} @else if (s.bold) {<strong>{{ s.text }}</strong>} @else {<span>{{ s.text }}</span>}}</li>
+              }
+            </ul>
+          } @else if (b.type === 'code') {
+            <div class="code-block">
+              <div class="code-head">
+                <mat-icon>code</mat-icon>
+                <span>{{ b.file ?? b.lang }}</span>
+                <span class="spacer"></span>
+                <button mat-button class="mini-btn" (click)="copy.emit(b.code)"><mat-icon>content_copy</mat-icon>Copier</button>
+              </div>
+              <pre><code>{{ b.code }}</code></pre>
+            </div>
+          } @else if (isWidget(b)) {
+            <app-hz-widget [block]="$any(b)" [busy]="busy()"
+              (formSubmit)="formSubmit.emit({ index: g.index, values: $event })"
+              (choose)="choose.emit({ index: g.index, option: $event })" />
+          } @else if (b.type === 'artifact') {
+            @if (artifact(b.artifactId); as art) {
+              <button type="button" class="artifact-card" (click)="openArtifact.emit(art.id)">
+                <span class="art-icon"><mat-icon>{{ art.kind === 'code' ? 'data_object' : 'article' }}</mat-icon></span>
+                <span class="art-text">
+                  <span class="art-title">{{ art.title }}</span>
+                  <span class="art-sub">{{ art.kind === 'code' ? 'Code' : 'Document' }} · version {{ art.version }} · cliquez pour ouvrir</span>
+                </span>
+                <mat-icon class="art-open">open_in_new</mat-icon>
+              </button>
+            }
+          }
+        }
+      }
+
+      @if (msg.stopped) {
+        <div class="stopped"><mat-icon>block</mat-icon>Réponse interrompue</div>
+      }
+
+      @if (!msg.streaming) {
+        <div class="actions">
+          <button mat-icon-button class="mini" matTooltip="Copier" (click)="copy.emit(plainText())"><mat-icon>content_copy</mat-icon></button>
+          <button mat-icon-button class="mini" [class.on]="msg.feedback === 'up'" matTooltip="Bonne réponse" (click)="feedback.emit('up')"><mat-icon>thumb_up</mat-icon></button>
+          <button mat-icon-button class="mini" [class.on]="msg.feedback === 'down'" matTooltip="Mauvaise réponse" (click)="feedback.emit('down')"><mat-icon>thumb_down</mat-icon></button>
+          @if (last()) {
+            <button mat-icon-button class="mini" matTooltip="Régénérer" (click)="retry.emit()"><mat-icon>refresh</mat-icon></button>
+          }
+          <span class="time">{{ msg.time }}</span>
+        </div>
+      }
+    </div>
+  </div>
+}

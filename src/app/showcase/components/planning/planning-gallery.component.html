@@ -1,0 +1,100 @@
+<kit-doc-page title="Planning" icon="view_timeline"
+  subtitle="Vues de planification génériques (shared/components/planning) : kanban, Gantt, notes, vue groupée, calendrier et agenda. Toutes reposent sur le même modèle PlanningItem, indépendant du métier, et partagent une barre d'outils dont chaque bloc est optionnel."
+  [toc]="toc">
+
+  <!-- ═══════════════ MODÈLE & OPTIONS ═══════════════ -->
+  <kit-section id="model" title="Modèle & options" source="planning.models.ts · app-planning-toolbar" [cols]="2"
+    description="Projetez n'importe quel objet (intervention, réservation, rendez-vous, ticket…) sur PlanningItem. Recherche, filtres et bascule « En retard » ne s'affichent que si vous les activez.">
+    <kit-demo label="PlanningItem & PlanningFilter" [code]="code.model">
+      <ul class="model-list">
+        <li><code>status</code><span>colonne du kanban</span></li>
+        <li><code>group</code><span>ligne du Gantt / groupe de la vue groupée</span></li>
+        <li><code>start · end · due</code><span>placement temporel, retard si <code>due</code> dépassée</span></li>
+        <li><code>tone · color</code><span>couleur sémantique, suit le thème clair / sombre</span></li>
+        <li><code>fields</code><span>valeurs lues par les filtres déclarés</span></li>
+        <li><code>data</code><span>objet métier d'origine, renvoyé dans les événements</span></li>
+      </ul>
+    </kit-demo>
+    <kit-demo label="Options de la barre d'outils" hint="appliquées à toutes les démos de la page" [code]="code.toolbar">
+      <div class="opt-panel">
+        <mat-slide-toggle color="primary" [checked]="optSearch()" (change)="optSearch.set($event.checked)">Recherche <code>[searchable]</code></mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="optFilters()" (change)="optFilters.set($event.checked)">Filtres <code>[filters]</code></mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="optLate()" (change)="optLate.set($event.checked)">En retard <code>[lateToggle]</code></mat-slide-toggle>
+        <p class="muted">Tout désactivé : la barre disparaît et la vue s'affiche seule.</p>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ KANBAN ═══════════════ -->
+  <kit-section id="kanban" title="Kanban" source="app-kanban-board"
+    description="Colonnes déclarées, éléments rangés par status, glisser-déposer entre colonnes (état local, événement itemMoved). Badge et progression colorés selon le tone de l'élément.">
+    <kit-demo label="Interventions terrain" hint="glissez les cartes" [code]="code.kanban">
+      <div class="col-gap">
+        <mat-slide-toggle color="primary" [checked]="readonlyKanban()" (change)="readonlyKanban.set($event.checked)">Lecture seule <code>[readonly]</code></mat-slide-toggle>
+        <app-kanban-board [columns]="columns" [items]="interventions" [readonly]="readonlyKanban()" [wipLimit]="4"
+          [searchable]="optSearch()" [filters]="kanbanFilters()" [lateToggle]="optLate()"
+          (itemClick)="clicked($event)" (itemMoved)="moved($event)" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Carte personnalisée" hint="[cardTemplate]">
+      <ng-template #compactCard let-item>
+        <div class="custom-card"><span class="cc-dot" [style.background]="'var(--' + (item.tone === 'neutral' ? 'text-muted' : item.tone + '-color') + ')'"></span><strong>{{ item.title }}</strong></div>
+      </ng-template>
+      <app-kanban-board [columns]="columns" [items]="interventions.slice(0, 6)" [cardTemplate]="compactCard" (itemClick)="clicked($event)" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ TIMELINE ═══════════════ -->
+  <kit-section id="timeline" title="Timeline / Gantt" source="app-gantt-timeline"
+    description="Barres de start à end, regroupées par lignes (groups ou item.group, sinon une ligne par élément). Marqueur d'échéance, hachures si elle est dépassée, zoom jour / semaine / mois.">
+    <kit-demo label="Réservations de véhicules" hint="groupes déclarés" [code]="code.timeline" [flush]="true">
+      <div class="demo-pad">
+        <app-gantt-timeline [items]="reservations" [groups]="vehicules" rowLabel="Véhicule"
+          [searchable]="optSearch()" [filters]="reservationFilters()" [lateToggle]="optLate()" (itemClick)="clicked($event)" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Phases d'un projet" hint="sans groupes · zoom masqué" [flush]="true">
+      <div class="demo-pad">
+        <app-gantt-timeline [items]="phases" rowLabel="Phase" zoom="week" [showZoom]="false" (itemClick)="clicked($event)" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ NOTES ═══════════════ -->
+  <kit-section id="notes" title="Grille de notes" source="app-note-grid"
+    description="Notes teintées par tone (fond mélangé à la surface, lisible en clair comme en sombre), badge, échéance, progression et assigné.">
+    <kit-demo label="Interventions" [code]="code.notes">
+      <app-note-grid [items]="interventions" [searchable]="optSearch()" [filters]="interventionFilters()" [lateToggle]="optLate()" (itemClick)="clicked($event)" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ GROUPÉE ═══════════════ -->
+  <kit-section id="grouped" title="Vue groupée" source="app-grouped-board" [cols]="2"
+    description="Regroupement par n'importe quelle clé (technicien, véhicule, client…), avec progression moyenne, terminés et retards. Groupes repliables.">
+    <kit-demo label="Par technicien (notes)" [code]="code.grouped">
+      <app-grouped-board [items]="interventions" [groups]="techniciens" [searchable]="optSearch()" [filters]="interventionFilters()" [lateToggle]="optLate()" (itemClick)="clicked($event)" />
+    </kit-demo>
+    <kit-demo label="Par véhicule (liste)" hint="layout=&quot;list&quot;">
+      <app-grouped-board [items]="reservations" [groups]="vehicules" layout="list" [showProgress]="false" (itemClick)="clicked($event)" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ CALENDRIER ═══════════════ -->
+  <kit-section id="calendar" title="Calendrier" source="app-month-calendar"
+    description="Mois complet, éléments placés à leur date de début (sinon échéance), « +n autres » au-delà de maxPerDay, panneau du jour optionnel.">
+    <kit-demo label="Échéances des interventions" hint="[showDayPanel]" [code]="code.calendar">
+      <app-month-calendar [items]="interventions" [showDayPanel]="true" [searchable]="optSearch()" [filters]="interventionFilters()" [lateToggle]="optLate()" (itemClick)="clicked($event)" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════ AGENDA ═══════════════ -->
+  <kit-section id="agenda" title="Agenda" source="app-agenda-view"
+    description="Vues jour / semaine / mois. Grille horaire élargie automatiquement, chevauchements répartis côte à côte, ligne « maintenant », éléments « toute la journée ».">
+    <kit-demo label="Rendez-vous de la semaine" [code]="code.agenda">
+      <app-agenda-view [items]="rdv" [searchable]="optSearch()" [filters]="rdvFilters()" (itemClick)="clicked($event)" />
+    </kit-demo>
+    <kit-demo label="Semaine de travail, vue unique" hint="[workWeek] · [views]">
+      <app-agenda-view [items]="rdv" [views]="['week']" [workWeek]="true" [startHour]="8" [endHour]="18" (itemClick)="clicked($event)" />
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

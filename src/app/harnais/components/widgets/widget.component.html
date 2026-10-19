@@ -1,0 +1,217 @@
+@let b = block();
+
+@if (framed()) {
+  <section class="frame" [class.flush]="b.type === 'map' || b.type === 'table'">
+    @let head = $any(b);
+    @if (head.title) {
+      <header class="frame-head">
+        <span class="frame-icon"><mat-icon>{{ head.icon ?? defaultIcon() }}</mat-icon></span>
+        <div class="frame-text">
+          <span class="frame-title">{{ head.title }}</span>
+          @if (head.subtitle) { <span class="frame-sub">{{ head.subtitle }}</span> }
+        </div>
+      </header>
+    }
+
+    <div class="frame-body">
+      @switch (b.type) {
+        @case ('chart') { <app-hz-chart [block]="b" /> }
+        @case ('table') { <app-hz-table [block]="b" /> }
+        @case ('form') { <app-hz-form [block]="b" [disabled]="busy()" (submitted)="formSubmit.emit($event)" /> }
+        @case ('map') {
+          <app-map [markers]="b.markers" [routes]="b.routes ?? []" [zones]="b.zones ?? []" [height]="(b.height ?? 320) + 'px'" [scale]="true">
+            @if (b.legend?.length) {
+              <div mapOverlay class="legend">
+                @for (l of b.legend; track l.label) { <span><i [style.background]="toneVar(l.tone)"></i>{{ l.label }}</span> }
+              </div>
+            }
+          </app-map>
+        }
+        @case ('records') {
+          <ul class="records">
+            @for (r of b.items; track r.id) {
+              <li>
+                <span class="rec-ava" [style.--tone]="toneVar(r.tone)">
+                  @if (r.icon) { <mat-icon>{{ r.icon }}</mat-icon> } @else { {{ r.initials }} }
+                </span>
+                <span class="rec-main">
+                  <span class="rec-title">{{ r.title }}</span>
+                  @if (r.subtitle) { <span class="rec-sub">{{ r.subtitle }}</span> }
+                  @if (r.tags?.length) { <span class="rec-tags">@for (t of r.tags; track t) {<span>{{ t }}</span>}</span> }
+                </span>
+                <span class="rec-side">
+                  @if (r.badge) { <span class="m3-badge {{ toneClass(r.badge.tone) }}">{{ r.badge.label }}</span> }
+                  @if (r.meta) { <span class="rec-meta">{{ r.meta }}</span> }
+                </span>
+              </li>
+            }
+          </ul>
+        }
+        @case ('timeline') {
+          <ol class="timeline">
+            @for (t of b.items; track $index) {
+              <li [style.--tone]="toneVar(t.tone)">
+                <span class="tl-time">{{ t.time }}</span>
+                <span class="tl-dot"><mat-icon>{{ t.icon ?? 'circle' }}</mat-icon></span>
+                <span class="tl-main"><span class="tl-title">{{ t.title }}</span>@if (t.text) {<span class="tl-text">{{ t.text }}</span>}</span>
+              </li>
+            }
+          </ol>
+        }
+        @case ('calendar') { <div class="planning"><app-month-calendar [items]="b.items" [month]="calendarMonth()" [maxPerDay]="2" /></div> }
+        @case ('kanban') { <div class="planning"><app-kanban-board [columns]="b.columns" [items]="kanbanItems()" (itemMoved)="onMove($event)" /></div> }
+        @case ('gantt') { <div class="planning"><app-gantt-timeline [items]="b.items" [groups]="b.groups ?? null" rowLabel="Équipe" /></div> }
+        @case ('agenda') { <div class="planning agenda"><app-agenda-view [items]="b.items" [views]="['day', 'week']" [startHour]="8" [endHour]="18" /></div> }
+
+        <!-- Navigation dans l'information -->
+        @case ('tree') {
+          <app-hz-tree [nodes]="b.nodes" [selectable]="!!b.selectable" [submitLabel]="b.submitLabel ?? 'Valider la sélection'" [answered]="b.selected"
+            (submitted)="choose.emit({ value: 'tree', label: 'Sélection : ' + $event.join(', ') })" />
+        }
+        @case ('json') { <app-hz-tree [nodes]="jsonNodes()" [mono]="true" /> }
+        @case ('carousel') { <app-hz-carousel [slides]="b.slides" /> }
+        @case ('modal') {
+          <div class="modal-card">
+            <p>{{ b.summary }}</p>
+            <button mat-flat-button color="primary" (click)="openModal()"><mat-icon>open_in_full</mat-icon>{{ b.button ?? 'Voir le détail' }}</button>
+          </div>
+        }
+        @case ('tabs') {
+          <mat-tab-group class="hz-tabs" animationDuration="200ms" mat-stretch-tabs="false" mat-align-tabs="start">
+            @for (t of b.tabs; track t.label) {
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  @if (t.icon) { <mat-icon class="tab-ic">{{ t.icon }}</mat-icon> }{{ t.label }}
+                  @if (t.badge) { <span class="tab-badge">{{ t.badge }}</span> }
+                </ng-template>
+                <div class="nested">@for (n of t.blocks; track $index) { <app-hz-widget [block]="n" [busy]="busy()" /> }</div>
+              </mat-tab>
+            }
+          </mat-tab-group>
+        }
+        @case ('accordion') {
+          <mat-accordion class="hz-accordion" multi>
+            @for (it of b.items; track it.title) {
+              <mat-expansion-panel [expanded]="!!it.open">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>@if (it.icon) {<mat-icon class="acc-ic">{{ it.icon }}</mat-icon>}{{ it.title }}</mat-panel-title>
+                  @if (it.subtitle) { <mat-panel-description>{{ it.subtitle }}</mat-panel-description> }
+                </mat-expansion-panel-header>
+                <div class="nested">@for (n of it.blocks; track $index) { <app-hz-widget [block]="n" [busy]="busy()" /> }</div>
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        }
+
+        <!-- Interaction -->
+        @case ('upload') {
+          @if (b.selected) {
+            <div class="upload-done"><mat-icon>task</mat-icon><span>{{ b.selected }}</span><span class="ok">Envoyé</span></div>
+          } @else {
+            <label class="dropzone" [class.disabled]="busy()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+              <input type="file" [attr.accept]="b.accept ?? null" [disabled]="busy()" (change)="onFile($event)" hidden />
+              <mat-icon>cloud_upload</mat-icon>
+              <strong>Déposez un fichier ou cliquez pour parcourir</strong>
+              <span>{{ b.hint ?? 'Le fichier reste sur votre poste : il est lu localement.' }}</span>
+            </label>
+            <div class="samples">
+              <span>Ou un exemple :</span>
+              @for (f of samples; track f.name) {
+                <button type="button" [disabled]="busy()" (click)="choose.emit({ value: 'upload', label: f.name + ' (' + f.size + ')' })">{{ f.name }}</button>
+              }
+            </div>
+          }
+        }
+
+        <!-- Médias -->
+        @case ('video') { <app-hz-media [block]="b" /> }
+        @case ('videos') { <app-hz-media [block]="b" /> }
+        @case ('audio') { <app-hz-media [block]="b" /> }
+        @case ('pdf') { <app-hz-media [block]="b" /> }
+        @case ('gallery') { <app-hz-media [block]="b" /> }
+        @case ('image') { <app-hz-media [block]="b" /> }
+
+        <!-- Contenu, typographie et précision (suite) -->
+        @case ('typography') { <app-hz-content [block]="b" /> }
+        @case ('article') { <app-hz-content [block]="b" /> }
+        @case ('comments') { <app-hz-content [block]="b" /> }
+        @case ('qrcode') { <app-hz-content [block]="b" /> }
+        @case ('textdiff') { <app-hz-content [block]="b" /> }
+        @case ('audit') { <app-hz-content [block]="b" /> }
+
+        <!-- Précision : fiche, étapes, checklist, objectifs, diff, sources, tags, heatmap, fichiers, cartes, comparatif -->
+        @default { <app-hz-rich [block]="b" /> }
+      }
+    </div>
+  </section>
+} @else {
+  @switch (b.type) {
+    @case ('stats') {
+      <div class="stats">
+        @for (s of b.items; track s.label) {
+          <div class="stat" [style.--tone]="toneVar(s.tone)">
+            <div class="stat-head">
+              @if (s.icon) { <span class="stat-icon"><mat-icon>{{ s.icon }}</mat-icon></span> }
+              <span class="stat-label">{{ s.label }}</span>
+            </div>
+            <div class="stat-value">{{ s.value }}</div>
+            @if (s.spark?.length) {
+              <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+                <path class="area" [attr.d]="sparkPath(s.spark!, true)" />
+                <path class="line" [attr.d]="sparkPath(s.spark!)" />
+              </svg>
+            }
+            <div class="stat-foot">
+              @if (s.delta) { <span class="delta" [class]="s.trend ?? 'up'"><mat-icon>{{ trendIcon(s.trend) }}</mat-icon>{{ s.delta }}</span> }
+              @if (s.hint) { <span class="stat-hint">{{ s.hint }}</span> }
+            </div>
+          </div>
+        }
+      </div>
+    }
+    @case ('callout') {
+      <div class="callout" [style.--tone]="toneVar(b.tone)" role="note">
+        <mat-icon>{{ b.icon ?? 'info' }}</mat-icon>
+        <div><strong>{{ b.title }}</strong><p>{{ b.text }}</p></div>
+      </div>
+    }
+    @case ('paragraph') { <p class="paragraph">{{ b.text }}</p> }
+    @case ('result') { <app-hz-content [block]="b" /> }
+    @case ('banner') { <app-hz-content [block]="b" /> }
+    @case ('approval') {
+      <div class="approval" [class.answered]="!!b.selected" [style.--tone]="toneVar(b.risk ?? 'warning')">
+        <div class="ap-head">
+          <span class="ap-icon"><mat-icon>shield</mat-icon></span>
+          <div class="ap-text"><strong>{{ b.title }}</strong><span>{{ b.text }}</span></div>
+          <span class="m3-badge {{ b.risk ?? 'warning' }}">Risque {{ riskLabel(b.risk) }}</span>
+        </div>
+        @if (b.command) { <pre class="ap-cmd"><code>{{ b.command }}</code></pre> }
+        <div class="ap-actions">
+          @if (b.selected) {
+            <span class="ap-result" [class.ok]="b.selected === 'approve'">
+              <mat-icon>{{ b.selected === 'approve' ? 'check_circle' : 'block' }}</mat-icon>{{ b.selected === 'approve' ? 'Autorisé' : 'Refusé' }}
+            </span>
+          } @else {
+            <button mat-button [disabled]="busy()" (click)="choose.emit({ value: 'reject', label: 'Refuser' })">Refuser</button>
+            <button mat-stroked-button [disabled]="busy()" (click)="choose.emit({ value: 'approve', label: 'Autoriser pour cette session' })">Toujours autoriser</button>
+            <button mat-flat-button color="primary" [disabled]="busy()" (click)="choose.emit({ value: 'approve', label: 'Autoriser' })"><mat-icon>check</mat-icon>Autoriser</button>
+          }
+        </div>
+      </div>
+    }
+    @case ('choices') {
+      <div class="choices">
+        @if (b.question) { <span class="choices-q">{{ b.question }}</span> }
+        <div class="choices-list">
+          @for (o of b.options; track o.value) {
+            <button type="button" class="choice" [class.on]="b.selected === o.value" [disabled]="!!b.selected || busy()" (click)="choose.emit(o)">
+              @if (o.icon) { <mat-icon>{{ o.icon }}</mat-icon> }
+              <span>{{ o.label }}</span>
+              @if (b.selected === o.value) { <mat-icon class="check">check</mat-icon> }
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+}

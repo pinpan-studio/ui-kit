@@ -1,0 +1,227 @@
+<kit-doc-page title="Studio de thème" icon="tune" eyebrow="Thèmes Material 3"
+  subtitle="Choisissez une couleur, un style et un contraste, imposez si besoin vos couleurs secondary, tertiary, neutres ou error : le schéma M3 complet se compose en direct, en clair comme en sombre."
+  [toc]="toc">
+
+  <!-- ═══════════════ COMPOSER ═══════════════ -->
+  <kit-section id="compose" title="Composer" source="core/theme/custom-theme.ts · @material/material-color-utilities (DynamicScheme)">
+    <div class="studio">
+      <!-- ─── Réglages ─── -->
+      <div class="controls">
+        <div class="panel">
+          <h3 class="panel-title">Couleur source <span class="muted">primary</span></h3>
+          <div class="source-row">
+            <app-color-picker class="grow" [swatches]="seeds" [ngModel]="draft().source" (ngModelChange)="setSource($event)" />
+            <button matIconButton (click)="randomize()" matTooltip="Couleur au hasard"><mat-icon>casino</mat-icon></button>
+          </div>
+          <span class="sub-label">Couleurs rapides</span>
+          <app-color-picker inline [swatches]="seeds" [ngModel]="draft().source" (ngModelChange)="setSource($event)" />
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Style <span class="muted">{{ styleInfo().label }}</span></h3>
+          <mat-chip-listbox class="styles" [value]="draft().style" (change)="$event.value && setStyle($event.value)" aria-label="Style du schéma">
+            @for (s of styles; track s.id) {
+              <mat-chip-option [value]="s.id">{{ s.label }}</mat-chip-option>
+            }
+          </mat-chip-listbox>
+          <p class="hint">{{ styleInfo().description }}</p>
+          <button matButton="outlined" class="mono-btn" (click)="monochrome()"><mat-icon>contrast</mat-icon> Noir & blanc</button>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Contraste</h3>
+          <mat-button-toggle-group class="full" hideSingleSelectionIndicator [value]="draft().contrast" (change)="setContrast($event.value)" aria-label="Niveau de contraste">
+            @for (c of contrasts; track c.value) {
+              <mat-button-toggle [value]="c.value">{{ c.label }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+          <p class="hint">Les niveaux Moyen et Élevé renforcent l'écart entre chaque rôle et son « on- » (accessibilité, réglage système Android).</p>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Couleurs des rôles <span class="muted">auto = dérivée de la source</span></h3>
+          @for (r of roles; track r.id) {
+            <div class="role-row" [class.on]="isOverridden(r.id)">
+              <div class="role-head">
+                <div class="role-text">
+                  <b>{{ r.label }}</b>
+                  <span>{{ r.hint }}</span>
+                </div>
+                <mat-slide-toggle [checked]="isOverridden(r.id)" (change)="toggleOverride(r.id, $event.checked)" [attr.aria-label]="'Imposer la couleur ' + r.label" />
+              </div>
+              <app-color-picker [swatches]="seeds" [ngModel]="roleColor(r.id)" [disabled]="!isOverridden(r.id)" (ngModelChange)="setOverride(r.id, $event)" />
+            </div>
+          }
+        </div>
+
+        <div class="panel actions">
+          <mat-slide-toggle [checked]="live()" (change)="live.set($event.checked)">Appliquer en direct à tout le kit</mat-slide-toggle>
+          <div class="action-row">
+            <button matButton="filled" (click)="apply()"><mat-icon>check</mat-icon> Appliquer au kit</button>
+            <button matButton="outlined" (click)="copyCss()"><mat-icon>content_copy</mat-icon> CSS</button>
+            <button matButton (click)="copyConfig()"><mat-icon>data_object</mat-icon> JSON</button>
+            <button matButton (click)="reset()"><mat-icon>restart_alt</mat-icon> Réinitialiser</button>
+          </div>
+          @if (theme.isCustom()) {
+            <p class="hint"><mat-icon class="inline">info</mat-icon> Le kit utilise actuellement votre thème personnalisé.</p>
+          }
+        </div>
+      </div>
+
+      <!-- ─── Aperçus ─── -->
+      <div class="previews">
+        <ng-container *ngTemplateOutlet="device; context: { $implicit: 'light', vars: previewVars().light }" />
+        <ng-container *ngTemplateOutlet="device; context: { $implicit: 'dark', vars: previewVars().dark }" />
+      </div>
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ NUANCES ═══════════════ -->
+  <kit-section id="tones" title="Nuances" source="TonalPalette.tone(0 → 100)"
+    description="Chaque palette tonale du thème, du noir (0) au blanc (100). Les rôles M3 piochent dans ces tons (ex. primary = 40 en clair, 80 en sombre en style standard). Cliquez une nuance pour copier son code.">
+    <div class="strips">
+      @for (p of strips(); track p.key) {
+        <div class="strip">
+          <div class="strip-label">
+            <span class="key" [style.background]="p.keyColor"></span>
+            <b>{{ p.label }}</b>
+            <code>{{ p.keyColor }}</code>
+          </div>
+          <div class="strip-tones">
+            @for (t of p.tones; track t.tone) {
+              <button type="button" class="tone" [style.background]="t.hex" [style.color]="toneInk(t.tone)"
+                      [matTooltip]="p.label + ' ' + t.tone + ' · ' + t.hex" (click)="copy(t.hex)">{{ t.tone }}</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </kit-section>
+
+  <!-- ═══════════════ RÔLES ═══════════════ -->
+  <kit-section id="roles" title="Rôles & contrastes" source="--mat-sys-*"
+    description="Paires « rôle / on-rôle » résolues pour le mode choisi, avec leur ratio de contraste WCAG (AA texte : 4,5:1).">
+    <mat-button-toggle-group class="roles-mode" hideSingleSelectionIndicator [value]="rolesMode()" (change)="rolesMode.set($event.value)" aria-label="Mode des rôles">
+      <mat-button-toggle value="light"><mat-icon>light_mode</mat-icon> Clair</mat-button-toggle>
+      <mat-button-toggle value="dark"><mat-icon>dark_mode</mat-icon> Sombre</mat-button-toggle>
+    </mat-button-toggle-group>
+    <div class="role-grid">
+      @for (r of roleColors(); track r.role) {
+        <button type="button" class="role-card" [style.background]="r.bg" [style.color]="r.fg" (click)="copy('var(--mat-sys-' + r.role + ')')">
+          <b>{{ r.label }}</b>
+          <span class="ratio" [class.low]="r.ratio < 4.5">{{ r.ratio.toFixed(1) }}:1</span>
+          <code>{{ r.bg }} / {{ r.fg }}</code>
+        </button>
+      }
+    </div>
+    <div class="extra-roles">
+      @for (r of extraRoles(); track r.role) {
+        <button type="button" class="extra" (click)="copy(r.hex)"><span [style.background]="r.hex"></span><code>{{ r.role }}</code><code class="muted">{{ r.hex }}</code></button>
+      }
+    </div>
+  </kit-section>
+</kit-doc-page>
+
+<!-- Maquette d'application montée avec les composants et champs du kit, rendue avec les rôles du brouillon. -->
+<ng-template #device let-mode let-vars="vars">
+  <figure class="device-wrap">
+    <figcaption><mat-icon>{{ mode === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon> {{ mode === 'dark' ? 'Sombre' : 'Clair' }}</figcaption>
+    <div class="device" [class]="mode" [style]="vars">
+      <div class="pv-appbar">
+        <mat-icon>menu</mat-icon>
+        <span class="pv-title">Clients</span>
+        <button mat-icon-button aria-label="Notifications"><mat-icon [matBadge]="3" matBadgeColor="warn">notifications</mat-icon></button>
+        <span class="pv-avatar">JK</span>
+      </div>
+
+      <div class="pv-body">
+        <!-- KPI : .kpi-grid / .kpi-card + app-trend -->
+        <div class="kpi-grid pv-kpis">
+          <div class="kpi-card"><div class="kpi-icon indigo"><mat-icon>people</mat-icon></div><div class="kpi-content"><span class="kpi-value">434</span><span class="kpi-label">Clients actifs</span></div></div>
+          <div class="kpi-card"><div class="kpi-icon success"><mat-icon>payments</mat-icon></div><div class="kpi-content"><span class="kpi-value">12,4 <small>M F</small></span><span class="kpi-label">CA du mois <app-trend [value]="18" /></span></div></div>
+        </div>
+
+        <!-- Recherche : .m3-search-bar-unified + app-filter-dropdown, app-view-mode-toggle -->
+        <div class="m3-search-bar-unified">
+          <div class="search-input-wrapper">
+            <mat-icon class="search-icon">search</mat-icon>
+            <input type="text" placeholder="Rechercher un client…" />
+          </div>
+          <div class="divider"></div>
+          <app-filter-dropdown [options]="statusOptions" [(value)]="previewStatus" labelPrefix="Statut" />
+        </div>
+        <app-view-mode-toggle [(mode)]="previewView" />
+
+        <!-- Carte entité : .m3-card.entity-card + app-status-badge -->
+        <div class="m3-card entity-card">
+          <div class="card-header">
+            <div class="card-icon-box icon-blue"><mat-icon>business</mat-icon></div>
+            <app-status-badge label="ACTIF" color="success" />
+          </div>
+          <div class="card-body">
+            <div class="card-title-area">
+              <span class="code-tag">CLI-1042</span>
+              <h3 class="card-title">Transports Yao & Fils</h3>
+              <p class="card-desc">Logistique · Abidjan</p>
+            </div>
+            <div class="card-info-list">
+              <div class="info-item"><mat-icon>person</mat-icon><span class="info-label">Contact :</span><span class="info-val">Awa Koné</span></div>
+              <div class="info-item"><mat-icon>directions_car</mat-icon><span class="info-label">Véhicules :</span><span class="info-val font-bold">24</span></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button mat-icon-button class="action-icon-btn" aria-label="Options"><mat-icon>more_vert</mat-icon></button>
+            <button mat-button color="primary" class="detail-btn">Fiche client <mat-icon iconPositionEnd>arrow_forward</mat-icon></button>
+          </div>
+        </div>
+
+        <!-- Bannière : app-banner -->
+        <app-banner tone="info" title="Synchronisation planifiée" [dismissible]="false" compact>Prochaine synchronisation ce soir à 22:00.</app-banner>
+
+        <!-- Formulaire : .form-field / .field-box, app-searchable-select, app-currency-input, app-number-stepper, app-rating -->
+        <div class="m3-card pv-form">
+          <h3 class="pv-form-title">Nouvelle intervention</h3>
+          <div class="form-field">
+            <label class="field-label">Raison sociale</label>
+            <div class="field-box"><mat-icon>business</mat-icon><input value="Transports Yao & Fils" /></div>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Type</label>
+            <app-searchable-select [options]="typeOptions" [ngModel]="previewType()" (ngModelChange)="previewType.set($event)" icon="category" placeholder="Type d'intervention" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Montant</label>
+            <app-currency-input [ngModel]="previewAmount()" (ngModelChange)="previewAmount.set($event)" />
+          </div>
+          <div class="pv-two">
+            <div class="form-field">
+              <label class="field-label">Balises</label>
+              <app-number-stepper [ngModel]="previewQty()" (ngModelChange)="previewQty.set($event)" [min]="0" [max]="50" compact />
+            </div>
+            <div class="form-field">
+              <label class="field-label">Satisfaction</label>
+              <app-rating [value]="4" readonly size="small" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Email</label>
+            <div class="field-box field-invalid"><mat-icon>alternate_email</mat-icon><input value="jean.kouassi@" /></div>
+            <span class="field-error">Adresse email invalide</span>
+          </div>
+          <div class="pv-checks">
+            <mat-slide-toggle [checked]="true">Notifier le client</mat-slide-toggle>
+            <mat-checkbox [checked]="true">Urgent</mat-checkbox>
+          </div>
+          <div class="pv-badges">
+            <app-status-badge label="En cours" color="info" /><app-status-badge label="En retard" color="warning" />
+            <app-status-badge label="Annulée" color="error" /><app-status-badge label="Brouillon" color="neutral" />
+          </div>
+          <div class="pv-actions">
+            <button mat-stroked-button>Annuler</button>
+            <button mat-flat-button color="primary"><mat-icon>check</mat-icon> Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </figure>
+</ng-template>

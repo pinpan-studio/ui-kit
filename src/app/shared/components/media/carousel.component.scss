@@ -1,0 +1,47 @@
+:host { display: block; }
+
+.cr { position: relative; outline: none;
+  &:focus-visible .cr-viewport { box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 40%, transparent); } }
+
+.cr-viewport { position: relative; overflow: hidden; border-radius: var(--r-l, 16px); touch-action: pan-y; cursor: grab; }
+.cr-track {
+  display: flex; gap: var(--gap); height: 100%;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  &.dragging { transition: none; cursor: grabbing; }
+}
+.cr-slide {
+  position: relative; flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+  min-width: 0; height: 100%; border-radius: var(--r-l, 16px); overflow: hidden;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; }
+}
+.cr-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 36px 20px 16px; color: #fff;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)); display: flex; flex-direction: column; gap: 2px;
+  strong { font-family: 'Outfit', sans-serif; font-size: 17px; }
+  span { font-size: 13px; opacity: 0.9; }
+}
+
+.cr-arrow, .cr-pause {
+  position: absolute; z-index: 1; border: none; cursor: pointer; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.92); color: #0f172a; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.cr-arrow { top: 50%; width: 40px; height: 40px; transform: translateY(-50%);
+  mat-icon { font-size: 26px; width: 26px; height: 26px; }
+  &.prev { left: 12px; } &.next { right: 12px; }
+  &:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+  &:disabled { opacity: 0; pointer-events: none; } }
+.cr-pause { top: 12px; right: 12px; width: 32px; height: 32px; opacity: 0;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; } }
+.cr:hover .cr-pause, .cr-pause:focus-visible { opacity: 1; }
+
+.cr-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px;
+  button { width: 8px; height: 8px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: var(--border-color); transition: all 0.2s ease;
+    &.active { width: 22px; background: var(--primary-color); } } }
+
+.cr-thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 2px;
+  button { width: 72px; height: 48px; flex-shrink: 0; padding: 0; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; opacity: 0.6; background: none;
+    img { width: 100%; height: 100%; object-fit: cover; }
+    &:hover { opacity: 1; }
+    &.active { opacity: 1; border-color: var(--primary-color); } } }

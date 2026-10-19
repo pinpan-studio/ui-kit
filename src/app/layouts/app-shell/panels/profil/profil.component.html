@@ -1,0 +1,47 @@
+<div style="display:flex; flex-direction:column;" class="dTheme">
+  <div mat-dialog-title matPadding style="display:flex; flex-direction:row; justify-content:flex-end; align-items:center;">
+    <div matPadding style="font-weight: 100; font-size: 20px; flex:1;">Paramètres personnels</div>
+    <button (click)="close()" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div style="display:flex; flex-direction:column; flex:1;" matPadding>
+    <form [formGroup]="iForm" matPadding class="inscription-form mat-padding" style="flex:1; display:flex; flex-direction:column; justify-content:flex-start; align-items:stretch;">
+      <div style="display:flex; flex-direction:column; justify-content:center; align-items:center;" matPadding>
+        <app-file-upload [fichier]="photo" [placeholder]="'document'" accept="application/images" (onUpload)="addPhoto($event)" mode="photo"></app-file-upload>
+      </div>
+      <div style="display:flex; flex-direction:column; flex:1;" matPadding>
+        <mat-form-field appearance="outline">
+          <mat-label>Nom complet</mat-label>
+          <mat-icon matSuffix>person</mat-icon>
+          <input matInput placeholder="Prénom(s) Nom" formControlName="fullname" [disabled]="progress.loading" autocomplete="off">
+        </mat-form-field>
+        <div matPaddingSmall></div>
+        <mat-form-field appearance="outline" style="flex:1;">
+          <mat-label>Email</mat-label>
+          <mat-icon matSuffix>alternate_email</mat-icon>
+          <input matInput placeholder="Adresse email" formControlName="mail" [disabled]="progress.loading" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="flex:1;">
+          <mat-label>Téléphone</mat-label>
+          <mat-icon matSuffix>phone</mat-icon>
+          <input matInput placeholder="Numéro de téléphone" formControlName="phone" [disabled]="progress.loading" autocomplete="off">
+        </mat-form-field>
+      </div>
+    </form>
+    <div matPadding style="display:flex; flex-direction:row; justify-content:center; align-items:center;">
+      <div matPaddingSmall matRounded style="flex:1;"></div>
+      <div matPaddingSmall></div>
+      <button [disabled]="iForm.invalid || progress.loading" mat-flat-button (click)="save()" color="primary">
+        <div style="display:flex; flex-direction:row; justify-content:flex-start; align-items:center;">
+          @if (progress.loading) {
+            <mat-spinner mode="indeterminate" diameter="25"></mat-spinner>
+          }
+          <span matPaddingSmall></span>
+          <span>Valider</span>
+          <span matPaddingSmall></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

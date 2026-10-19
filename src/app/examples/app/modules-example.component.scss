@@ -1,0 +1,44 @@
+@import 'ex-page';
+
+.wrap { max-width: 1120px; margin: 0 auto; }
+
+.hero { padding: 24px 0 28px;
+  .eyebrow { font: 600 var(--fs-overline) / 1.4 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+  h1 { margin: 6px 0 0; font-family: var(--font-heading) !important; font-size: var(--fs-h1) !important; font-weight: 700 !important; line-height: 1.2 !important; letter-spacing: -.02em !important; }
+  p { margin: 4px 0 20px; font-size: var(--fs-body-lg); color: var(--text-secondary); }
+  .quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; .chip-filter { text-decoration: none; } }
+  @include mobile { padding-top: 8px; h1 { font-size: var(--fs-h2) !important; } } }
+.big-search { display: flex; align-items: center; gap: 10px; max-width: 720px; height: 52px; padding: 0 8px 0 16px; box-sizing: border-box; border-radius: 12px;
+  border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--text-muted); transition: border-color .15s, box-shadow .15s;
+  input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: var(--fs-body-lg) var(--font-body); color: var(--text-primary); }
+  &:focus-within { box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 45%, transparent); }
+  .palette { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: var(--hover-bg);
+    font: 500 var(--fs-body-sm) var(--font-body); color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+    &:hover { color: var(--text-primary); }
+    @include sm { font-size: 0; gap: 0; } } }
+
+.today { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 32px; border: 0; border-radius: 12px; background: var(--mat-sys-surface-container-high, var(--hover-bg));
+  .t-item { display: flex; flex-direction: column; gap: 2px; padding: 16px 20px; }
+  .t-val { font: 600 var(--fs-h3) / 1.2 var(--font-heading); font-variant-numeric: tabular-nums; small { margin-left: 4px; font: 500 var(--fs-caption) var(--font-body); color: var(--text-muted); } }
+  .t-lbl { font-size: var(--fs-caption); color: var(--text-muted); }
+  @include mobile { grid-template-columns: repeat(2, minmax(0, 1fr));
+    .t-item:nth-child(3) { border-left: 0; } .t-item:nth-child(n + 3) { border-top: 0; } } }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-bottom: 32px;
+  .none { grid-column: 1 / -1; }
+  @include mobile { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
+.tile { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 14px; row-gap: 8px; align-items: start; padding: 16px; color: inherit; text-decoration: none; transition: border-color .15s;
+  &:hover { background: var(--mat-sys-surface-container-highest, var(--hover-bg)); }
+  &:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+  .t-ic { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--c) 12%, var(--card-bg)); color: color-mix(in srgb, var(--c) 80%, var(--text-primary));
+    mat-icon { font-size: 22px; width: 22px; height: 22px; } }
+  .t-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0;
+    strong { display: flex; align-items: center; gap: 8px; font-size: var(--fs-body); font-weight: 600; }
+    b { min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center;
+      font: 600 11px var(--font-body); background: var(--error-color); color: #fff; font-variant-numeric: tabular-nums; }
+    span { font-size: var(--fs-body-sm); line-height: 1.4; color: var(--text-secondary); } }
+  small { grid-column: 2; font-size: var(--fs-caption); color: var(--text-muted); font-variant-numeric: tabular-nums; } }
+
+.bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; @include lg { grid-template-columns: 1fr; } }
+.list { padding: 8px 0; .chev { color: var(--text-muted); } }

@@ -1,0 +1,79 @@
+<div class="viewer">
+  <header class="bar">
+    <a mat-icon-button routerLink="/showcases" matTooltip="Tous les showcases" class="back"><mat-icon>arrow_back</mat-icon></a>
+
+    <button type="button" class="picker" [matMenuTriggerFor]="list">
+      <span class="p-icon"><mat-icon>{{ showcase().icon }}</mat-icon></span>
+      <span class="p-text">
+        <small>{{ group().label }}</small>
+        <strong>{{ showcase().label }}</strong>
+      </span>
+      <mat-icon class="caret">expand_more</mat-icon>
+    </button>
+    <mat-menu #list="matMenu" class="showcase-menu">
+      @for (g of groups; track g.id) {
+        <div class="menu-group" mat-menu-item disabled>{{ g.label }}</div>
+        @for (s of g.items; track s.id) {
+          <button mat-menu-item (click)="open(s.id)" [class.current]="s.id === showcase().id">
+            <mat-icon>{{ s.icon }}</mat-icon><span>{{ s.label }}</span>
+          </button>
+        }
+      }
+    </mat-menu>
+
+    <div class="nav-arrows">
+      <button mat-icon-button (click)="open(prev().id)" [matTooltip]="'Précédent : ' + prev().label + ' (←)'"><mat-icon>chevron_left</mat-icon></button>
+      <button mat-icon-button (click)="open(next().id)" [matTooltip]="'Suivant : ' + next().label + ' (→)'"><mat-icon>chevron_right</mat-icon></button>
+    </div>
+
+    <span class="spacer"></span>
+
+    <div class="segmented" role="radiogroup" aria-label="Appareil">
+      @for (d of devices; track d; let i = $index) {
+        <button type="button" role="radio" [attr.aria-checked]="currentDevice() === d" [class.on]="currentDevice() === d"
+          (click)="setDevice(d)" [matTooltip]="specs[d].model + ' (' + (i + 1) + ')'">
+          <mat-icon>{{ specs[d].icon }}</mat-icon><span class="seg-label">{{ specs[d].label }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="tools">
+      <button mat-icon-button (click)="rotate()" [disabled]="currentDevice() === 'desktop'" matTooltip="Pivoter (R)">
+        <mat-icon [class.turned]="isLandscape()">screen_rotation</mat-icon>
+      </button>
+      <button mat-button class="zoom-btn" [matMenuTriggerFor]="zoomMenu" matTooltip="Zoom">
+        <mat-icon>zoom_in</mat-icon>{{ zoomLabel() }}
+      </button>
+      <mat-menu #zoomMenu="matMenu">
+        @for (z of zooms; track z.label) {
+          <button mat-menu-item (click)="zoom.set(z.value)"><mat-icon>{{ zoom() === z.value ? 'check' : '' }}</mat-icon>{{ z.label }}</button>
+        }
+      </mat-menu>
+      <button mat-icon-button (click)="frame()?.reload()" matTooltip="Recharger l’aperçu"><mat-icon>refresh</mat-icon></button>
+      <button mat-icon-button (click)="openInTab()" matTooltip="Ouvrir dans un nouvel onglet"><mat-icon>open_in_new</mat-icon></button>
+    </div>
+  </header>
+
+  <div class="stage" [class.zoomed]="zoom() !== 'fit'">
+    <kit-device-frame [src]="showcase().path" [device]="currentDevice()" [landscape]="isLandscape()" [zoom]="zoom()"
+      [title]="showcase().label" (urlChange)="path.set($event)" />
+  </div>
+
+  <footer class="foot">
+    <div class="info">
+      <p>{{ showcase().description }}</p>
+      <div class="meta">
+        <span class="chip"><mat-icon>{{ specs[currentDevice()].icon }}</mat-icon>{{ specs[currentDevice()].model }}{{ isLandscape() ? ' · paysage' : '' }}</span>
+        <code>{{ path() || showcase().path }}</code>
+        @for (t of showcase().tags ?? []; track t) { <span class="tag">{{ t }}</span> }
+      </div>
+    </div>
+    <nav class="siblings" aria-label="Écrans du groupe">
+      @for (s of group().items; track s.id) {
+        <button type="button" (click)="open(s.id)" [class.on]="s.id === showcase().id" [matTooltip]="s.description">
+          <mat-icon>{{ s.icon }}</mat-icon>{{ s.label }}
+        </button>
+      }
+    </nav>
+  </footer>
+</div>

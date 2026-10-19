@@ -1,0 +1,44 @@
+<kit-doc-page title="Showcases" icon="devices" eyebrow="Catalogue" [toc]="toc()"
+  subtitle="Les sous-modules et des écrans d’exemple, présentés en direct dans une iframe et un cadre d’appareil. Ouvrez une vignette pour basculer entre ordinateur, tablette et mobile, pivoter l’écran et naviguer dans la page.">
+
+  <div class="filters">
+    <div class="segmented" role="radiogroup" aria-label="Appareil des vignettes">
+      @for (d of devices; track d) {
+        <button type="button" role="radio" [attr.aria-checked]="device() === d" [class.on]="device() === d" (click)="device.set(d)">
+          <mat-icon>{{ specs[d].icon }}</mat-icon><span>{{ specs[d].label }}</span>
+        </button>
+      }
+    </div>
+    <div class="group-chips">
+      <button type="button" [class.active]="!groupFilter()" (click)="groupFilter.set('')">Tout ({{ total }})</button>
+      @for (g of allGroups; track g.id) {
+        <button type="button" [class.active]="groupFilter() === g.id" (click)="groupFilter.set(g.id)"><mat-icon>{{ g.icon }}</mat-icon>{{ g.label }}</button>
+      }
+    </div>
+  </div>
+
+  @for (g of groups(); track g.id) {
+    <section class="group" [attr.id]="g.id">
+      <div class="group-head">
+        <div class="g-icon"><mat-icon>{{ g.icon }}</mat-icon></div>
+        <div class="g-text"><h2>{{ g.label }}</h2><p>{{ g.description }}</p></div>
+        <span class="g-count">{{ g.items.length }}</span>
+      </div>
+      <div class="grid" [class]="'grid on-' + device()">
+        @for (s of g.items; track s.id) {
+          <a class="card" [routerLink]="['/showcases', s.id]" [queryParams]="{ device: device() }">
+            <div class="thumb">
+              <kit-device-frame [src]="s.path" [device]="device()" thumbnail [title]="s.label" />
+              <span class="open"><mat-icon>fullscreen</mat-icon>Ouvrir l’aperçu</span>
+            </div>
+            <div class="body">
+              <div class="title"><mat-icon>{{ s.icon }}</mat-icon><strong>{{ s.label }}</strong></div>
+              <p>{{ s.description }}</p>
+              <div class="tags">@for (t of s.tags ?? []; track t) { <span>{{ t }}</span> }</div>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+  }
+</kit-doc-page>

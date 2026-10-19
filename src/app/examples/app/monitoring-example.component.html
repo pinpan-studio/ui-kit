@@ -1,0 +1,174 @@
+<ex-app-shell title="Supervision" crumb="Pilotage">
+  <div class="page-head">
+    <div class="titles">
+      <span class="eyebrow">Pilotage</span>
+      <h1>Supervision</h1>
+      <p class="live-line">
+        <span class="live" [class.paused]="!live()"><i></i>{{ live() ? 'En direct' : 'En pause' }}</span>
+        Mis à jour à {{ lastUpdate().toLocaleTimeString('fr-FR') }} · services, infrastructure, flotte et capteurs
+      </p>
+    </div>
+    <div class="actions">
+      <mat-button-toggle-group class="seg" [value]="range()" (change)="range.set($event.value)" hideSingleSelectionIndicator aria-label="Période">
+        <mat-button-toggle value="1h">1 h</mat-button-toggle><mat-button-toggle value="24h">24 h</mat-button-toggle><mat-button-toggle value="7j">7 j</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-stroked-button (click)="toggleLive()"><mat-icon>{{ live() ? 'pause' : 'play_arrow' }}</mat-icon>{{ live() ? 'Pause' : 'Reprendre' }}</button>
+      <button mat-flat-button color="primary"><mat-icon>add_alert</mat-icon>Nouvelle alerte</button>
+    </div>
+  </div>
+
+  <app-banner class="alert" tone="warning" title="Incident en cours · INC-214" actionLabel="Voir l’incident" [dismissible]="false" compact>
+    Latence élevée sur les callbacks Mobile Money depuis 38 min. Les paiements aboutissent avec un délai.
+  </app-banner>
+
+  <!-- Santé globale -->
+  <section class="card overall" [class]="'card overall tone-bg-' + health[globalStatus()].tone">
+    <span class="o-ic"><mat-icon>{{ globalStatus() === 'up' ? 'check_circle' : globalStatus() === 'degraded' ? 'error' : 'cancel' }}</mat-icon></span>
+    <div class="o-txt"><strong>{{ globalStatus() === 'up' ? 'Tous les systèmes sont opérationnels' : 'Perturbation partielle' }}</strong>
+      <span>{{ services().length }} services surveillés · dernier incident résolu il y a 18 h</span></div>
+    <div class="o-counts">
+      @for (c of counts(); track c.h) { <span><i [class]="'dot bg-' + health[c.h].tone"></i>{{ health[c.h].label }} <b>{{ c.n }}</b></span> }
+    </div>
+  </section>
+
+  <div class="kpis six">
+    @for (k of kpis(); track k.label) {
+      <div class="card kpi">
+        <span class="k-label"><mat-icon>{{ k.icon }}</mat-icon>{{ k.label }}</span>
+        <span class="k-val">{{ k.value }}@if (k.unit) { <small>{{ k.unit }}</small> }</span>
+        <span class="k-foot">@if (k.trend) { <app-trend [value]="k.trend" [inverse]="k.inverse" /> }{{ k.hint }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Temps réel -->
+  <div class="grid two">
+    <section class="card"><div class="card-head"><h2>Trafic</h2><span class="sub">requêtes par minute</span></div>
+      <div class="card-body"><div class="chart"><canvas baseChart type="line" [data]="trafficData()" [options]="trafficOpts()"></canvas></div></div></section>
+    <section class="card"><div class="card-head"><h2>Latence</h2><span class="sub">p50 / p95 · seuil 250 ms</span></div>
+      <div class="card-body"><div class="chart"><canvas baseChart type="line" [data]="latencyData()" [options]="latencyOpts()"></canvas></div></div></section>
+    <section class="card"><div class="card-head"><h2>Erreurs</h2><span class="sub">% de réponses 5xx</span></div>
+      <div class="card-body"><div class="chart sm"><canvas baseChart type="bar" [data]="errorData()" [options]="errorOpts()"></canvas></div></div></section>
+    <section class="card"><div class="card-head"><h2>Ressources du cluster</h2><span class="sub">moyenne des nœuds</span></div>
+      <div class="card-body"><div class="chart sm"><canvas baseChart type="line" [data]="resourceData()" [options]="resourceOpts()"></canvas></div></div></section>
+  </div>
+
+  <!-- Services -->
+  <section class="card services">
+    <div class="card-head"><h2>Services</h2><span class="sub">disponibilité sur 90 jours</span></div>
+    <div class="svc-list">
+      @for (s of services(); track s.id) {
+        <div class="svc">
+          <span class="ic-tile"><mat-icon>{{ s.icon }}</mat-icon></span>
+          <div class="svc-name"><strong>{{ s.name }}</strong><small>{{ s.group }}@if (s.latency) { · {{ s.latency }} ms }</small></div>
+          <div class="uptime" [attr.aria-label]="'Disponibilité ' + s.uptime + ' %'">
+            @for (d of s.days; track $index) { <i [class]="'bg-' + health[d].tone" [matTooltip]="'J-' + (89 - $index) + ' · ' + health[d].label"></i> }
+          </div>
+          <span class="pct tabular">{{ s.uptime | number: '1.2-2' }} %</span>
+          <span class="state" [class]="'state tone-' + health[s.status].tone">{{ health[s.status].label }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Infrastructure -->
+  <div class="grid infra">
+    <app-data-table class="hosts" title="Serveurs" [rows]="hosts()" [columns]="hostCols" [pageSize]="8" maxHeight="none" [searchable]="false" />
+    <section class="card">
+      <div class="card-head"><h2>Données & files</h2></div>
+      <div class="rows list">
+        @for (d of stores; track d.name) {
+          <div class="row"><span class="ic-tile" [class]="'ic-tile tone-' + d.tone"><mat-icon>{{ d.icon }}</mat-icon></span>
+            <span class="grow"><strong>{{ d.name }}</strong><small>{{ d.meta }}</small></span>
+            <span class="num">{{ d.value | number: '1.0-1' }} <small class="muted">{{ d.unit }}</small></span></div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Flotte + alertes -->
+  <div class="grid fleet">
+    <section class="card map-card">
+      <div class="card-head"><h2>Flotte GPS</h2><span class="sub">{{ fleetOnline() }} balises en ligne sur {{ fleet().length }}</span></div>
+      <app-map [center]="[5.35, -4.01]" [zoom]="11" height="340px" [markers]="fleet()" [fitBounds]="false" />
+    </section>
+    <section class="card">
+      <div class="card-head"><h2>Alertes actives</h2><span class="count">{{ alerts().length }}</span></div>
+      <div class="rows list">
+        @for (a of alerts(); track a.text) {
+          <div class="row"><span [class]="'ic-tile tone-' + a.tone"><mat-icon>{{ a.icon }}</mat-icon></span>
+            <span class="grow"><strong class="wrap">{{ a.text }}</strong><small>{{ a.at }}</small></span>
+            <button mat-icon-button matTooltip="Acquitter" aria-label="Acquitter"><mat-icon>done</mat-icon></button></div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Capteurs + tâches -->
+  <div class="grid two">
+    <section class="card">
+      <div class="card-head"><h2>Capteurs des entrepôts</h2><span class="sub">IoT · rafraîchi toutes les 2 s</span></div>
+      <div class="card-body gauges">
+        @for (s of sensors(); track s.id) {
+          <div class="gauge" [class.warn]="alarm(s)">
+            <svg viewBox="0 0 100 58" aria-hidden="true">
+              <path d="M 10 50 A 40 40 0 0 1 90 50" class="g-track" />
+              <path [attr.d]="arc(gauge(s))" class="g-val" />
+            </svg>
+            <span class="g-val-txt">{{ s.value | number: '1.0-1' }}<small>{{ s.unit.split(' ')[0] }}</small></span>
+            <span class="g-lbl"><mat-icon>{{ s.icon }}</mat-icon>{{ s.label }}</span>
+            <small class="g-site">{{ s.site }}</small>
+          </div>
+        }
+      </div>
+    </section>
+    <section class="card">
+      <div class="card-head"><h2>Tâches planifiées</h2></div>
+      <div class="rows list">
+        @for (j of jobs; track j.name) {
+          <div class="row">
+            <span [class]="'dot-lg bg-' + jobTone(j.status)" [class.pulse]="j.status === 'running'"></span>
+            <span class="grow"><strong>{{ j.name }}</strong><small>{{ j.schedule }} · dernier : {{ j.last }}</small></span>
+            <span class="num muted">{{ j.duration }}</span>
+            <span [class]="'state tone-' + jobTone(j.status)">{{ j.status === 'ok' ? 'Réussie' : j.status === 'running' ? 'En cours' : 'Échec' }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Incidents + journaux -->
+  <div class="grid logs-grid">
+    <section class="card">
+      <div class="card-head"><h2>Incidents</h2><a href="#" (click)="$event.preventDefault()">Historique</a></div>
+      <div class="incidents">
+        @for (i of incidents(); track i.id) {
+          <div class="inc" [class.done]="i.status === 'résolu'">
+            <span [class]="'sev tone-' + sevTone(i.severity)">{{ i.severity }}</span>
+            <div class="inc-body">
+              <strong>{{ i.title }}</strong>
+              <small><span class="mono">{{ i.id }}</span> · {{ i.service }} · {{ i.started }} · {{ i.owner }}</small>
+            </div>
+            @if (i.status === 'en cours') { <button mat-stroked-button (click)="ack(i)">Prendre en charge</button> }
+            @else { <span [class]="'state tone-' + (i.status === 'résolu' ? 'success' : 'info')">{{ i.status }}</span> }
+          </div>
+        }
+      </div>
+    </section>
+    <section class="card console-card">
+      <div class="card-head"><h2>Journaux</h2>
+        <div class="lvls">
+          @for (l of ['all', 'info', 'warn', 'error', 'debug']; track l) {
+            <button type="button" [class.on]="logLevel() === l" (click)="logLevel.set($any(l))">{{ l === 'all' ? 'Tous' : l }}</button>
+          }
+        </div>
+      </div>
+      <label class="searchbox log-search"><mat-icon>search</mat-icon><input type="search" placeholder="Filtrer les journaux" [value]="logQuery()" (input)="logQuery.set($any($event.target).value)" /></label>
+      <div class="console" #logBox role="log" aria-live="polite">
+        @for (l of visibleLogs(); track l.id) {
+          <div class="ln"><time>{{ l.at.toLocaleTimeString('fr-FR') }}</time><span [class]="'lv lv-' + l.level">{{ l.level }}</span><span class="src">{{ l.source }}</span><span class="msg">{{ l.msg }}</span></div>
+        } @empty { <div class="ln empty">Aucune ligne ne correspond.</div> }
+      </div>
+    </section>
+  </div>
+</ex-app-shell>

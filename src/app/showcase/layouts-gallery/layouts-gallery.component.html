@@ -1,0 +1,29 @@
+<kit-doc-page title="Layouts" icon="dashboard_customize" eyebrow="Catalogue"
+  subtitle="Les gabarits d'écran complets du projet. Chaque carte montre la structure schématique et ouvre des exemples réels. Les briques de mise en page (grilles, panneaux, conteneurs) sont dans Composants › Layout.">
+  <div class="layout-grid">
+    @for (l of layouts; track l.id) {
+      <article class="layout-card" [attr.id]="l.id">
+        <div class="preview" [class]="'preview wire-' + l.wire">
+          @switch (l.wire) {
+            @case ('shell') { <div class="rail"></div><div class="main"><div class="bar"></div><div class="content"><span></span><span></span><span class="wide"></span></div></div> }
+            @case ('module') { <div class="rail"></div><div class="main"><div class="bar"></div><div class="split"><div class="subnav"><i></i><i></i><i></i><i></i></div><div class="content"><span class="wide"></span><span></span><span></span></div></div></div> }
+            @case ('detail') { <div class="main full"><div class="head"></div><div class="kpis"><b></b><b></b><b></b><b></b></div><div class="cols"><div class="big"></div><div class="aside"></div></div></div> }
+            @case ('auth') { <div class="visual"></div><div class="form"><i></i><i></i><i></i><b></b></div> }
+            @case ('public') { <div class="doc"><div class="head"></div><i></i><i></i><i class="short"></i><div class="table"></div></div> }
+            @case ('drawer') { <div class="rail"></div><div class="main"><div class="bar"></div><div class="content dim"></div></div><div class="drawer"><i></i><i></i><i></i></div> }
+            @case ('dialog') { <div class="main full dim"></div><div class="dialog"><i></i><i></i><b></b></div> }
+            @case ('kit') { <div class="tree"><i></i><i></i><i></i><i></i><i></i></div><div class="main"><div class="bar"></div><div class="content"><span class="wide"></span><span></span><span></span></div></div> }
+          }
+        </div>
+        <div class="body">
+          <div class="title"><mat-icon>{{ l.icon }}</mat-icon><h2>{{ l.title }}</h2></div>
+          <p>{{ l.description }}</p>
+          <code>{{ l.file }}</code>
+          <div class="links">
+            @for (k of l.links; track k.path) { <a mat-stroked-button [routerLink]="k.path">{{ k.label }} <mat-icon iconPositionEnd>arrow_forward</mat-icon></a> }
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+</kit-doc-page>

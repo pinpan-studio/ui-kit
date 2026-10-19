@@ -1,0 +1,366 @@
+<kit-doc-page title="Champs avancés" icon="dynamic_form"
+  subtitle="Types de champs complémentaires aux formulaires de base, tous compatibles ngModel et formulaires réactifs (ControlValueAccessor) et alignés sur le motif « field-box » : codes OTP, nombres, montants FCFA, intervalles, notation, couleur, éditeurs, signature, sélection arborescente, transfert, tags, adresse, mot de passe et valeurs à copier."
+  [toc]="toc">
+
+  <!-- ═══════════════════════ OTP ═══════════════════════ -->
+  <kit-section id="otp" title="Code OTP / PIN" source="app-otp-input (shared/components/fields)"
+    description="Cases séparées avec avance automatique, retour arrière, flèches, collage d'un code complet et autocomplétion SMS (one-time-code). (completed) se déclenche quand toutes les cases sont remplies." [cols]="3">
+    <kit-demo label="Vérification SMS" hint="essayez 246810" [code]="code.otp">
+      <div class="otp-card">
+        <mat-icon class="otp-ic">sms</mat-icon>
+        <strong>Saisissez le code reçu</strong>
+        <span class="muted">Envoyé au +225 07 •• •• 42 18</span>
+        <app-otp-input [(ngModel)]="otp" (completed)="verify($event)" [invalid]="otpState() === 'bad'" [success]="otpState() === 'ok'" />
+        @switch (otpState()) {
+          @case ('checking') { <span class="otp-msg"><mat-spinner diameter="14" />Vérification…</span> }
+          @case ('ok') { <span class="otp-msg ok"><mat-icon>check_circle</mat-icon>Numéro vérifié</span> }
+          @case ('bad') { <span class="otp-msg bad"><mat-icon>error</mat-icon>Code incorrect</span> }
+          @default { <button mat-button class="otp-msg">Renvoyer le code (0:42)</button> }
+        }
+      </div>
+    </kit-demo>
+    <kit-demo label="PIN masqué" hint="[length]=&quot;4&quot; mask">
+      <div class="col center">
+        <app-otp-input [(ngModel)]="pin" [length]="4" mask />
+        <span class="caption">Valeur : {{ pin || '—' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Alphanumérique + séparateur" hint="[numeric]=&quot;false&quot; separator">
+      <div class="col center">
+        <app-otp-input [(ngModel)]="alnum" [numeric]="false" separator />
+        <span class="caption">Code d'activation de balise : {{ alnum || '—' }}</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ STEPPER ═══════════════════════ -->
+  <kit-section id="stepper" title="Nombre avec + / −" source="app-number-stepper (shared/components/fields)"
+    description="Bornes, pas, décimales, unité. Appui long pour répéter (accéléré), flèches ↑/↓ (Maj = ×10), saisie directe au clavier." [cols]="3">
+    <kit-demo label="Quantité de véhicules" [code]="code.stepper">
+      <div class="form-field">
+        <label class="field-label">Véhicules à équiper</label>
+        <app-number-stepper [(ngModel)]="vehicules" [min]="1" [max]="500" unit="véh." />
+        <span class="field-hint">Entre 1 et 500 · valeur : {{ vehicules }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Décimales + pas" hint="[step]=&quot;0.5&quot; [decimals]=&quot;1&quot;">
+      <div class="form-field">
+        <label class="field-label">Remise</label>
+        <app-number-stepper [(ngModel)]="tauxRemise" [min]="0" [max]="30" [step]="0.5" [decimals]="1" unit="%" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Compact (panier)" hint="compact">
+      <div class="cart-line">
+        <mat-icon>router</mat-icon><span class="spacer">Balise GPS 4G</span>
+        <app-number-stepper [(ngModel)]="quantite" [min]="0" [max]="99" compact />
+        <strong>{{ (quantite * 45000).toLocaleString('fr-FR') }} F</strong>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MONTANT ═══════════════════════ -->
+  <kit-section id="currency" title="Montant / devise" source="app-currency-input (shared/components/fields)"
+    description="Séparateurs de milliers fr-FR au fil de la frappe, curseur préservé, décimales selon la devise (FCFA : aucune), ↑/↓ = ±1 000. Valeur du modèle : nombre. Option « en toutes lettres » pour les documents." [cols]="3">
+    <kit-demo label="FCFA + en lettres" [code]="code.currency">
+      <div class="form-field">
+        <label class="field-label">Montant de la facture</label>
+        <app-currency-input [(ngModel)]="montant" [inWords]="true" />
+        <span class="field-hint">Modèle : {{ montant ?? 'null' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Multi-devises" hint="[currencies]=&quot;['XOF','EUR','USD']&quot;">
+      <div class="form-field">
+        <label class="field-label">Prix d'achat</label>
+        <app-currency-input [(ngModel)]="montantEur" currency="EUR" [currencies]="['XOF', 'EUR', 'USD']" icon="shopping_cart" />
+        <span class="field-hint">Modèle : {{ montantEur ?? 'null' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Vide + plafond" hint="[max]=&quot;5000000&quot;">
+      <div class="form-field">
+        <label class="field-label">Caution (max 5 000 000)</label>
+        <app-currency-input [(ngModel)]="montantVide" [max]="5000000" placeholder="Saisir un montant" icon="savings" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ INTERVALLE ═══════════════════════ -->
+  <kit-section id="range" title="Intervalle à double curseur" source="app-range-slider (shared/components/fields)"
+    description="Filtre min / max avec histogramme de distribution (les barres dans l'intervalle sont colorées), infobulles, champs saisissables, clavier (←/→, Page ↑/↓, Début/Fin). Valeur : [min, max]." [cols]="2">
+    <kit-demo label="Prix avec histogramme" [code]="code.range">
+      <div class="form-field">
+        <label class="field-label">Prix de l'abonnement</label>
+        <app-range-slider [(ngModel)]="prix" [min]="0" [max]="500000" [step]="5000" [histogram]="histo" unit="FCFA" [format]="fcfa" [minGap]="10000" />
+        <span class="field-hint">{{ histo.length }} tranches · sélection : {{ prix[0].toLocaleString('fr-FR') }} – {{ prix[1].toLocaleString('fr-FR') }} FCFA</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Simple, sans champs" hint="[inputs]=&quot;false&quot;">
+      <div class="form-field">
+        <label class="field-label">Vitesse tolérée</label>
+        <app-range-slider [(ngModel)]="vitesse" [min]="0" [max]="140" [step]="5" unit="km/h" [inputs]="false" />
+        <span class="field-hint">Alerte si la vitesse sort de {{ vitesse[0] }} – {{ vitesse[1] }} km/h</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ NOTATION ═══════════════════════ -->
+  <kit-section id="rating" title="Notation" source="app-rating (shared/components/fields)"
+    description="Étoiles (demi-étoiles possibles), cœurs ou émojis de satisfaction. Aperçu au survol, clavier ←/→, re-clic pour effacer, lecture seule pour afficher une moyenne." [cols]="3">
+    <kit-demo label="Étoiles" [code]="code.rating">
+      <div class="col">
+        <app-rating [(ngModel)]="note" showValue />
+        <app-rating [(ngModel)]="noteDemi" half showValue size="large" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Satisfaction (émojis)" hint="variant=&quot;emoji&quot;">
+      <div class="col">
+        <span class="muted">Comment s'est passée l'intervention ?</span>
+        <app-rating [(ngModel)]="satisfaction" variant="emoji" size="large" showValue />
+        <app-rating [(ngModel)]="coeur" variant="heart" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Lecture seule (moyenne)" hint="readonly">
+      <div class="reviews">
+        <div class="big">4,3</div>
+        <div class="col tight"><app-rating [value]="4.3" readonly half /><span class="muted">128 avis clients</span></div>
+      </div>
+      <div class="bars">
+        @for (b of [[5, 62], [4, 38], [3, 15], [2, 8], [1, 5]]; track b[0]) {
+          <div class="bar-row"><span>{{ b[0] }}</span><mat-icon>star</mat-icon><div class="bar"><i [style.width.%]="b[1] / 0.62 * 0.95"></i></div><em>{{ b[1] }}</em></div>
+        }
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ COULEUR ═══════════════════════ -->
+  <kit-section id="color" title="Sélecteur de couleur" source="app-color-picker (shared/components/fields)"
+    description="Champ hexadécimal + panneau : saturation / luminosité, teinte, palette, couleurs récentes et pipette (EyeDropper, Chrome / Edge). Mode inline = palette seule." [cols]="3">
+    <kit-demo label="Champ + panneau" [code]="code.color">
+      <div class="form-field">
+        <label class="field-label">Couleur du groupe</label>
+        <app-color-picker [(ngModel)]="couleur" />
+      </div>
+      <div class="color-preview" [style.background]="couleur"><mat-icon>local_shipping</mat-icon>Groupe Nord</div>
+    </kit-demo>
+    <kit-demo label="Palette de marque" hint="[swatches]=&quot;brand&quot;">
+      <div class="form-field">
+        <label class="field-label">Couleur d'étiquette</label>
+        <app-color-picker [(ngModel)]="couleurTag" [swatches]="brand" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Inline" hint="inline">
+      <app-color-picker [(ngModel)]="couleurTag" [swatches]="brand" inline />
+      <span class="tag-preview" [style.background]="couleurTag + '22'" [style.color]="couleurTag"><i [style.background]="couleurTag"></i>Maintenance</span>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TEXTE RICHE ═══════════════════════ -->
+  <kit-section id="rich-text" title="Éditeur de texte riche" source="app-rich-text-editor (shared/components/fields)"
+    description="Éditeur léger sans dépendance (contenteditable) : styles de paragraphe, gras, italique, souligné, barré, listes, lien, nettoyage, annuler / rétablir, compteur. Le collage est converti en texte brut. Valeur : HTML." [cols]="2">
+    <kit-demo label="Compte rendu" [code]="code.rich">
+      <app-rich-text-editor [(ngModel)]="rich" [maxLength]="1000" />
+    </kit-demo>
+    <kit-demo label="Vide + aperçu HTML">
+      <app-rich-text-editor [(ngModel)]="richEmpty" placeholder="Notes pour le technicien…" minHeight="100px" />
+      <pre class="html-out">{{ richEmpty || '(vide)' }}</pre>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MARKDOWN ═══════════════════════ -->
+  <kit-section id="markdown" title="Éditeur Markdown" source="app-markdown-editor (shared/components/fields)"
+    description="Écrire / Aperçu / Côte à côte, barre d'insertion, raccourcis Ctrl+B / I / K, Tab, continuation automatique des listes. Rendu par markdownToHtml (shared/utils/markdown.util.ts), texte échappé.">
+    <kit-demo label="Procédure (côte à côte)" [code]="code.markdown">
+      <app-markdown-editor [(ngModel)]="md" mode="split" minHeight="300px" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ SIGNATURE ═══════════════════════ -->
+  <kit-section id="signature" title="Signature" source="app-signature-pad (shared/components/fields)"
+    description="Souris, doigt ou stylet (pression prise en compte) ; trait lissé à épaisseur variable selon la vitesse, annuler, effacer, choix d'encre, rendu net en haute densité. Valeur : PNG transparent (data URL)." [cols]="2">
+    <kit-demo label="PV d'installation" [code]="code.signature">
+      <div class="form-field">
+        <label class="field-label">Signature du client <span class="req">*</span></label>
+        <app-signature-pad [(ngModel)]="signature" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Résultat (PNG)">
+      <div class="sig-out">
+        @if (signature) { <img [src]="signature" alt="Signature" /> } @else { <span class="muted">Signez à gauche pour voir l'image produite.</span> }
+      </div>
+      @if (signature) { <span class="caption">{{ (signature.length / 1024).toFixed(0) }} Ko · fond transparent</span> }
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TREE-SELECT ═══════════════════════ -->
+  <kit-section id="tree-select" title="Sélection arborescente" source="app-tree-select (shared/components/fields)"
+    description="Hiérarchie dans un panneau déroulant : recherche insensible aux accents (garde les ancêtres), dépli / repli, simple (chemin affiché) ou multiple avec cases tri-état — cocher un parent coche toutes ses feuilles." [cols]="2">
+    <kit-demo label="Simple" hint="chemin complet" [code]="code.tree">
+      <div class="form-field">
+        <label class="field-label">Quartier d'intervention</label>
+        <app-tree-select [options]="zones" [(ngModel)]="zoneSimple" placeholder="Choisir un quartier…" icon="location_on" leafOnly />
+        <span class="field-hint">Valeur : {{ zoneSimple ?? 'null' }}</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Multiple (tri-état)" hint="multiple">
+      <div class="form-field">
+        <label class="field-label">Zones couvertes</label>
+        <app-tree-select [options]="zones" [(ngModel)]="zonesMulti" multiple placeholder="Toutes les zones" />
+        <span class="field-hint">{{ zonesMulti.length }} feuille(s) : {{ zonesMulti.join(', ') || '—' }}</span>
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TRANSFER ═══════════════════════ -->
+  <kit-section id="transfer" title="Liste de transfert" source="app-transfer-list (shared/components/fields)"
+    description="Deux colonnes filtrables ; sélection multiple (Maj+clic pour une plage), boutons de transfert, double-clic, ou glisser-déposer entre colonnes (et réordonnancement à droite). Les éléments désactivés restent en place.">
+    <kit-demo label="Affecter des véhicules à un groupe" [code]="code.transfer">
+      <app-transfer-list [items]="vehiculesListe" [(ngModel)]="affectes" sourceTitle="Parc disponible" targetTitle="Groupe « Livraisons Nord »" />
+      <span class="caption">Ordre de tournée : {{ affectes.join(' → ') || '—' }}</span>
+    </kit-demo>
+    <kit-demo label="Permissions d'un rôle">
+      <app-transfer-list [items]="permissions" [(ngModel)]="perms" sourceTitle="Permissions" targetTitle="Rôle « Superviseur »" />
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ TAGS ═══════════════════════ -->
+  <kit-section id="tags" title="Tags libres avec suggestions" source="app-tag-input (shared/components/fields)"
+    description="Entrée, virgule ou Tab pour valider ; collage d'une liste ; retour arrière pour retirer ; double-clic pour modifier ; suggestions au clavier ; limite, validation et normalisation." [cols]="3">
+    <kit-demo label="Mots-clés" hint="[max]=&quot;6&quot;" [code]="code.tags">
+      <div class="form-field">
+        <label class="field-label">Étiquettes du ticket</label>
+        <app-tag-input [(ngModel)]="tags" [suggestions]="motsCles" [max]="6" placeholder="Ajouter une étiquette…" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Destinataires (validation)" hint="[validator]=&quot;isEmail&quot;">
+      <div class="form-field">
+        <label class="field-label">Envoyer le rapport à</label>
+        <app-tag-input [(ngModel)]="emails" [validator]="isEmail" [transform]="lower" icon="mail" invalidMessage="Adresse email invalide" placeholder="email@exemple.ci" />
+        @if (hasBadEmail) { <span class="field-error">Une adresse est invalide (soulignée).</span> }
+      </div>
+    </kit-demo>
+    <kit-demo label="Liste fermée" hint="[allowCustom]=&quot;false&quot;">
+      <div class="form-field">
+        <label class="field-label">Catégories</label>
+        <app-tag-input [(ngModel)]="fixedTags" [suggestions]="motsCles" [allowCustom]="false" icon="category" placeholder="Choisir…" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ ADRESSE ═══════════════════════ -->
+  <kit-section id="address" title="Adresse avec carte" source="app-address-field (shared/components/fields)"
+    description="La recherche est fournie par l'hôte ([search] : répertoire local ici, géocodeur en production). « Ma position » utilise la géolocalisation du navigateur ; un clic sur la carte place un repère précis. Valeur : { label, detail, lat, lng }." [cols]="2">
+    <kit-demo label="Autocomplétion" hint="essayez « port », « cocody », « bouake »" [code]="code.address">
+      <div class="form-field">
+        <label class="field-label">Adresse de livraison</label>
+        <app-address-field [search]="searchPlaces" [(ngModel)]="adresse" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Avec carte" hint="map">
+      <div class="form-field">
+        <label class="field-label">Lieu d'installation</label>
+        <app-address-field [search]="searchPlaces" [(ngModel)]="adresseMap" map />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ MOT DE PASSE ═══════════════════════ -->
+  <kit-section id="password" title="Mot de passe avec jauge" source="app-password-field (shared/components/fields)"
+    description="Jauge de robustesse en 4 niveaux (longueur, variété, pénalités pour suites et mots courants), règles cochées en direct, alerte de verrouillage majuscules, générateur (crypto.getRandomValues)." [cols]="2">
+    <kit-demo label="Création de compte" [code]="code.password">
+      <div class="form-field">
+        <label class="field-label">Nouveau mot de passe</label>
+        <app-password-field [(ngModel)]="pwd" generator showRulesEmpty />
+      </div>
+    </kit-demo>
+    <kit-demo label="Mot de passe faible" hint="contient un mot courant">
+      <div class="form-field">
+        <label class="field-label">Mot de passe</label>
+        <app-password-field [(ngModel)]="pwd2" />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ COPIER ═══════════════════════ -->
+  <kit-section id="copy" title="Valeur à copier" source="app-copy-field (shared/components/fields)"
+    description="Clé API, lien de partage, IMEI, code d'intégration : bouton de copie avec confirmation, secret masqué (4 premiers / 4 derniers caractères), régénération, variante multi-ligne." [cols]="3">
+    <kit-demo label="Clé API (secret)" [code]="code.copy">
+      <div class="form-field">
+        <label class="field-label">Clé API de production</label>
+        <app-copy-field [value]="apiKey" secret regenerable icon="key" label="la clé API" (regenerate)="regen()" />
+        <span class="field-hint">Ne la partagez jamais publiquement.</span>
+      </div>
+    </kit-demo>
+    <kit-demo label="Lien de partage">
+      <div class="form-field">
+        <label class="field-label">Suivi en temps réel (24 h)</label>
+        <app-copy-field value="https://suivi.example.com/partage/7f3a9c" icon="link" />
+      </div>
+      <div class="form-field mt">
+        <label class="field-label">IMEI</label>
+        <app-copy-field value="358240051111110" icon="router" />
+      </div>
+    </kit-demo>
+    <kit-demo label="Code d'intégration" hint="multiline">
+      <div class="form-field">
+        <label class="field-label">Widget à intégrer</label>
+        <app-copy-field [value]="embed" multiline />
+      </div>
+    </kit-demo>
+  </kit-section>
+
+  <!-- ═══════════════════════ FORMULAIRE ═══════════════════════ -->
+  <kit-section id="form" title="Formulaire complet (réactif)" source="FormGroup + composants ControlValueAccessor"
+    description="Tous les champs avancés s'utilisent avec formControlName, Validators et l'état touched — exactement comme un input natif.">
+    <kit-demo label="PV d'installation" [code]="code.form">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="pv-form">
+        <div class="grid-2">
+          <div class="form-field">
+            <label class="field-label">Quartier <span class="req">*</span></label>
+            <app-tree-select formControlName="quartier" [options]="zones" leafOnly icon="location_on" />
+            @if (err('quartier')) { <span class="field-error">Choisissez un quartier</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Adresse exacte <span class="req">*</span></label>
+            <app-address-field formControlName="adresse" [search]="searchPlaces" [showCoords]="false" />
+            @if (err('adresse')) { <span class="field-error">Adresse requise</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Balises installées <span class="req">*</span></label>
+            <app-number-stepper formControlName="balises" [min]="0" [max]="50" />
+            @if (err('balises')) { <span class="field-error">Au moins une balise</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Montant encaissé <span class="req">*</span></label>
+            <app-currency-input formControlName="montant" />
+            @if (err('montant')) { <span class="field-error">Minimum 10 000 FCFA</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Étiquettes</label>
+            <app-tag-input formControlName="etiquettes" [suggestions]="motsCles" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Satisfaction du client</label>
+            <app-rating formControlName="note" size="large" />
+            @if (err('note')) { <span class="field-error">Merci de noter l'intervention</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Code de validation client <span class="req">*</span></label>
+            <app-otp-input formControlName="code" [length]="4" [invalid]="err('code')" />
+            @if (err('code')) { <span class="field-error">Code à 4 chiffres requis</span> }
+          </div>
+          <div class="form-field">
+            <label class="field-label">Signature <span class="req">*</span></label>
+            <app-signature-pad formControlName="signature" height="140px" [invalid]="err('signature')" />
+            @if (err('signature')) { <span class="field-error">Signature requise</span> }
+          </div>
+        </div>
+        <div class="row form-actions">
+          <span class="muted">{{ form.valid ? 'Formulaire valide' : 'Champs requis manquants' }}</span>
+          <span class="spacer"></span>
+          <button mat-stroked-button type="button" (click)="reset()">Réinitialiser</button>
+          <button mat-flat-button type="submit"><mat-icon>task_alt</mat-icon>Valider le PV</button>
+        </div>
+        <details class="json"><summary>Valeur du formulaire</summary><pre>{{ formJson }}</pre></details>
+      </form>
+    </kit-demo>
+  </kit-section>
+</kit-doc-page>

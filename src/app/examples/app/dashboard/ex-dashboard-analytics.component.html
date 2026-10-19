@@ -1,0 +1,151 @@
+@switch (tab()) {
+  @case ('sales') {
+    <div class="grid">
+      <section class="card span-2">
+        <div class="card-head"><h2>Chiffre d’affaires par région</h2><span class="tag">Barres groupées</span></div>
+        <div class="card-body"><div class="chart">@if (regionBar(); as g) { <canvas baseChart type="bar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Meilleures ventes</h2><span class="tag">Barres horizontales</span></div>
+        <div class="card-body"><div class="chart">@if (topProducts(); as g) { <canvas baseChart type="bar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card span-2">
+        <div class="card-head"><h2>Encaissements par moyen de paiement</h2><span class="tag">Barres empilées</span></div>
+        <div class="card-body"><div class="chart">@if (payStack(); as g) { <canvas baseChart type="bar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Du CA au résultat</h2><span class="tag">Cascade</span></div>
+        <div class="card-body"><div class="chart">@if (waterfall(); as g) { <canvas baseChart type="bar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card span-2">
+        <div class="card-head"><h2>Commandes et panier moyen</h2><span class="tag">Mixte · double axe</span></div>
+        <div class="card-body"><div class="chart">@if (mixed(); as g) { <canvas baseChart type="bar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Stock de balises</h2><span class="tag">Escalier</span></div>
+        <div class="card-body"><div class="chart">@if (stock(); as g) { <canvas baseChart type="line" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card span-3">
+        <div class="card-head"><h2>Visites par canal</h2><span class="tag">Aires empilées</span></div>
+        <div class="card-body"><div class="chart">@if (channels(); as g) { <canvas baseChart type="line" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+    </div>
+  }
+
+  @case ('customers') {
+    <div class="grid">
+      <section class="card">
+        <div class="card-head"><h2>CA par secteur</h2><span class="tag">Camembert</span></div>
+        <div class="card-body"><div class="chart">@if (pie(); as g) { <canvas baseChart type="pie" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Tickets par catégorie</h2><span class="tag">Aire polaire</span></div>
+        <div class="card-body"><div class="chart">@if (polar(); as g) { <canvas baseChart type="polarArea" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Satisfaction</h2><span class="tag">Radar</span></div>
+        <div class="card-body"><div class="chart">@if (radar(); as g) { <canvas baseChart type="radar" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card span-2">
+        <div class="card-head"><h2>Délai de paiement selon le montant</h2><span class="tag">Nuage de points</span></div>
+        <div class="card-body"><div class="chart">@if (scatter(); as g) { <canvas baseChart type="scatter" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Portefeuille grands comptes</h2><span class="tag">Bulles</span></div>
+        <div class="card-body"><div class="chart">@if (bubble(); as g) { <canvas baseChart type="bubble" [data]="g.data" [options]="g.options"></canvas> }</div></div>
+      </section>
+      <section class="card span-2">
+        <div class="card-head"><h2>Répartition du chiffre d’affaires</h2><span class="tag">Treemap</span></div>
+        <div class="card-body">
+          <div class="treemap">
+            @for (g of treemap; track g.label) {
+              <div class="tm-group" [style.flex-grow]="g.v" [style.--tone]="'var(--' + g.tone + '-color)'">
+                <span class="tm-title">{{ g.label }} · {{ g.v }} %</span>
+                <div class="tm-kids">
+                  @for (k of g.kids; track k.label; let i = $index) {
+                    <div class="tm-cell" [style.flex-grow]="k.v" [style.opacity]="1 - i * 0.22" [title]="k.label + ' : ' + k.v + ' %'"><strong>{{ k.label }}</strong><span>{{ k.v }} %</span></div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+      <section class="card map">
+        <div class="card-head"><h2>Ventes par ville</h2><span class="tag">Carte</span></div>
+        <app-map [center]="[7.2, -5.6]" [zoom]="6" height="260px" [markers]="cityMarkers" [fitBounds]="true" />
+      </section>
+    </div>
+  }
+
+  @case ('operations') {
+    <div class="grid">
+      <section class="card span-2">
+        <div class="card-head"><h2>Tunnel de conversion</h2><span class="tag">Entonnoir</span></div>
+        <div class="card-body funnel">
+          @for (f of funnel; track f.label; let i = $index) {
+            <div class="f-row">
+              <span class="f-lbl">{{ f.label }}</span>
+              <div class="f-track"><div class="f-bar" [style.width.%]="funnelWidth(f.v)" [style.opacity]="1 - i * 0.14"></div></div>
+              <span class="f-val tabular">{{ f.v | number }}</span>
+              <span class="f-rate tabular">@if (i) { {{ pct(f.v, funnel[i - 1].v) | number: '1.0-0' }} % } @else { — }</span>
+            </div>
+          }
+          <p class="f-foot">Largeurs en échelle racine carrée · conversion globale : <strong>{{ pct(funnel[4].v, funnel[0].v) | number: '1.2-2' }} %</strong> des visiteurs</p>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Qualité de service</h2><span class="tag">Anneaux</span></div>
+        <div class="card-body rings">
+          @for (r of rings; track r.label) {
+            <div class="ring" [style.--tone]="'var(--' + r.tone + '-color)'">
+              <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" class="r-track" /><circle cx="50" cy="50" r="40" class="r-val" [attr.stroke-dasharray]="dash(r.v)" /></svg>
+              <strong class="tabular">{{ r.v }} %</strong>
+              <span>{{ r.label }}</span>
+            </div>
+          }
+        </div>
+      </section>
+      <section class="card span-2">
+        <div class="card-head"><h2>Commandes par heure</h2><span class="tag">Heatmap</span></div>
+        <div class="card-body">
+          <div class="heat" role="table" aria-label="Commandes par jour et par heure">
+            <span></span>@for (h of hours; track h) { <span class="hx">{{ h }} h</span> }
+            @for (row of heat; track $index; let d = $index) {
+              <span class="hy">{{ days[d] }}</span>
+              @for (v of row; track $index; let h = $index) { <i [style.background]="heatColor(v)" [matTooltip]="days[d] + ' ' + hours[h] + ' h : ' + v + ' commandes'"></i> }
+            }
+          </div>
+          <div class="legend-scale"><span>Moins</span>@for (s of [0.1, 0.3, 0.5, 0.7, 0.9]; track s) { <i [style.background]="heatColor(s * heatMax)"></i> }<span>Plus</span></div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Objectifs de l’équipe</h2><span class="tag">Classement</span></div>
+        <div class="card-body ranking">
+          @for (p of ranking; track p.name; let i = $index) {
+            <div class="rk">
+              <span class="rk-pos">{{ i + 1 }}</span>
+              <div class="rk-main"><div class="rk-top"><strong>{{ p.name }}</strong><span class="tabular">{{ p.v }} / {{ p.goal }}</span></div>
+                <div class="rk-bar"><i [style.width.%]="pct(p.v, p.goal) > 100 ? 100 : pct(p.v, p.goal)" [class.over]="p.v >= p.goal"></i></div><small>{{ p.team }}</small></div>
+            </div>
+          }
+        </div>
+      </section>
+      <section class="card span-3">
+        <div class="card-head"><h2>Interventions sur 12 mois</h2><span class="tag">Calendrier d’activité</span></div>
+        <div class="card-body cal-wrap">
+          <div class="cal">
+            <div class="cal-months">@for (m of monthsAxis; track m.label) { <span [style.grid-column]="m.col + 2">{{ m.label }}</span> }</div>
+            <div class="cal-grid">
+              <div class="cal-days">@for (d of days; track d; let i = $index) { <span>{{ i % 2 === 0 ? d : '' }}</span> }</div>
+              @for (w of calendar; track $index) {
+                <div class="cal-week">@for (c of w; track $index) { <i [class]="'lv' + c.lvl" [matTooltip]="(c.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })) + ' : ' + c.v + ' intervention(s)'"></i> }</div>
+              }
+            </div>
+          </div>
+          <div class="legend-scale"><span>Moins</span>@for (l of [0, 1, 2, 3, 4]; track l) { <i [class]="'lv' + l"></i> }<span>Plus</span></div>
+        </div>
+      </section>
+    </div>
+  }
+}

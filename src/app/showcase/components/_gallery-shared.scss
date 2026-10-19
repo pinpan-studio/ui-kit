@@ -1,0 +1,22 @@
+// Utilitaires de mise en page communs aux galeries /components/* (n'affectent pas les composants démontrés).
+.w-100 { width: 100%; }
+.row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-s); }
+.row.lg { gap: var(--space-m); }
+.col { display: flex; flex-direction: column; gap: var(--space-m); }
+.spacer { flex: 1; }
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-m);
+  @media (max-width: 767.98px) { grid-template-columns: 1fr; }
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-m);
+  @media (max-width: 1023.98px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 599.98px) { grid-template-columns: 1fr; }
+}
+.muted { color: var(--text-muted); font-size: 12px; }
+p.muted { margin: var(--space-m) 0 0; }
+.caption { display: block; font-size: 11px; color: var(--text-muted); margin-top: var(--space-s); text-align: center; }

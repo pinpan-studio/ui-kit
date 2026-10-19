@@ -1,0 +1,57 @@
+<div class="head">
+  <div class="brand">
+    <span class="logo"><mat-icon>auto_awesome</mat-icon></span>
+    <span class="title">Harnais</span>
+  </div>
+  <button mat-icon-button class="icon-btn" matTooltip="Masquer l'historique" (click)="collapse.emit()"><mat-icon>menu_open</mat-icon></button>
+</div>
+
+<button type="button" class="new-btn" (click)="create.emit()">
+  <mat-icon>add</mat-icon><span>Nouvelle conversation</span>
+  <kbd>⌘K</kbd>
+</button>
+
+<label class="search">
+  <mat-icon>search</mat-icon>
+  <input type="search" placeholder="Rechercher" aria-label="Rechercher une conversation"
+    [value]="query()" (input)="query.set($any($event.target).value)" />
+</label>
+
+<nav class="list" aria-label="Conversations">
+  @if (pinned().length) {
+    <div class="group-label"><mat-icon>push_pin</mat-icon>Épinglées</div>
+    @for (c of pinned(); track c.id) {
+      <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: c }"></ng-container>
+    }
+  }
+  @for (g of groups(); track g.label) {
+    <div class="group-label">{{ g.label }}</div>
+    @for (c of g.items; track c.id) {
+      <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: c }"></ng-container>
+    }
+  }
+  @if (empty()) {
+    <div class="empty"><mat-icon>search_off</mat-icon>Aucune conversation pour « {{ query() }} »</div>
+  }
+</nav>
+
+<div class="me">
+  <span class="me-avatar">{{ initials }}</span>
+  <span class="me-text"><span class="me-name">{{ user.fullname }}</span><span class="me-role">{{ user.role }}</span></span>
+</div>
+
+<ng-template #row let-c>
+  <div class="item" [class.active]="c.id === activeId()">
+    <button type="button" class="item-main" (click)="select.emit(c.id)" [attr.aria-current]="c.id === activeId() ? 'page' : null">
+      <span class="item-title">{{ c.title }}</span>
+      @if (c.project) { <span class="item-project">{{ c.project }}</span> }
+    </button>
+    <button mat-icon-button class="item-more" [matMenuTriggerFor]="itemMenu" aria-label="Actions"><mat-icon>more_horiz</mat-icon></button>
+    <mat-menu #itemMenu="matMenu" xPosition="before" class="harnais-menu">
+      <button mat-menu-item (click)="togglePin.emit(c.id)"><mat-icon>push_pin</mat-icon><span>{{ c.pinned ? 'Désépingler' : 'Épingler' }}</span></button>
+      <button mat-menu-item disabled><mat-icon>edit</mat-icon><span>Renommer</span></button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item class="danger" (click)="remove.emit(c.id)"><mat-icon>delete</mat-icon><span>Supprimer</span></button>
+    </mat-menu>
+  </div>
+</ng-template>

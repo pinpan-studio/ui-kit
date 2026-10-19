@@ -1,0 +1,191 @@
+@let b = block();
+
+@if (done()) {
+  <!-- Récapitulatif figé après envoi -->
+  <dl class="summary">
+    @for (s of summary(); track s.label) {
+      <div class="row"><dt>{{ s.label }}</dt><dd>{{ s.value }}</dd></div>
+    }
+  </dl>
+  <div class="sent"><mat-icon>check_circle</mat-icon>Envoyé à l’agent</div>
+} @else {
+  @if (b.description) { <p class="desc">{{ b.description }}</p> }
+
+  <form class="grid" [formGroup]="form()" (ngSubmit)="submit()">
+    @for (f of b.fields; track f.key) {
+      <div class="field" [class.wide]="isWide(f)" [class.invalid]="invalid(f.key)">
+        @if (isKit(f)) {
+          <!-- Champs avancés du kit : libellé, aide et erreur posés autour du composant -->
+          <span class="label">{{ f.label }}@if (f.required) {<em class="req">*</em>}</span>
+          @switch (f.kind) {
+            @case ('otp') { <app-otp-input [formControl]="$any(ctrl(f.key))" [length]="f.length ?? 6" [invalid]="invalid(f.key)" /> }
+            @case ('stepper') { <app-number-stepper [formControl]="$any(ctrl(f.key))" [min]="f.min ?? 0" [max]="f.max ?? 9999" [step]="f.step ?? 1" [unit]="f.unit ?? ''" /> }
+            @case ('currency') { <app-currency-input [formControl]="$any(ctrl(f.key))" [currency]="f.currency ?? 'XOF'" [placeholder]="f.placeholder ?? '0'" [inWords]="true" /> }
+            @case ('range') { <app-range-slider [formControl]="$any(ctrl(f.key))" [min]="f.min ?? 0" [max]="f.max ?? 100" [step]="f.step ?? 1" [unit]="f.unit ?? ''" [histogram]="f.histogram ?? []" /> }
+            @case ('color') { <app-color-picker [formControl]="$any(ctrl(f.key))" /> }
+            @case ('richtext') { <app-rich-text-editor [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? 'Saisissez votre texte…'" minHeight="120px" /> }
+            @case ('markdown') { <app-markdown-editor [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? 'Rédigez en Markdown…'" minHeight="160px" /> }
+            @case ('signature') { <app-signature-pad [formControl]="$any(ctrl(f.key))" height="160px" [invalid]="invalid(f.key)" /> }
+            @case ('treeselect') { <app-tree-select [formControl]="$any(ctrl(f.key))" [options]="$any(f.options ?? [])" [multiple]="!!f.multiple" [placeholder]="f.placeholder ?? 'Sélectionner…'" [icon]="f.icon ?? 'account_tree'" /> }
+            @case ('transfer') { <app-transfer-list [formControl]="$any(ctrl(f.key))" [items]="$any(f.options ?? [])" /> }
+            @case ('tags') { <app-tag-input [formControl]="$any(ctrl(f.key))" [suggestions]="labels(f)" [placeholder]="f.placeholder ?? 'Ajouter…'" [icon]="f.icon ?? 'sell'" [max]="f.max ?? null" /> }
+            @case ('address') { <app-address-field [formControl]="$any(ctrl(f.key))" [search]="searchPlaces" [map]="!!f.map" mapHeight="200px" [placeholder]="f.placeholder ?? 'Rechercher une adresse…'" /> }
+            @case ('password') { <app-password-field [formControl]="$any(ctrl(f.key))" [generator]="!!f.secret" [placeholder]="f.placeholder ?? 'Mot de passe'" /> }
+            @case ('copy') { <app-copy-field [value]="$any(f.value ?? '')" [label]="f.label" [icon]="f.icon ?? ''" [secret]="!!f.secret" /> }
+            @case ('file') { <app-file-upload [accept]="f.accept" [placeholder]="f.placeholder ?? 'Joindre un fichier'" [disabled]="disabled()" (onUpload)="setFile(f.key, $event)" /> }
+          }
+          @if (invalid(f.key)) { <span class="err">Champ requis</span> } @else if (f.hint) { <span class="hint">{{ f.hint }}</span> }
+        } @else {
+        @switch (f.kind) {
+          @case ('select') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              @if (f.icon) { <mat-icon matPrefix>{{ f.icon }}</mat-icon> }
+              <mat-select [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? ''">
+                @for (o of f.options; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }
+              </mat-select>
+              @if (f.hint) { <mat-hint>{{ f.hint }}</mat-hint> }
+              @if (invalid(f.key)) { <mat-error>Champ requis</mat-error> }
+            </mat-form-field>
+          }
+          @case ('multiselect') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              @if (f.icon) { <mat-icon matPrefix>{{ f.icon }}</mat-icon> }
+              <mat-select multiple [formControl]="$any(ctrl(f.key))">
+                @for (o of f.options; track o.value) { <mat-option [value]="o.value">{{ o.label }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+          }
+          @case ('autocomplete') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              <mat-icon matPrefix>{{ f.icon ?? 'search' }}</mat-icon>
+              <input matInput [formControl]="$any(ctrl(f.key))" [matAutocomplete]="auto" [placeholder]="f.placeholder ?? ''" />
+              <mat-autocomplete #auto="matAutocomplete">
+                @for (l of suggest(f); track l) { <mat-option [value]="l">{{ l }}</mat-option> }
+              </mat-autocomplete>
+              @if (f.hint) { <mat-hint>{{ f.hint }}</mat-hint> }
+              @if (invalid(f.key)) { <mat-error>Champ requis</mat-error> }
+            </mat-form-field>
+          }
+          @case ('mask') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              @if (f.icon) { <mat-icon matPrefix>{{ f.icon }}</mat-icon> }
+              <input matInput [appInputMask]="f.mask ?? ''" [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? ''" inputmode="text" />
+              <mat-hint>{{ f.hint ?? 'Format : ' + f.mask }}</mat-hint>
+              @if (invalid(f.key)) { <mat-error>Champ requis</mat-error> }
+            </mat-form-field>
+          }
+          @case ('daterange') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              <mat-date-range-input [rangePicker]="rp">
+                <input matStartDate placeholder="Début" [value]="range(f.key).start" (dateChange)="setRange(f.key, 'start', $event.value)" />
+                <input matEndDate placeholder="Fin" [value]="range(f.key).end" (dateChange)="setRange(f.key, 'end', $event.value)" />
+              </mat-date-range-input>
+              <mat-datepicker-toggle matIconSuffix [for]="rp" />
+              <mat-date-range-picker #rp />
+              @if (f.hint) { <mat-hint>{{ f.hint }}</mat-hint> }
+              @if (invalid(f.key)) { <mat-hint class="mat-error-hint">Période requise</mat-hint> }
+            </mat-form-field>
+          }
+          @case ('time') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              <mat-icon matPrefix>{{ f.icon ?? 'schedule' }}</mat-icon>
+              <input matInput [matTimepicker]="tp" [formControl]="$any(ctrl(f.key))" placeholder="HH:MM" />
+              <mat-timepicker-toggle matIconSuffix [for]="tp" />
+              <mat-timepicker #tp [interval]="(f.step ?? 15) + 'min'" />
+              @if (f.hint) { <mat-hint>{{ f.hint }}</mat-hint> }
+              @if (invalid(f.key)) { <mat-error>Heure requise</mat-error> }
+            </mat-form-field>
+          }
+          @case ('date') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              <input matInput [matDatepicker]="picker" [formControl]="$any(ctrl(f.key))" placeholder="jj/mm/aaaa" />
+              <mat-datepicker-toggle matIconSuffix [for]="picker" />
+              <mat-datepicker #picker />
+              @if (invalid(f.key)) { <mat-error>Date requise</mat-error> }
+            </mat-form-field>
+          }
+          @case ('textarea') {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              <textarea matInput rows="3" [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? ''"></textarea>
+            </mat-form-field>
+          }
+          @case ('segmented') {
+            <span class="label">{{ f.label }}</span>
+            <div class="segmented" role="radiogroup" [attr.aria-label]="f.label">
+              @for (o of f.options; track o.value) {
+                <button type="button" role="radio" [attr.aria-checked]="value(f.key) === o.value" [class.on]="value(f.key) === o.value" (click)="ctrl(f.key).setValue(o.value)">
+                  @if (o.icon) { <mat-icon>{{ o.icon }}</mat-icon> }{{ o.label }}
+                </button>
+              }
+            </div>
+          }
+          @case ('radio') {
+            <span class="label">{{ f.label }}</span>
+            <mat-radio-group class="radios" [formControl]="$any(ctrl(f.key))" [attr.aria-label]="f.label">
+              @for (o of f.options; track o.value) { <mat-radio-button [value]="o.value">{{ o.label }}</mat-radio-button> }
+            </mat-radio-group>
+          }
+          @case ('chips') {
+            <span class="label">{{ f.label }}</span>
+            <div class="chips">
+              @for (o of f.options; track o.value) {
+                <button type="button" class="chip" [class.on]="isChipOn(f.key, o.value)" [attr.aria-pressed]="isChipOn(f.key, o.value)" (click)="toggleChip(f.key, o.value)">
+                  <mat-icon>{{ isChipOn(f.key, o.value) ? 'check' : 'add' }}</mat-icon>{{ o.label }}
+                </button>
+              }
+            </div>
+          }
+          @case ('slider') {
+            <span class="label">{{ f.label }} <strong>{{ value(f.key) }}{{ f.unit }}</strong></span>
+            <mat-slider class="slider" [min]="f.min ?? 0" [max]="f.max ?? 100" [step]="f.step ?? 1" discrete>
+              <input matSliderThumb [formControl]="$any(ctrl(f.key))" />
+            </mat-slider>
+          }
+          @case ('rating') {
+            <span class="label">{{ f.label }}</span>
+            <div class="stars" role="radiogroup" [attr.aria-label]="f.label">
+              @for (n of stars; track n) {
+                <button type="button" role="radio" [attr.aria-checked]="value(f.key) === n" [attr.aria-label]="n + ' sur 5'" [class.on]="$any(value(f.key)) >= n" (click)="setRating(f.key, n)">
+                  <mat-icon>{{ $any(value(f.key)) >= n ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+              }
+            </div>
+          }
+          @case ('checkbox') {
+            <mat-checkbox [formControl]="$any(ctrl(f.key))">{{ f.label }}</mat-checkbox>
+          }
+          @case ('toggle') {
+            <div class="toggle-row">
+              <span class="toggle-label">{{ f.label }}@if (f.hint) {<small>{{ f.hint }}</small>}</span>
+              <mat-slide-toggle [formControl]="$any(ctrl(f.key))" [attr.aria-label]="f.label" />
+            </div>
+          }
+          @default {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ f.label }}</mat-label>
+              @if (f.icon) { <mat-icon matPrefix>{{ f.icon }}</mat-icon> }
+              <input matInput [type]="f.kind" [formControl]="$any(ctrl(f.key))" [placeholder]="f.placeholder ?? ''" [attr.min]="f.min" [attr.max]="f.max" />
+              @if (f.unit) { <span matTextSuffix>{{ f.unit }}</span> }
+              @if (f.hint) { <mat-hint>{{ f.hint }}</mat-hint> }
+              @if (invalid(f.key)) { <mat-error>{{ ctrl(f.key).hasError('email') ? 'Adresse invalide' : 'Champ requis' }}</mat-error> }
+            </mat-form-field>
+          }
+        }
+        }
+      </div>
+    }
+
+    <div class="actions wide">
+      <button type="button" mat-button (click)="reset()" [disabled]="disabled()">Réinitialiser</button>
+      <button type="submit" mat-flat-button color="primary" [disabled]="disabled()"><mat-icon>send</mat-icon>{{ b.submitLabel ?? 'Envoyer' }}</button>
+    </div>
+  </form>
+}
