@@ -145,7 +145,7 @@
     &.indigo  { background: rgba(99, 102, 241, 0.12); color: #6366f1; }
     &.success { background: rgba(16, 185, 129, 0.12); color: #10b981; }
     &.warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
-    &.danger  { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+    &.danger  { background: rgba(239, 68, 68, 0.12); color: var(--error-icon-on-tint); }
     &.purple  { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
     &.cyan    { background: rgba(6, 182, 212, 0.12); color: var(--cyan-icon-on-tint); }
     &.teal    { background: rgba(20, 184, 166, 0.12); color: #14b8a6; }
@@ -222,7 +222,7 @@
       &.teal    { background: rgba(20, 184, 166, 0.12); color: #14b8a6; }
       &.success { background: rgba(16, 185, 129, 0.12); color: #10b981; }
       &.warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
-      &.danger  { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+      &.danger  { background: rgba(239, 68, 68, 0.12); color: var(--error-icon-on-tint); }
       &.purple  { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
       &.cyan    { background: rgba(6, 182, 212, 0.12); color: var(--cyan-icon-on-tint); }
     }

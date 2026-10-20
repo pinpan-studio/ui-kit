@@ -115,7 +115,7 @@
     &:hover { background: var(--hover-bg); }
     &.active { background: var(--primary-color-light); border-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
       .item-icon-box { background: var(--primary-color); color: #fff; } .item-label { color: var(--primary-color); font-weight: 600; } }
-    &.danger .item-icon-box { background-color: rgba(239, 68, 68, 0.1); color: #b91c1c; }
+    &.danger .item-icon-box { background-color: rgba(239, 68, 68, 0.1); color: var(--error-icon-on-tint); }
   }
 }
 
