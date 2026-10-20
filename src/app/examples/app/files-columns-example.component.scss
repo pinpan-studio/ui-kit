@@ -46,7 +46,7 @@
   &:hover { background: var(--hover-bg); }
   // Sélection dans une colonne parente : discrète ; dans la colonne active : accentuée.
   &.sel { background: var(--hover-bg); font-weight: 500; }
-  &.focus { background: var(--primary-color); color: var(--mat-sys-on-primary, #fff); .chev, .star, .nm small { color: inherit; } } }
+  &.focus { background: var(--primary-color); color: var(--mat-sys-on-primary, #fff); .chev, .star, .nm small { color: inherit; } .fi { color: inherit !important; } } }
 .none { margin: var(--space-3) var(--space-2); font-size: var(--fs-caption); color: var(--text-muted); }
 
 // ─── Aperçu ────────────────────────────────────────────────────

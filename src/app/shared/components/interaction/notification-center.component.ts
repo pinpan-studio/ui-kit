@@ -93,7 +93,7 @@ export interface AppNotification {
       display: flex; align-items: center; justify-content: center;
       &:hover, &.on { background: var(--hover-bg); color: var(--text-primary); } }
     .nc-count { position: absolute; top: 4px; right: 3px; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; border: 2px solid var(--card-bg);
-      background: var(--error-color); color: #fff; font: 700 10px/14px 'Inter', sans-serif; text-align: center;
+      background: var(--error-color); color: var(--mat-sys-on-error); font: 700 10px/14px 'Inter', sans-serif; text-align: center;
       &.ping::after { content: ''; position: absolute; inset: -2px; border-radius: inherit; background: var(--error-color); animation: nc-ping 1s ease-out 2; z-index: -1; } }
     @keyframes nc-ping { to { transform: scale(2); opacity: 0; } }
   `],

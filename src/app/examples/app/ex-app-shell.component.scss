@@ -158,7 +158,7 @@
 .chat-btn { position: relative;
   &.on { color: var(--primary-color); }
   .chat-n { position: absolute; top: 4px; right: 2px; min-width: 16px; height: 16px; padding: 0 var(--space-1); box-sizing: border-box; border-radius: var(--radius-sm);
-    background: var(--error-color); color: #fff; font: 700 10px / 16px var(--font-body); text-align: center; pointer-events: none; } }
+    background: var(--error-color); color: var(--mat-sys-on-error); font: 700 10px / 16px var(--font-body); text-align: center; pointer-events: none; } }
 .chat-drawer { width: calc(380px + var(--space-s) * 2); box-sizing: border-box; padding: var(--space-s); background: transparent; border: none; box-shadow: none;
   @include mobile { width: min(400px, 94vw); } }
 .chat-inner { height: 100%; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--r-l);

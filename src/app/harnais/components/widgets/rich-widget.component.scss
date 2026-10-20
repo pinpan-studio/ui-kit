@@ -43,7 +43,7 @@ dd {
 }
 .done .dot { background: var(--success-color); border-color: var(--success-color); color: var(--on-success-color); }
 .current .dot { background: var(--primary-color); border-color: var(--primary-color); color: #fff; box-shadow: 0 0 0 4px var(--primary-color-light); }
-.error .dot { background: var(--error-color); border-color: var(--error-color); color: #fff; }
+.error .dot { background: var(--error-color); border-color: var(--error-color); color: var(--mat-sys-on-error); }
 .st-text { display: flex; flex-direction: column; gap: 2px; }
 .st-label { font-size: var(--hz-ui); font-weight: 600; color: var(--text-primary); }
 .todo .st-label { color: var(--text-muted); }
@@ -118,7 +118,7 @@ dd {
   padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--hz-ui); font-weight: 500;
   background: color-mix(in srgb, var(--tone) 10%, transparent); color: var(--text-primary);
   border: 1px solid color-mix(in srgb, var(--tone) 22%, transparent);
-  b { font-size: var(--hz-micro); padding: 0 var(--space-2); border-radius: 99px; background: var(--tone); color: #fff; }
+  b { font-size: var(--hz-micro); padding: 0 var(--space-2); border-radius: 99px; background: var(--tone-solid, var(--tone)); color: var(--tone-on, #fff); }
 }
 
 // ─── Carte de chaleur ──────────────────────────────────────────
@@ -156,7 +156,7 @@ dd {
 .c-visual {
   height: 92px; display: flex; align-items: center; justify-content: center; position: relative;
   background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 20%, var(--card-bg)), color-mix(in srgb, var(--tone) 6%, var(--card-bg)));
-  color: var(--tone);
+  color: var(--tone-icon, var(--tone));
   mat-icon { font-size: 36px; width: 36px; height: 36px; }
   img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 }

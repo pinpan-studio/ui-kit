@@ -76,7 +76,7 @@ export interface DescriptionItem {
         mat-icon { font-size: 14px; width: 14px; height: 14px; } &:hover { text-decoration: underline; } }
       .ml { white-space: pre-line; font-weight: 400; line-height: 1.55; } }
     .dl-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
-      color: var(--tone); background: color-mix(in srgb, var(--tone) 14%, transparent);
+      color: var(--tone-fg, var(--tone)); background: color-mix(in srgb, var(--tone) 14%, transparent);
       &::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tone); } }
     .dl-copy { width: 26px; height: 26px; border: none; border-radius: 50%; background: transparent; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 0.6;
       mat-icon { font-size: 15px; width: 15px; height: 15px; } &:hover { opacity: 1; background: var(--hover-bg); color: var(--primary-color); } }

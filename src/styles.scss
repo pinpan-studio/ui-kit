@@ -644,6 +644,7 @@ mat-drawer {
   --cyan-on-tint: #155e75;
   --cyan-icon-on-tint: #0e7490;
   --error-on-tint: #b91c1c;
+  --error-icon-on-tint: #b91c1c;
   /* Fonds pleins de ton : contenu « on- » (warning 7,6:1, cyan 5,52:1) et fonds
      assombris pour le blanc (info 5,17:1, purple 5,38:1, error en dur 4,83:1).
      L'error M3 garde --mat-sys-error + --mat-sys-on-error. */
@@ -702,6 +703,7 @@ mat-drawer {
   --cyan-on-tint: #67e8f9;
   --cyan-icon-on-tint: #67e8f9;
   --error-on-tint: var(--mat-sys-on-error-container);
+  --error-icon-on-tint: var(--mat-sys-on-error-container);
 
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
@@ -1554,6 +1556,20 @@ app-workspace {
   }
 }
 
+// ─── Lot contraste : couleur de texte/icône pour les tons passés en style inline ───
+// Les composants reçoivent leur ton en [style.--tone]="'var(--info-color)'" (ou --pin, --c).
+// Ces sélecteurs en déduisent --tone-fg (texte sur fond -light), --tone-icon (icône)
+// et --tone-on (contenu sur fond plein), sans toucher aux --*-color globaux.
+[style*="var(--success-color)"] { --tone-fg: var(--success-on-tint); --tone-icon: var(--success-icon-on-tint); --tone-on: var(--on-success-color); }
+[style*="var(--warning-color)"] { --tone-fg: var(--warning-on-tint); --tone-icon: var(--warning-icon-on-tint); --tone-on: var(--on-warning-color); }
+[style*="var(--error-color)"] { --tone-fg: var(--error-on-tint); --tone-icon: var(--error-icon-on-tint); --tone-on: var(--mat-sys-on-error); }
+[style*="var(--info-color)"] { --tone-fg: var(--info-on-tint); --tone-icon: var(--info-icon-on-tint); --tone-on: #fff; }
+[style*="var(--purple-color)"] { --tone-fg: var(--purple-on-tint); --tone-icon: var(--purple-icon-on-tint); --tone-on: #fff; }
+[style*="var(--cyan-color)"] { --tone-fg: var(--cyan-on-tint); --tone-icon: var(--cyan-icon-on-tint); --tone-on: var(--on-cyan-color); }
+// info/purple pleins : fond assombri pour le blanc (5,17:1 / 5,38:1).
+[style*="var(--info-color)"] { --tone-solid: var(--info-color-strong); }
+[style*="var(--purple-color)"] { --tone-solid: var(--purple-color-strong); }
+
 // ─── Badges ────────────────────────────────────────────────────
 .m3-badge {
   display: inline-flex;
@@ -2160,6 +2176,7 @@ app-workspace {
   --cyan-on-tint: #155e75;
   --cyan-icon-on-tint: #0e7490;
   --error-on-tint: #b91c1c;
+  --error-icon-on-tint: #b91c1c;
 
   // Case à cocher des pense-bêtes : contour visible sur fond clair
   --mat-checkbox-unselected-icon-color: #6b7280;

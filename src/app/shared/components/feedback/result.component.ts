@@ -51,7 +51,7 @@ const PRESETS: Record<ResultStatus, { icon: string; tone: string; title: string;
     .rs-code { position: absolute; top: 0; left: 50%; transform: translateX(-50%); font: 800 120px/1 'Outfit', sans-serif; letter-spacing: -0.04em;
       color: color-mix(in srgb, var(--tone) 9%, transparent); pointer-events: none; user-select: none; }
     .rs-ic { position: relative; width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      background: color-mix(in srgb, var(--tone) 14%, var(--card-bg)); color: var(--tone);
+      background: color-mix(in srgb, var(--tone) 14%, var(--card-bg)); color: var(--tone-icon, var(--tone));
       box-shadow: 0 0 0 10px color-mix(in srgb, var(--tone) 6%, transparent);
       mat-icon { font-size: 42px; width: 42px; height: 42px; }
       &.pop { animation: rs-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }

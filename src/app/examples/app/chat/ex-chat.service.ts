@@ -48,7 +48,7 @@ const PEOPLE: ChatPerson[] = [
   { id: 'aya', name: 'Aya Koné', color: '#8b5cf6', role: 'Opérations', online: true },
   { id: 'marc', name: 'Marc Yao', color: '#10b981', role: 'Développeur', online: true },
   { id: 'grace', name: 'Grace Kouamé', color: '#f59e0b', role: 'Designer', online: false },
-  { id: 'ibrahim', name: 'Ibrahim Sanogo', color: '#ef4444', role: 'Produit', online: true },
+  { id: 'ibrahim', name: 'Ibrahim Sanogo', color: '#dc2626', role: 'Produit', online: true },
   { id: 'fatou', name: 'Fatou Diabaté', color: '#7c3aed', role: 'Juridique', online: false },
   { id: 'koffi', name: 'Koffi N’Guessan', color: '#0891b2', role: 'Technicien', online: true },
   { id: 'sarah', name: 'Sarah Bamba', color: '#db2777', role: 'Formation', online: false },

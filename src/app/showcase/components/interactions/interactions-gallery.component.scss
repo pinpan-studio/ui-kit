@@ -47,7 +47,7 @@
 
 .app-bar { display: flex; align-items: center; gap: var(--space-3); height: 56px; padding: 0 var(--space-2) 0 var(--space-4); border-radius: var(--radius-lg); border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg));
   .logo { color: var(--primary-color); } strong { font-family: 'Outfit', sans-serif; } .spacer { flex: 1; } }
-.me { width: 34px; height: 34px; border-radius: 50%; background: var(--purple-color, #8b5cf6); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.me { width: 34px; height: 34px; border-radius: 50%; background: var(--purple-color-strong); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
 .files { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
 .file { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: var(--space-3); border-radius: var(--radius-md); border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg)); cursor: default; outline: none; user-select: none;

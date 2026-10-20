@@ -8,16 +8,17 @@
   &.compact { padding: 7px var(--space-2) 7px var(--space-4); border-radius: var(--radius-md); .bn-text { flex-direction: row; gap: var(--space-2); flex-wrap: wrap; align-items: baseline; } }
 }
 @keyframes bn-in { from { opacity: 0; transform: translateY(-6px); } }
-.bn--success { --c: var(--success-color); }
-.bn--warning { --c: var(--warning-color); }
-.bn--error { --c: var(--error-color); }
-.bn--maintenance { --c: var(--purple-color, #8b5cf6); }
-.bn--offline { --c: var(--error-color); background: var(--error-color); color: #fff; border-color: transparent;
-  .bn-ic, .bn-text span { color: #fff; } .bn-action { background: rgba(255, 255, 255, 0.2); color: #fff; } .bn-close { color: #fff; } }
+.bn { --c-icon: var(--info-icon-on-tint); }
+.bn--success { --c: var(--success-color); --c-icon: var(--success-icon-on-tint); }
+.bn--warning { --c: var(--warning-color); --c-icon: var(--warning-icon-on-tint); }
+.bn--error { --c: var(--error-color); --c-icon: var(--error-on-tint); }
+.bn--maintenance { --c: var(--purple-color, #8b5cf6); --c-icon: var(--purple-icon-on-tint); }
+.bn--offline { --c: var(--error-color); background: var(--error-color); color: var(--mat-sys-on-error); border-color: transparent;
+  .bn-ic, .bn-text span { color: var(--mat-sys-on-error); } .bn-action { background: color-mix(in srgb, var(--mat-sys-on-error) 20%, transparent); color: var(--mat-sys-on-error); } .bn-close { color: var(--mat-sys-on-error); } }
 .bn--promo { --c: var(--primary-color); background: linear-gradient(90deg, var(--primary-color), var(--purple-color, #8b5cf6)); color: #fff; border-color: transparent;
   .bn-ic, .bn-text span { color: #fff; } .bn-action { background: #fff; color: var(--primary-color); } .bn-close { color: #fff; } }
 
-.bn-ic { flex-shrink: 0; color: var(--c); &.spin { animation: bn-spin 1.4s linear infinite; } }
+.bn-ic { flex-shrink: 0; color: var(--c-icon, var(--c)); &.spin { animation: bn-spin 1.4s linear infinite; } }
 @keyframes bn-spin { to { transform: rotate(360deg); } }
 .bn-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; font-size: 13px;
   strong { font-weight: 600; font-size: 13.5px; }

@@ -168,7 +168,7 @@ $brand-b: color-mix(in srgb, var(--tertiary-color) 55%, #0b1220);
   .fc-1 { top: 18%; right: 10%; }
   .fc-2 { top: 34%; right: 26%; }
   .avatars { display: flex; i { width: 28px; height: 28px; margin-left: -8px; border-radius: 50%; border: 2px solid var(--card-bg); display: flex; align-items: center; justify-content: center;
-    font-style: normal; font-size: 10px; font-weight: 700; color: #fff; background: var(--primary-color); &:first-child { margin-left: 0; } &:nth-child(2) { background: var(--tertiary-color); } &:nth-child(3) { background: var(--info-color); } } }
+    font-style: normal; font-size: 10px; font-weight: 700; color: #fff; background: var(--primary-color); &:first-child { margin-left: 0; } &:nth-child(2) { background: var(--tertiary-color); } &:nth-child(3) { background: var(--info-color-strong); } } }
 }
 
 .testimonial { justify-content: center; gap: var(--space-10);
