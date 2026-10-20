@@ -29,4 +29,4 @@
   display: flex; align-items: center; justify-content: center; mat-icon { font-size: 18px; width: 18px; height: 18px; }
   &:hover { background: color-mix(in srgb, currentColor 12%, transparent); } }
 
-@media (max-width: 599.98px) { .bn { flex-wrap: wrap; } .bn-action { margin-left: var(--space-10); } }
+@media (max-width: 599.98px) { .bn { flex-wrap: wrap; align-items: flex-start; } .bn-text { flex: 1 1 calc(100% - 80px); } .bn-action { margin-left: var(--space-10); } }

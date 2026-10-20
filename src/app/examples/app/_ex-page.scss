@@ -21,7 +21,7 @@
   h1 { margin: 0; font-family: var(--font-heading) !important; font-size: var(--fs-h2) !important; font-weight: 700 !important; line-height: 1.25 !important; letter-spacing: -.02em !important; text-wrap: balance; }
   p { margin: var(--space-1) 0 0; font-size: var(--fs-body); line-height: var(--lh-body); color: var(--text-secondary); text-wrap: pretty; }
   .actions { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
-  @include mobile { margin-bottom: var(--space-4); h1 { font-size: var(--fs-h3) !important; } .actions { width: 100%; > * { flex: 1; } } } }
+  @include mobile { margin-bottom: var(--space-4); h1 { font-size: var(--fs-h3) !important; } .actions { width: 100%; > * { flex: 1 1 auto; } } } }
 
 // ─── Cartes ────────────────────────────────────────────────────
 .card { background: var(--card-bg); border: 0; border-radius: var(--radius-md); box-sizing: border-box; min-width: 0; }
@@ -41,7 +41,7 @@
     mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--text-muted); } }
   .k-val { font-family: var(--font-heading); font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     small { margin-left: var(--space-1); font: 500 var(--fs-body-sm) var(--font-body); letter-spacing: 0; color: var(--text-muted); } }
-  .k-foot { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-caption); color: var(--text-muted); }
+  .k-foot { display: flex; align-items: center; flex-wrap: wrap; row-gap: 2px; gap: var(--space-2); font-size: var(--fs-caption); color: var(--text-muted); }
   @include sm { padding: var(--space-3) var(--space-4); .k-val { font-size: 22px; } } }
 
 // ─── Listes de lignes (avatar + 2 lignes + valeur) ─────────────

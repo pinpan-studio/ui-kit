@@ -36,5 +36,5 @@
   .spacer { flex: 1; }
   .help { display: flex; align-items: center; gap: var(--space-2); mat-icon { font-size: 17px; width: 17px; height: 17px; } }
   button { height: 44px; }
-  @include sm { .spacer { display: none; } button { flex: 1; } } }
+  @include sm { .spacer { display: none; } .help { flex: 1 1 100%; } button { flex: 1 1 auto; white-space: nowrap; } } }
 .done { max-width: 640px; margin: 0 auto; }

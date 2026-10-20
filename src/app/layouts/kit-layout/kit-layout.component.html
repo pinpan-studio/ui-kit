@@ -108,7 +108,7 @@
 
   <mat-sidenav-content class="kit-main">
     <mat-toolbar class="kit-toolbar">
-      <button mat-icon-button (click)="nav.toggle()"><mat-icon>{{ nav.opened ? 'menu_open' : 'menu' }}</mat-icon></button>
+      <button mat-icon-button (click)="nav.toggle()" [attr.aria-label]="nav.opened ? 'Fermer le menu' : 'Ouvrir le menu'" [attr.aria-expanded]="nav.opened"><mat-icon>{{ nav.opened ? 'menu_open' : 'menu' }}</mat-icon></button>
       <span class="toolbar-title">Catalogue UI</span>
       <span class="spacer"></span>
       <button type="button" class="palette-btn" (click)="palette.open()" aria-label="Rechercher (⌘K)">
@@ -120,7 +120,7 @@
       <a mat-stroked-button class="app-link" routerLink="/main">
         <mat-icon>open_in_new</mat-icon><span>Ouvrir l'application</span>
       </a>
-      <button mat-icon-button (click)="theme.toggle()" matTooltip="Changer de thème">
+      <button mat-icon-button (click)="theme.toggle()" matTooltip="Changer de thème" aria-label="Changer de thème">
         <mat-icon>{{ theme.mode() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
       </button>
       <app-theme-picker />
