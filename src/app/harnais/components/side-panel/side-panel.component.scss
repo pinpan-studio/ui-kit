@@ -174,7 +174,7 @@ mat-progress-bar { border-radius: 99px; --mdc-linear-progress-track-height: 6px;
     padding: var(--space-3) var(--space-3); border-radius: var(--radius-md); font-size: var(--hz-body); color: var(--text-primary);
     mat-icon { font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
   }
-  .done { color: var(--text-muted); span { text-decoration: line-through; } mat-icon { color: var(--success-color); } }
+  .done { color: var(--text-muted); span { text-decoration: line-through; } mat-icon { color: var(--success-icon-on-tint); } }
   .running { background: var(--tertiary-color-light); font-weight: 600; mat-icon { color: var(--tertiary-color); } }
   .todo mat-icon { color: var(--text-muted); }
   .tag {

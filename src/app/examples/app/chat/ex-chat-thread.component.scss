@@ -38,7 +38,7 @@
   ::ng-deep a { color: inherit; } ::ng-deep code { font: .9em var(--font-mono); padding: 0 var(--space-1); border-radius: var(--radius-xs); background: rgba(127, 127, 127, .18); } }
 .meta { float: right; display: inline-flex; align-items: center; gap: 2px; margin: var(--space-2) 0 -2px var(--space-3); font-size: 10.5px; opacity: .7; font-variant-numeric: tabular-nums; white-space: nowrap;
   .tick { font-size: 14px; width: 14px; height: 14px; &.read { color: #7dd3fc; opacity: 1; } }
-  .msg:not(.mine) & .tick.read { color: var(--info-color); } }
+  .msg:not(.mine) & .tick.read { color: var(--info-on-tint); } }
 .del { display: inline-flex; align-items: center; gap: var(--space-1); font-style: italic; font-size: var(--fs-body-sm); mat-icon { font-size: 15px; width: 15px; height: 15px; } }
 
 .quote { display: flex; flex-direction: column; margin: 2px 0 var(--space-2); padding: var(--space-1) var(--space-2); border-left: 3px solid currentColor; border-radius: var(--radius-xs); background: rgba(127, 127, 127, .12); font-size: var(--fs-caption);
@@ -103,4 +103,4 @@
     i { width: 3px; height: 100%; border-radius: 2px; background: var(--error-color); opacity: .6; animation: wave .9s ease-in-out infinite; } }
   button[mat-flat-button] { border-radius: var(--radius-xl); } }
 @keyframes wave { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
-.danger { color: var(--error-color-text, var(--error-color)); mat-icon { color: inherit; } }
+.danger { color: var(--error-on-tint); mat-icon { color: inherit; } }

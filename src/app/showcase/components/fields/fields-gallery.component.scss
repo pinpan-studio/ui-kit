@@ -12,7 +12,7 @@
   background: var(--primary-color-light); color: var(--primary-color); margin-bottom: var(--space-1); }
 .otp-msg { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); font-size: 12.5px; min-height: 36px;
   mat-icon { font-size: 17px; width: 17px; height: 17px; }
-  &.ok { color: var(--success-color-text, var(--success-color)); }
+  &.ok { color: var(--success-on-tint); }
   &.bad { color: var(--error-color); } }
 
 .cart-line { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3); border-radius: var(--r-m); border: 0; font-size: 13.5px;

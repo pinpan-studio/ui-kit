@@ -215,3 +215,8 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
     --mat-standard-button-toggle-divider-color: transparent; --mat-standard-button-toggle-background-color: transparent;
     .mat-button-toggle + .mat-button-toggle { border-left: 0 !important; } }
 }
+
+// Contraste : chaque aperçu (.device.light / .device.dark) a son propre fond de carte, indépendant du mode
+// de la page. L'icône bleue suit donc le mode de l'aperçu : nuance 700 en clair, 300 en sombre.
+.device.light .entity-card .card-icon-box.icon-blue { color: #1d4ed8 !important; mat-icon { color: #1d4ed8 !important; } }
+.device.dark .entity-card .card-icon-box.icon-blue { color: #93c5fd !important; mat-icon { color: #93c5fd !important; } }

@@ -61,12 +61,12 @@ import {
     }
     .dense .ng-note { min-height: 0; padding: 10px 12px; gap: 6px; }
     .ng-head { display: flex; align-items: center; gap: 6px; min-height: 18px; }
-    .ng-ref { font-size: 11px; font-weight: 700; color: var(--tone); }
+    .ng-ref { font-size: 11px; font-weight: 700; color: var(--tone-fg, var(--tone)); }
     .ng-title { margin: 0; font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--text-primary); }
     .ng-desc { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-secondary); display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
     .ng-foot { margin-top: auto; display: flex; align-items: center; gap: 6px; }
     .ng-pct { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
-    .ng-done { font-size: 18px; width: 18px; height: 18px; color: var(--success-color); }
+    .ng-done { font-size: 18px; width: 18px; height: 18px; color: var(--success-icon-on-tint); }
     .pl-progress { background: color-mix(in srgb, var(--tone) 20%, transparent); }
   `],
 })

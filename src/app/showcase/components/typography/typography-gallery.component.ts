@@ -80,7 +80,7 @@ export class TypographyGalleryComponent {
   measureState = computed(() => (this.measure() < 45 ? 'trop court' : this.measure() > 80 ? 'trop long' : 'confortable'));
 
   // ── Contraste ────────────────────────────────────────
-  readonly textTokens = ['--text-primary', '--text-secondary', '--text-muted', '--primary-color', '--error-color', '--error-color-text', '--success-color', '--success-color-text', '--warning-color', '--warning-color-text'];
+  readonly textTokens = ['--text-primary', '--text-secondary', '--text-muted', '--primary-color', '--error-color', '--error-color-text', '--success-icon-on-tint', '--success-color-text', '--warning-on-tint', '--warning-color-text'];
   contrasts = signal<{ token: string; color: string; bg: string; ratio: number }[]>([]);
 
   // ── Chiffres ─────────────────────────────────────────

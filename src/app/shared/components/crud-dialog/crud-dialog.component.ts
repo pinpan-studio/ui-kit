@@ -46,7 +46,7 @@ export interface CrudDialogConfig {
   template: `
     <h2 mat-dialog-title>
       <mat-icon *ngIf="config.mode === 'create'" style="vertical-align:middle;margin-right:8px;color:var(--primary-color);">add_circle</mat-icon>
-      <mat-icon *ngIf="config.mode === 'edit'" style="vertical-align:middle;margin-right:8px;color:var(--warning-color);">edit</mat-icon>
+      <mat-icon *ngIf="config.mode === 'edit'" style="vertical-align:middle;margin-right:8px;color: var(--warning-icon-on-tint);">edit</mat-icon>
       <mat-icon *ngIf="config.mode === 'view'" style="vertical-align:middle;margin-right:8px;color:var(--text-secondary);">visibility</mat-icon>
       {{ config.title }}
     </h2>

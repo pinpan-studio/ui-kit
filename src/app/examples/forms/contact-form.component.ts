@@ -111,7 +111,7 @@ import { ExAppShellComponent } from '../app/ex-app-shell.component';
       mat-expansion-panel { background: transparent; box-shadow: none !important; }
       mat-panel-title { font: 500 var(--fs-body) / 1.4 var(--font-body); color: var(--text-primary); } }
     .fields { display: flex; flex-direction: column; gap: 18px; }
-    .label-row { display: flex; justify-content: space-between; align-items: baseline; .warn { color: var(--warning-color-text, var(--warning-color)); font-weight: 600; } }
+    .label-row { display: flex; justify-content: space-between; align-items: baseline; .warn { color: var(--warning-on-tint); font-weight: 600; } }
     .phone { padding-left: 4px; mat-select { width: 96px; flex: 0 0 96px; padding: 0 8px; border-right: 1px solid var(--border-color); } }
     .actions-bar .help { display: flex; align-items: center; gap: 4px; .lock { font-size: 14px; width: 14px; height: 14px; } }
     mat-spinner { margin: 0 auto; --mat-progress-spinner-active-indicator-color: currentColor; }

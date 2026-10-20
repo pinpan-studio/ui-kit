@@ -60,7 +60,7 @@ app-map { display: block; min-width: 0; }
 .kit-pin-wrap { background: none !important; border: none !important; }
 .kit-pin {
   position: relative; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  background: var(--pin); color: #fff; outline: 2px solid var(--card-bg); transition: transform .15s ease;
+  background: var(--tone-solid, var(--pin)); color: var(--tone-on, #fff); outline: 2px solid var(--card-bg); transition: transform .15s ease;
   .material-icons { font-size: 18px; }
   &:hover { transform: scale(1.08); }
 }

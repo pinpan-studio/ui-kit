@@ -41,12 +41,12 @@
   .th { width: 22px; height: 22px; border-radius: var(--radius-xs); object-fit: cover; flex-shrink: 0; }
   .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     small { display: block; font-size: var(--fs-caption); color: var(--text-muted); } }
-  .star { font-size: 14px; width: 14px; height: 14px; color: var(--warning-color); }
+  .star { font-size: 14px; width: 14px; height: 14px; color: var(--warning-icon-on-tint); }
   .chev { font-size: 18px; width: 18px; height: 18px; color: var(--text-muted); }
   &:hover { background: var(--hover-bg); }
   // Sélection dans une colonne parente : discrète ; dans la colonne active : accentuée.
   &.sel { background: var(--hover-bg); font-weight: 500; }
-  &.focus { background: var(--primary-color); color: var(--mat-sys-on-primary, #fff); .chev, .star, .nm small { color: inherit; } } }
+  &.focus { background: var(--primary-color); color: var(--mat-sys-on-primary, #fff); .chev, .star, .nm small { color: inherit; } .fi { color: inherit !important; } } }
 .none { margin: var(--space-3) var(--space-2); font-size: var(--fs-caption); color: var(--text-muted); }
 
 // ─── Aperçu ────────────────────────────────────────────────────

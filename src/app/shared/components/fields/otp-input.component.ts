@@ -38,7 +38,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       &:disabled { opacity: 0.55; }
     }
     .invalid input { border-color: var(--error-color); animation: otp-shake 0.35s ease; }
-    .success input { border-color: var(--success-color); color: var(--success-color-text, var(--success-color)); }
+    .success input { border-color: var(--success-color); color: var(--success-on-tint); }
     @keyframes otp-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
     @media (max-width: 420px) { input { width: 40px; height: 48px; font-size: 19px; } .otp { gap: 6px; } }
   `],

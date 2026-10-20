@@ -69,7 +69,7 @@ import {
     .gb-group { display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); &:last-of-type { border-bottom: none; } }
     .gb-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; cursor: pointer; padding: 4px 0; }
     .gb-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      font-size: 12px; font-weight: 700; color: var(--tone); background: color-mix(in srgb, var(--tone) 15%, transparent);
+      font-size: 12px; font-weight: 700; color: var(--tone-fg, var(--tone)); background: color-mix(in srgb, var(--tone) 15%, transparent);
       mat-icon { font-size: 19px; width: 19px; height: 19px; } }
     .gb-title { display: flex; flex-direction: column; min-width: 140px; flex: 1;
       strong { font-family: 'Outfit', sans-serif; font-size: 15px; color: var(--text-primary); } span { font-size: 12px; color: var(--text-muted); } }

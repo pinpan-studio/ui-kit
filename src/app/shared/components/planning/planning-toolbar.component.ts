@@ -57,9 +57,9 @@ import { EMPTY_FILTER_STATE, PlanningFilter, PlanningFilterState } from './plann
       border-radius: var(--r-full); background: var(--mat-sys-surface-container, var(--hover-bg)); color: var(--text-secondary);
       font: inherit; font-size: 12.5px; font-weight: 600;
       mat-icon { font-size: 16px; width: 16px; height: 16px; }
-      em { font-style: normal; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: var(--r-full); background: var(--error-color); color: #fff; }
+      em { font-style: normal; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: var(--r-full); background: var(--error-color); color: var(--mat-sys-on-error); }
       &:hover { color: var(--text-primary); }
-      &.active { background: var(--error-color-light); color: var(--error-color-text); }
+      &.active { background: var(--error-color-light); color: var(--error-on-tint); }
     }
     .pl-reset { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: none; border-radius: 50%; cursor: pointer; background: transparent; color: var(--text-muted);
       mat-icon { font-size: 18px; width: 18px; height: 18px; } &:hover { background: var(--hover-bg); color: var(--error-color); } }

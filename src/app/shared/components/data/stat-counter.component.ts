@@ -101,8 +101,8 @@ export function formatStat(v: number, format: CounterFormat, decimals = 0, curre
     .tr { display: inline-flex; align-items: center; gap: 3px; font: 600 12px 'Inter', sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap;
       mat-icon { font-size: 16px; width: 16px; height: 16px; }
       &.soft { padding: 2px 8px 2px 6px; border-radius: 12px; } }
-    .tr--up { color: var(--success-color-text, var(--success-color)); &.soft { background: var(--success-color-light); } }
-    .tr--down { color: var(--error-color-text, var(--error-color)); &.soft { background: var(--error-color-light); } }
+    .tr--up { color: var(--success-on-tint); &.soft { background: var(--success-color-light); } }
+    .tr--down { color: var(--error-on-tint); &.soft { background: var(--error-color-light); } }
     .tr--flat { color: var(--text-muted); &.soft { background: var(--hover-bg); } }
     .tr-label { font-size: 12px; color: var(--text-muted); }
   `],

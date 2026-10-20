@@ -36,7 +36,7 @@
 .stat-icon {
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: color-mix(in srgb, var(--tone) 12%, transparent); color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, transparent); color: var(--tone-fg, var(--tone));
   mat-icon { font-size: 15px; width: 15px; height: 15px; }
 }
 .stat-label { font-size: var(--hz-meta); font-weight: 600; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -45,8 +45,8 @@
 .delta {
   display: inline-flex; align-items: center; gap: 2px; font-weight: 700;
   mat-icon { font-size: 13px; width: 13px; height: 13px; }
-  &.up { color: var(--success-color-text, var(--success-color)); }
-  &.down { color: var(--error-color-text, var(--error-color)); }
+  &.up { color: var(--success-on-tint); }
+  &.down { color: var(--error-on-tint); }
   &.flat { color: var(--text-muted); }
 }
 .stat-hint { color: var(--text-muted); }
@@ -56,7 +56,7 @@
   display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--tone) 9%, transparent);
   border: 1px solid color-mix(in srgb, var(--tone) 22%, transparent);
-  > mat-icon { color: var(--tone); font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+  > mat-icon { color: var(--tone-icon, var(--tone)); font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
   strong { display: block; font-size: var(--hz-body); color: var(--text-primary); }
   p { margin: 2px 0 0; font-size: var(--hz-ui); line-height: 1.6; color: var(--text-secondary); }
 }
@@ -88,7 +88,7 @@
 .rec-ava {
   width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone-fg, var(--tone));
   font-size: 11px; font-weight: 700;
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
@@ -112,7 +112,7 @@
 .tl-dot {
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone-fg, var(--tone));
   mat-icon { font-size: 14px; width: 14px; height: 14px; }
 }
 .tl-main { display: flex; flex-direction: column; gap: 2px; padding-top: var(--space-1); }
@@ -184,7 +184,7 @@
 .ap-icon {
   width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent); color: var(--tone-fg, var(--tone));
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 .ap-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
@@ -201,8 +201,8 @@
   button { font-size: var(--hz-ui); mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: var(--space-1); } }
 }
 .ap-result {
-  display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--hz-ui); font-weight: 600; color: var(--error-color-text, var(--error-color));
-  &.ok { color: var(--success-color-text, var(--success-color)); }
+  display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--hz-ui); font-weight: 600; color: var(--error-on-tint);
+  &.ok { color: var(--success-on-tint); }
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 
@@ -230,7 +230,7 @@
   display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3); border-radius: var(--radius-md); background: var(--hover-bg);
   font-size: var(--hz-body); color: var(--text-primary);
   mat-icon { color: var(--primary-color); }
-  .ok { margin-left: auto; font-size: var(--hz-meta); font-weight: 700; color: var(--success-color-text, var(--success-color)); }
+  .ok { margin-left: auto; font-size: var(--hz-meta); font-weight: 700; color: var(--success-on-tint); }
 }
 
 .planning.agenda { max-height: 460px; overflow: auto; }

@@ -53,7 +53,7 @@ interface Stroke { color: string; points: Pt[]; }
       .ink { width: 18px; height: 18px; margin: 0 2px; border-radius: 50%; border: 2px solid var(--card-bg); cursor: pointer; padding: 0;
         &.on { box-shadow: 0 0 0 2px var(--text-secondary); } }
       .sep { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; } }
-    .sig-meta { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11.5px; color: var(--success-color-text, var(--success-color));
+    .sig-meta { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11.5px; color: var(--success-on-tint);
       mat-icon { font-size: 15px; width: 15px; height: 15px; } }
   `],
 })

@@ -630,6 +630,30 @@ mat-drawer {
   --cyan-color: #06b6d4;
   --cyan-color-light: color-mix(in srgb, var(--cyan-color) 15%, transparent);
 
+  /* Lot contraste : jetons dédiés (les --*-color globaux ne changent pas).
+     *-on-tint : texte de ton posé sur son fond -light (≥ 4,5:1) ;
+     *-icon-on-tint : icône de ton sur fond -light (≥ 3:1). */
+  --success-on-tint: #166534;
+  --success-icon-on-tint: #15803d;
+  --warning-on-tint: #854d0e;
+  --warning-icon-on-tint: #a16207;
+  --info-on-tint: #1d4ed8;
+  --info-icon-on-tint: #1d4ed8;
+  --purple-on-tint: #7e22ce;
+  --purple-icon-on-tint: #7e22ce;
+  --cyan-on-tint: #155e75;
+  --cyan-icon-on-tint: #0e7490;
+  --error-on-tint: #b91c1c;
+  --error-icon-on-tint: #b91c1c;
+  /* Fonds pleins de ton : contenu « on- » (warning 7,6:1, cyan 5,52:1) et fonds
+     assombris pour le blanc (info 5,17:1, purple 5,38:1, error en dur 4,83:1).
+     L'error M3 garde --mat-sys-error + --mat-sys-on-error. */
+  --on-warning-color: #422006;
+  --on-cyan-color: #083344;
+  --info-color-strong: #2563eb;
+  --purple-color-strong: #9333ea;
+  --error-color-strong: #dc2626;
+
   --text-primary: #1f2937;
   --text-secondary: #4b5563;
   --text-muted: #9ca3af;
@@ -667,6 +691,19 @@ mat-drawer {
   --on-success-color: #052e16; /* --success-color est identique en sombre */
   --warning-color-text: #fbbf24;
   --error-color-text: #f87171;
+  /* Lot contraste, sombre : nuances 300/200 sur les fonds -light sombres. */
+  --success-on-tint: var(--success-color-text);
+  --success-icon-on-tint: var(--success-color-text);
+  --warning-on-tint: var(--warning-color-text);
+  --warning-icon-on-tint: var(--warning-color-text);
+  --info-on-tint: #93c5fd;
+  --info-icon-on-tint: #93c5fd;
+  --purple-on-tint: #d8b4fe;
+  --purple-icon-on-tint: #d8b4fe;
+  --cyan-on-tint: #67e8f9;
+  --cyan-icon-on-tint: #67e8f9;
+  --error-on-tint: var(--mat-sys-on-error-container);
+  --error-icon-on-tint: var(--mat-sys-on-error-container);
 
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
@@ -909,7 +946,7 @@ mat-card {
   background-color: var(--error-color);
   padding: 3px;
   font-size: 10px;
-  color: white;
+  color: var(--mat-sys-on-error);
   border-radius: var(--radius-xs);
   position: relative;
   top: -12px;
@@ -991,7 +1028,7 @@ html {
   border: 1px dotted #fff;
   background: var(--error-color);
   padding: var(--space-5);
-  color: #fff;
+  color: var(--mat-sys-on-error);
   text-align: center;
 }
 
@@ -1519,6 +1556,20 @@ app-workspace {
   }
 }
 
+// ─── Lot contraste : couleur de texte/icône pour les tons passés en style inline ───
+// Les composants reçoivent leur ton en [style.--tone]="'var(--info-color)'" (ou --pin, --c).
+// Ces sélecteurs en déduisent --tone-fg (texte sur fond -light), --tone-icon (icône)
+// et --tone-on (contenu sur fond plein), sans toucher aux --*-color globaux.
+[style*="var(--success-color)"] { --tone-fg: var(--success-on-tint); --tone-icon: var(--success-icon-on-tint); --tone-on: var(--on-success-color); }
+[style*="var(--warning-color)"] { --tone-fg: var(--warning-on-tint); --tone-icon: var(--warning-icon-on-tint); --tone-on: var(--on-warning-color); }
+[style*="var(--error-color)"] { --tone-fg: var(--error-on-tint); --tone-icon: var(--error-icon-on-tint); --tone-on: var(--mat-sys-on-error); }
+[style*="var(--info-color)"] { --tone-fg: var(--info-on-tint); --tone-icon: var(--info-icon-on-tint); --tone-on: #fff; }
+[style*="var(--purple-color)"] { --tone-fg: var(--purple-on-tint); --tone-icon: var(--purple-icon-on-tint); --tone-on: #fff; }
+[style*="var(--cyan-color)"] { --tone-fg: var(--cyan-on-tint); --tone-icon: var(--cyan-icon-on-tint); --tone-on: var(--on-cyan-color); }
+// info/purple pleins : fond assombri pour le blanc (5,17:1 / 5,38:1).
+[style*="var(--info-color)"] { --tone-solid: var(--info-color-strong); }
+[style*="var(--purple-color)"] { --tone-solid: var(--purple-color-strong); }
+
 // ─── Badges ────────────────────────────────────────────────────
 .m3-badge {
   display: inline-flex;
@@ -1538,12 +1589,15 @@ app-workspace {
     height: 14px !important;
   }
 
-  &.success { background: var(--success-color-light); color: var(--success-color-text, var(--success-color)); }
-  &.warning { background: var(--warning-color-light); color: var(--warning-color-text, var(--warning-color)); }
-  &.error   { background: var(--error-color-light); color: var(--error-color-text, var(--error-color)); }
-  &.info    { background: var(--info-color-light); color: var(--info-color); }
-  &.purple  { background: var(--purple-color-light); color: var(--purple-color); }
-  &.cyan    { background: var(--cyan-color-light); color: var(--cyan-color); }
+  &.success { background: var(--success-color-light); color: var(--success-on-tint); }
+  &.warning { background: var(--warning-color-light); color: var(--warning-on-tint); }
+  &.error   { background: var(--error-color-light); color: var(--error-on-tint); }
+  &.info    { background: var(--info-color-light); color: var(--info-on-tint); }
+  &.purple  { background: var(--purple-color-light); color: var(--purple-on-tint); }
+  &.cyan    { background: var(--cyan-color-light); color: var(--cyan-on-tint); }
+  &.success mat-icon { color: var(--success-icon-on-tint); }
+  &.warning mat-icon { color: var(--warning-icon-on-tint); }
+  &.cyan mat-icon    { color: var(--cyan-icon-on-tint); }
   &.neutral, &.default {
     background: var(--mat-sys-surface-container-high, var(--hover-bg));
     color: var(--text-secondary);
@@ -2107,6 +2161,22 @@ app-workspace {
   --success-color-text: #15803d;
   --warning-color-text: #a16207;
   --error-color-text: #b91c1c;
+
+  /* Lot contraste : jetons dédiés (les --*-color globaux ne changent pas).
+     *-on-tint : texte de ton posé sur son fond -light (≥ 4,5:1) ;
+     *-icon-on-tint : icône de ton sur fond -light (≥ 3:1). */
+  --success-on-tint: #166534;
+  --success-icon-on-tint: #15803d;
+  --warning-on-tint: #854d0e;
+  --warning-icon-on-tint: #a16207;
+  --info-on-tint: #1d4ed8;
+  --info-icon-on-tint: #1d4ed8;
+  --purple-on-tint: #7e22ce;
+  --purple-icon-on-tint: #7e22ce;
+  --cyan-on-tint: #155e75;
+  --cyan-icon-on-tint: #0e7490;
+  --error-on-tint: #b91c1c;
+  --error-icon-on-tint: #b91c1c;
 
   // Case à cocher des pense-bêtes : contour visible sur fond clair
   --mat-checkbox-unselected-icon-color: #6b7280;

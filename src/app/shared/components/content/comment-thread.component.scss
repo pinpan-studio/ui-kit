@@ -32,7 +32,7 @@ header { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2
   .badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px var(--space-2); border-radius: 99px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
     mat-icon { font-size: 12px; width: 12px; height: 12px; }
     &.author { background: var(--primary-color); color: var(--mat-sys-on-primary, #fff); }
-    &.pin { background: var(--warning-color-light); color: var(--warning-color-text, var(--warning-color)); } }
+    &.pin { background: var(--warning-color-light); color: var(--warning-on-tint); } }
   .menu { margin-left: auto; width: 32px; height: 32px; padding: var(--space-1); opacity: .55; --mat-icon-button-state-layer-size: 32px; mat-icon { font-size: 20px; width: 20px; height: 20px; } }
 }
 .comment:hover header .menu, header .menu:focus-visible { opacity: 1; }
@@ -54,7 +54,7 @@ footer { display: flex; align-items: center; gap: 2px; margin: var(--space-1) 0 
   font: 600 12.5px var(--font-body, 'Inter', sans-serif); color: var(--text-secondary); cursor: pointer;
   mat-icon { font-size: 17px; width: 17px; height: 17px; }
   &:hover { background: var(--hover-bg); color: var(--text-primary); }
-  &.on { color: var(--error-color-text, var(--error-color)); }
+  &.on { color: var(--error-on-tint); }
   &.icon { padding: 0 7px; } }
 
 ::ng-deep .emoji-menu .mat-mdc-menu-content { padding: var(--space-1) !important; }
@@ -65,4 +65,4 @@ footer { display: flex; align-items: center; gap: 2px; margin: var(--space-1) 0 
 .empty { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-8) var(--space-4); text-align: center; color: var(--text-muted);
   mat-icon { font-size: 36px; width: 36px; height: 36px; opacity: .6; } strong { color: var(--text-primary); font-size: 15px; } span { font-size: 13px; } }
 
-::ng-deep .mat-mdc-menu-item.danger { color: var(--error-color-text, var(--error-color)); .mat-icon { color: inherit; } }
+::ng-deep .mat-mdc-menu-item.danger { color: var(--error-on-tint); .mat-icon { color: inherit; } }

@@ -45,7 +45,7 @@ const ACTIONS: Record<AuditAction, { label: string; icon: string; tone: string }
       <button type="button" class="chip" [class.on]="!action()" (click)="action.set(null)">Tout <em>{{ entries().length }}</em></button>
       @for (a of usedActions(); track a) {
         <button type="button" class="chip" [class.on]="action() === a" (click)="action.set(action() === a ? null : a)">
-          <mat-icon [style.color]="'var(--' + meta(a).tone + '-color)'">{{ meta(a).icon }}</mat-icon>{{ actionName[a] }}<em>{{ count(a) }}</em></button>
+          <mat-icon [style.color]="'var(--' + meta(a).tone + (meta(a).tone === 'primary' ? '-color)' : '-icon-on-tint)')">{{ meta(a).icon }}</mat-icon>{{ actionName[a] }}<em>{{ count(a) }}</em></button>
       }
       <span class="spacer"></span>
       <div class="al-users">

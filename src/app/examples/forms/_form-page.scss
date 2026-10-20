@@ -16,7 +16,7 @@
 .row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); @include sm { grid-template-columns: 1fr; } }
 .req { color: var(--error-color); margin-left: 2px; }
 .help { font-size: var(--fs-caption); color: var(--text-muted); }
-.err { display: flex; align-items: center; gap: var(--space-1); font-size: 12px; font-weight: 500; color: var(--error-color-text, var(--error-color));
+.err { display: flex; align-items: center; gap: var(--space-1); font-size: 12px; font-weight: 500; color: var(--error-on-tint);
   mat-icon { font-size: 14px; width: 14px; height: 14px; } }
 .form-field.invalid .field-box { border-color: var(--error-color); background: var(--error-color-light); }
 

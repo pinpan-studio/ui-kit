@@ -110,7 +110,7 @@ type Q =
     .nps { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 6px;
       button { aspect-ratio: 1; max-height: 56px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--card-bg); font: 700 16px var(--font-heading); color: var(--text-primary); cursor: pointer; transition: transform .1s;
         &:hover { transform: translateY(-2px); border-color: var(--text-muted); }
-        &.on.det { background: var(--error-color); border-color: var(--error-color); color: #fff; }
+        &.on.det { background: var(--error-color); border-color: var(--error-color); color: var(--mat-sys-on-error); }
         &.on.pas { background: var(--warning-color); border-color: var(--warning-color); color: #1f2937; }
         &.on.pro { background: var(--success-color); border-color: var(--success-color); color: #fff; } }
       @include sm { grid-template-columns: repeat(6, minmax(0, 1fr)); } }

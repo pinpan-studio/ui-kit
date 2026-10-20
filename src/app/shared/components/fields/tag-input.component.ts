@@ -58,7 +58,7 @@ import { MatIconModule } from '@angular/material/icon';
       background: var(--primary-color-light); color: var(--primary-color); font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: default;
       button { width: 20px; height: 20px; border: none; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center;
         mat-icon { font-size: 14px; width: 14px; height: 14px; } &:hover { background: color-mix(in srgb, currentColor 18%, transparent); } }
-      &.bad { background: var(--error-color-light); color: var(--error-color-text, var(--error-color)); text-decoration: underline wavy; text-underline-offset: 3px; } }
+      &.bad { background: var(--error-color-light); color: var(--error-on-tint); text-decoration: underline wavy; text-underline-offset: 3px; } }
     .tg-count { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; align-self: center; }
   `],
 })

@@ -36,7 +36,7 @@
   .t-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0;
     strong { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-body); font-weight: 600; }
     b { min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center;
-      font: 600 11px var(--font-body); background: var(--error-color); color: #fff; font-variant-numeric: tabular-nums; }
+      font: 600 11px var(--font-body); background: var(--error-color); color: var(--mat-sys-on-error); font-variant-numeric: tabular-nums; }
     span { font-size: var(--fs-body-sm); line-height: 1.4; color: var(--text-secondary); } }
   small { grid-column: 2; font-size: var(--fs-caption); color: var(--text-muted); font-variant-numeric: tabular-nums; } }
 

@@ -7,7 +7,7 @@
 .fake-search { display: flex; align-items: center; gap: var(--space-3); height: 46px; padding: 0 var(--space-3) 0 var(--space-4); border-radius: 23px; border: 0;
   background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--text-muted); font: 14px 'Inter', sans-serif; cursor: pointer; text-align: left;
   span { flex: 1; } &:hover { border-color: var(--primary-color); } }
-.last { display: inline-flex; align-items: center; gap: var(--space-1); font-size: 13px; mat-icon { color: var(--warning-color); font-size: 18px; width: 18px; height: 18px; } }
+.last { display: inline-flex; align-items: center; gap: var(--space-1); font-size: 13px; mat-icon { color: var(--warning-icon-on-tint); font-size: 18px; width: 18px; height: 18px; } }
 .cmd-list { list-style: none; margin: 0; padding: 0; font-size: 13px;
   li { display: flex; align-items: center; gap: var(--space-2); padding: 5px 0; border-bottom: 0;
     mat-icon { font-size: 17px; width: 17px; height: 17px; color: var(--text-muted); }
@@ -47,11 +47,11 @@
 
 .app-bar { display: flex; align-items: center; gap: var(--space-3); height: 56px; padding: 0 var(--space-2) 0 var(--space-4); border-radius: var(--radius-lg); border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg));
   .logo { color: var(--primary-color); } strong { font-family: 'Outfit', sans-serif; } .spacer { flex: 1; } }
-.me { width: 34px; height: 34px; border-radius: 50%; background: var(--purple-color, #8b5cf6); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.me { width: 34px; height: 34px; border-radius: 50%; background: var(--purple-color-strong); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
 .files { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
 .file { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: var(--space-3); border-radius: var(--radius-md); border: 0; background: var(--mat-sys-surface-container-high, var(--hover-bg)); cursor: default; outline: none; user-select: none;
-  mat-icon { color: var(--primary-color); margin-bottom: var(--space-1); &.pdf { color: var(--error-color); } &.folder { color: var(--warning-color); } }
+  mat-icon { color: var(--primary-color); margin-bottom: var(--space-1); &.pdf { color: var(--error-color); } &.folder { color: var(--warning-icon-on-tint); } }
   .fname { font-size: 13px; font-weight: 600; }
   &.sel, &:focus-visible { border-color: var(--primary-color); background: var(--primary-color-light); } }
 .ctx-table { width: 100%; border-collapse: collapse; font-size: 13px;

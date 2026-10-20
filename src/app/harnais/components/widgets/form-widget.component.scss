@@ -95,7 +95,7 @@ dt { font-size: var(--hz-micro); font-weight: 700; letter-spacing: 0.08em; text-
 dd { margin: 0; font-size: var(--hz-body); color: var(--text-primary); overflow-wrap: anywhere; }
 .sent {
   display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-3);
-  font-size: var(--hz-meta); font-weight: 600; color: var(--success-color-text, var(--success-color));
+  font-size: var(--hz-meta); font-weight: 600; color: var(--success-on-tint);
   mat-icon { font-size: 16px; width: 16px; height: 16px; }
 }
 

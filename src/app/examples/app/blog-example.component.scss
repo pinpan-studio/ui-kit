@@ -41,7 +41,7 @@
   > mat-icon { color: var(--primary-color); margin-bottom: var(--space-2); }
   p { margin: 0 0 var(--space-4); font-size: var(--fs-body-sm); line-height: var(--lh-body); color: var(--text-secondary); }
   .nl-form { display: flex; flex-direction: column; gap: var(--space-2); }
-  .ok { display: flex; align-items: center; gap: var(--space-2); color: var(--success-color-text, var(--success-color)); font-weight: 600; margin: 0; mat-icon { font-size: 18px; width: 18px; height: 18px; } } }
+  .ok { display: flex; align-items: center; gap: var(--space-2); color: var(--success-on-tint); font-weight: 600; margin: 0; mat-icon { font-size: 18px; width: 18px; height: 18px; } } }
 .popular ol { margin: 0; padding: 0; list-style: none; counter-reset: r;
   li { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-top: 0; &:first-child { border-top: 0; } }
   .rank { font-family: var(--font-heading); font-size: var(--fs-h3); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; color: var(--text-muted); min-width: 18px; }

@@ -43,7 +43,7 @@ dd {
 }
 .done .dot { background: var(--success-color); border-color: var(--success-color); color: var(--on-success-color); }
 .current .dot { background: var(--primary-color); border-color: var(--primary-color); color: #fff; box-shadow: 0 0 0 4px var(--primary-color-light); }
-.error .dot { background: var(--error-color); border-color: var(--error-color); color: #fff; }
+.error .dot { background: var(--error-color); border-color: var(--error-color); color: var(--mat-sys-on-error); }
 .st-text { display: flex; flex-direction: column; gap: 2px; }
 .st-label { font-size: var(--hz-ui); font-weight: 600; color: var(--text-primary); }
 .todo .st-label { color: var(--text-muted); }
@@ -80,8 +80,8 @@ dd {
   background: var(--table-header-bg); border-bottom: 1px solid var(--border-color);
   > mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--text-muted); }
   code { font-size: var(--hz-code); font-weight: 600; color: var(--text-primary); }
-  .plus { font-size: var(--hz-meta); font-weight: 700; color: var(--success-color-text, var(--success-color)); }
-  .minus { font-size: var(--hz-meta); font-weight: 700; color: var(--error-color-text, var(--error-color)); }
+  .plus { font-size: var(--hz-meta); font-weight: 700; color: var(--success-on-tint); }
+  .minus { font-size: var(--hz-meta); font-weight: 700; color: var(--error-on-tint); }
 }
 .diff-body { overflow-x: auto; font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: var(--hz-code); line-height: 1.75; }
 .dl {
@@ -89,9 +89,9 @@ dd {
   .n { text-align: right; padding-right: var(--space-2); color: var(--text-muted); user-select: none; opacity: 0.7; }
   .sign { text-align: center; user-select: none; }
   .t { white-space: pre; padding-right: var(--space-4); color: var(--text-primary); }
-  &.add { background: color-mix(in srgb, var(--success-color) 12%, transparent); .sign { color: var(--success-color); } }
+  &.add { background: color-mix(in srgb, var(--success-color) 12%, transparent); .sign { color: var(--success-icon-on-tint); } }
   &.del { background: color-mix(in srgb, var(--error-color) 10%, transparent); .sign { color: var(--error-color); } .t { opacity: 0.85; } }
-  &.hunk { background: var(--info-color-light); .t { color: var(--info-color); } }
+  &.hunk { background: var(--info-color-light); .t { color: var(--info-on-tint); } }
 }
 
 // ─── Sources ───────────────────────────────────────────────────
@@ -118,7 +118,7 @@ dd {
   padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--hz-ui); font-weight: 500;
   background: color-mix(in srgb, var(--tone) 10%, transparent); color: var(--text-primary);
   border: 1px solid color-mix(in srgb, var(--tone) 22%, transparent);
-  b { font-size: var(--hz-micro); padding: 0 var(--space-2); border-radius: 99px; background: var(--tone); color: #fff; }
+  b { font-size: var(--hz-micro); padding: 0 var(--space-2); border-radius: 99px; background: var(--tone-solid, var(--tone)); color: var(--tone-on, #fff); }
 }
 
 // ─── Carte de chaleur ──────────────────────────────────────────
@@ -156,7 +156,7 @@ dd {
 .c-visual {
   height: 92px; display: flex; align-items: center; justify-content: center; position: relative;
   background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 20%, var(--card-bg)), color-mix(in srgb, var(--tone) 6%, var(--card-bg)));
-  color: var(--tone);
+  color: var(--tone-icon, var(--tone));
   mat-icon { font-size: 36px; width: 36px; height: 36px; }
   img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 }
@@ -191,4 +191,4 @@ dd {
 .p-price { display: block; font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
 .p-note { display: block; font-size: var(--hz-meta); font-weight: 400; color: var(--text-muted); }
 .compare mat-icon { font-size: 18px; width: 18px; height: 18px; vertical-align: middle;
-  &.yes { color: var(--success-color); } &.no { color: var(--text-muted); opacity: 0.5; } }
+  &.yes { color: var(--success-icon-on-tint); } &.no { color: var(--text-muted); opacity: 0.5; } }
