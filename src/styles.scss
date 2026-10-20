@@ -615,6 +615,8 @@ mat-drawer {
   --success-color: #22c55e;
   --success-color-light: color-mix(in srgb, var(--success-color) 15%, transparent);
   --success-color-text: #15803d;
+  /* Contenu (texte, icône) posé sur --success-color : 6,54:1 sur #22c55e (le blanc n'en donne que 2,28:1). */
+  --on-success-color: #052e16;
   --error-color: #ef4444;
   --error-color-light: color-mix(in srgb, var(--error-color) 10%, transparent);
   --error-color-text: #b91c1c;
@@ -662,6 +664,7 @@ mat-drawer {
      de variante dark. Les -text ci-dessous sont propres à admin (store n'a pas ce
      token) : gardées theme-aware pour la lisibilité du texte sur badge/chip. */
   --success-color-text: #4ade80;
+  --on-success-color: #052e16; /* --success-color est identique en sombre */
   --warning-color-text: #fbbf24;
   --error-color-text: #f87171;
 
@@ -848,6 +851,7 @@ html {
   &[color="warn"]:not(:disabled) { background-color: var(--error-color) !important; color: var(--mat-sys-on-error) !important; }
   // Tertiaire M3 : rôle --mat-sys-tertiary (color="accent" retomberait sur le primaire).
   &.btn-tertiary:not(:disabled) { background-color: var(--mat-sys-tertiary) !important; color: var(--mat-sys-on-tertiary) !important; }
+  &.btn-success:not(:disabled) { background-color: var(--success-color) !important; color: var(--on-success-color) !important; }
 }
 
 // Contour : neutre par défaut, teinté si color est fourni
