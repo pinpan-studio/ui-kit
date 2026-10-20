@@ -45,8 +45,8 @@
 .delta {
   display: inline-flex; align-items: center; gap: 2px; font-weight: 700;
   mat-icon { font-size: 13px; width: 13px; height: 13px; }
-  &.up { color: var(--success-color-text, var(--success-color)); }
-  &.down { color: var(--error-color-text, var(--error-color)); }
+  &.up { color: var(--success-on-tint); }
+  &.down { color: var(--error-on-tint); }
   &.flat { color: var(--text-muted); }
 }
 .stat-hint { color: var(--text-muted); }
@@ -201,8 +201,8 @@
   button { font-size: var(--hz-ui); mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: var(--space-1); } }
 }
 .ap-result {
-  display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--hz-ui); font-weight: 600; color: var(--error-color-text, var(--error-color));
-  &.ok { color: var(--success-color-text, var(--success-color)); }
+  display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--hz-ui); font-weight: 600; color: var(--error-on-tint);
+  &.ok { color: var(--success-on-tint); }
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 
@@ -230,7 +230,7 @@
   display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3); border-radius: var(--radius-md); background: var(--hover-bg);
   font-size: var(--hz-body); color: var(--text-primary);
   mat-icon { color: var(--primary-color); }
-  .ok { margin-left: auto; font-size: var(--hz-meta); font-weight: 700; color: var(--success-color-text, var(--success-color)); }
+  .ok { margin-left: auto; font-size: var(--hz-meta); font-weight: 700; color: var(--success-on-tint); }
 }
 
 .planning.agenda { max-height: 460px; overflow: auto; }

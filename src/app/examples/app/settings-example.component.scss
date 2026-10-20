@@ -19,7 +19,7 @@
     p { margin: 2px 0 0; font-size: var(--fs-body-sm); color: var(--text-secondary); } }
   > app-theme-settings { display: block; padding: var(--space-5) 0 var(--space-6); }
   > footer { display: flex; justify-content: flex-end; gap: var(--space-2); margin: 0 -24px; padding: var(--space-3) var(--space-6); border-top: 0; background: var(--table-header-bg, var(--hover-bg)); border-radius: 0 0 var(--radius-md) var(--radius-md); }
-  &.danger { background: color-mix(in srgb, var(--error-color) 5%, var(--card-bg)); > header h2 { color: var(--error-color-text, var(--error-color)); } }
+  &.danger { background: color-mix(in srgb, var(--error-color) 5%, var(--card-bg)); > header h2 { color: var(--error-on-tint); } }
   @include mobile { padding: 0 var(--space-4); > footer { margin: 0 -16px; padding: var(--space-3) var(--space-4); } } }
 
 // Ligne de réglage : libellé + aide à gauche, contrôle à droite.

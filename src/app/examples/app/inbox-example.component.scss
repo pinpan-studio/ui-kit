@@ -38,7 +38,7 @@
   .i-subject { font-size: var(--fs-body-sm); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .i-preview { font-size: var(--fs-body-sm); line-height: 1.45; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .i-tags { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--text-muted); } } }
-.star { color: var(--warning-color) !important; }
+.star { color: var(--warning-icon-on-tint) !important; }
 
 // ─── Lecture ───────────────────────────────────────────────────
 .reader { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--bg); }

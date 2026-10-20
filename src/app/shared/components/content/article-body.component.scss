@@ -78,10 +78,10 @@ blockquote { margin: 1.6em 0; padding: 0.2em 0 0.2em 1.2em; border-left: 3px sol
   > mat-icon { flex-shrink: 0; margin-top: 2px; }
   strong { display: block; margin-bottom: 2px; font-family: var(--font-heading, 'Outfit', sans-serif); }
   p { margin: 0; }
-  &.info { background: var(--info-color-light); border-color: transparent; > mat-icon { color: var(--info-color); } }
-  &.success { background: var(--success-color-light); border-color: transparent; > mat-icon { color: var(--success-color-text, var(--success-color)); } }
-  &.warning { background: var(--warning-color-light); border-color: transparent; > mat-icon { color: var(--warning-color-text, var(--warning-color)); } }
-  &.error { background: var(--error-color-light); border-color: transparent; > mat-icon { color: var(--error-color-text, var(--error-color)); } } }
+  &.info { background: var(--info-color-light); border-color: transparent; > mat-icon { color: var(--info-on-tint); } }
+  &.success { background: var(--success-color-light); border-color: transparent; > mat-icon { color: var(--success-on-tint); } }
+  &.warning { background: var(--warning-color-light); border-color: transparent; > mat-icon { color: var(--warning-on-tint); } }
+  &.error { background: var(--error-color-light); border-color: transparent; > mat-icon { color: var(--error-on-tint); } } }
 
 .table-wrap { margin: 1.6em 0; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 0.82em; line-height: 1.5; font-variant-numeric: tabular-nums; hyphens: none;

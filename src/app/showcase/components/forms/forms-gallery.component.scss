@@ -18,9 +18,9 @@
   }
   &.field-valid {
     border-color: var(--success-color);
-    > mat-icon { color: var(--success-color-text, var(--success-color)); }
+    > mat-icon { color: var(--success-on-tint); }
   }
-  .state-icon.ok { color: var(--success-color) !important; }
+  .state-icon.ok { color: var(--success-icon-on-tint) !important; }
   .unit { font-size: 12px; font-weight: 600; color: var(--text-muted); }
   select { appearance: auto; }
 }
@@ -111,8 +111,8 @@
     gap: var(--space-2);
     font-size: 12px;
     font-weight: 600;
-    color: var(--warning-color-text);
+    color: var(--warning-on-tint);
     mat-icon { font-size: 18px; width: 18px; height: 18px; }
-    &.ok { color: var(--success-color-text); }
+    &.ok { color: var(--success-on-tint); }
   }
 }

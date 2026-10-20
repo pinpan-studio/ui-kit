@@ -60,9 +60,9 @@ mat-spinner { display: inline-block; margin-right: var(--space-2); vertical-alig
   cursor: pointer;
   .chip-count { font-size: 11px; padding: 0 var(--space-2); border-radius: 99px; background: var(--hover-bg); }
   &.active { background: var(--primary-color-light); border-color: var(--primary-color); color: var(--primary-color); }
-  &.success .chip-count { background: var(--success-color-light); color: var(--success-color-text); }
-  &.warning .chip-count { background: var(--warning-color-light); color: var(--warning-color-text); }
-  &.danger .chip-count { background: var(--error-color-light); color: var(--error-color-text); }
+  &.success .chip-count { background: var(--success-color-light); color: var(--success-on-tint); }
+  &.warning .chip-count { background: var(--warning-color-light); color: var(--warning-on-tint); }
+  &.danger .chip-count { background: var(--error-color-light); color: var(--error-on-tint); }
 }
 
 .split {

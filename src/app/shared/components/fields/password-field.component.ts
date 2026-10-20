@@ -69,20 +69,20 @@ export function passwordScore(v: string): number {
     :host { display: block; }
     .pf-btn { flex-shrink: 0; width: 32px; height: 32px; border: none; border-radius: 50%; background: transparent; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;
       mat-icon { font-size: 18px; width: 18px; height: 18px; } &:hover:not(:disabled) { background: var(--hover-bg); color: var(--primary-color); } }
-    .pf-caps { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11.5px; color: var(--warning-color-text, var(--warning-color));
+    .pf-caps { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11.5px; color: var(--warning-on-tint);
       mat-icon { font-size: 15px; width: 15px; height: 15px; } }
     .pf-meter { display: flex; align-items: center; gap: 4px; margin-top: 8px;
       span { flex: 1; height: 4px; border-radius: 2px; background: var(--border-color); transition: background 0.2s ease; }
       em { min-width: 78px; text-align: right; font-style: normal; font-size: 11.5px; font-weight: 600; }
       &[data-score='0'] { span.on { background: var(--error-color); } em { color: var(--error-color); } }
       &[data-score='1'] { span.on { background: var(--error-color); } em { color: var(--error-color); } }
-      &[data-score='2'] { span.on { background: var(--warning-color); } em { color: var(--warning-color-text, var(--warning-color)); } }
-      &[data-score='3'] { span.on { background: var(--info-color); } em { color: var(--info-color); } }
-      &[data-score='4'] { span.on { background: var(--success-color); } em { color: var(--success-color-text, var(--success-color)); } } }
+      &[data-score='2'] { span.on { background: var(--warning-color); } em { color: var(--warning-on-tint); } }
+      &[data-score='3'] { span.on { background: var(--info-color); } em { color: var(--info-on-tint); } }
+      &[data-score='4'] { span.on { background: var(--success-color); } em { color: var(--success-on-tint); } } }
     .pf-rules { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px 12px;
       li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); transition: color 0.15s ease;
         mat-icon { font-size: 15px; width: 15px; height: 15px; }
-        &.ok { color: var(--success-color-text, var(--success-color)); } } }
+        &.ok { color: var(--success-on-tint); } } }
   `],
 })
 export class PasswordFieldComponent implements ControlValueAccessor {

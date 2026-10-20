@@ -40,8 +40,8 @@ blockquote { margin: var(--space-2) 0 0; padding: var(--space-2) var(--space-3);
   td { padding: 7px var(--space-3); border-top: 1px solid var(--border-color); vertical-align: middle; }
   .f { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
   .arrow { width: 20px; padding: 0; color: var(--text-muted); mat-icon { font-size: 15px; width: 15px; height: 15px; vertical-align: middle; } }
-  .old { color: var(--error-color-text, var(--error-color)); text-decoration: line-through; background: color-mix(in srgb, var(--error-color) 8%, transparent); padding: 1px var(--space-2); border-radius: var(--radius-xs); }
-  .new { color: var(--success-color-text, var(--success-color)); background: color-mix(in srgb, var(--success-color) 10%, transparent); padding: 1px var(--space-2); border-radius: var(--radius-xs); font-weight: 500; }
+  .old { color: var(--error-on-tint); text-decoration: line-through; background: color-mix(in srgb, var(--error-color) 8%, transparent); padding: 1px var(--space-2); border-radius: var(--radius-xs); }
+  .new { color: var(--success-on-tint); background: color-mix(in srgb, var(--success-color) 10%, transparent); padding: 1px var(--space-2); border-radius: var(--radius-xs); font-weight: 500; }
   .none { font-style: italic; text-decoration: none; background: none; color: var(--text-muted); } }
 .al-meta { display: inline-flex; align-items: center; gap: var(--space-1); margin-top: var(--space-2); font-size: 11.5px; color: var(--text-muted);
   mat-icon { font-size: 14px; width: 14px; height: 14px; } }

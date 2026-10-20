@@ -47,7 +47,7 @@
   button { display: flex; align-items: center; justify-content: center; gap: var(--space-2); height: 38px; border: 0; border-radius: var(--radius-md); background: none;
     font: 500 var(--fs-body-sm) var(--font-body); color: var(--text-secondary); cursor: pointer;
     mat-icon { font-size: 19px; width: 19px; height: 19px; }
-    &:hover { background: var(--hover-bg); } &.on { color: var(--error-color-text, var(--error-color)); } } }
+    &:hover { background: var(--hover-bg); } &.on { color: var(--error-on-tint); } } }
 .post-comments { padding: var(--space-3) 0 var(--space-3); border-top: 0; }
 
 .right .card { padding: var(--space-4) var(--space-5);

@@ -55,11 +55,11 @@
 
 // ─── Tons (pastilles discrètes) ────────────────────────────────
 .tone-primary { background: var(--primary-color-light); color: var(--primary-color); }
-.tone-success { background: var(--success-color-light); color: var(--success-color-text, var(--success-color)); }
-.tone-warning { background: var(--warning-color-light); color: var(--warning-color-text, var(--warning-color)); }
-.tone-error { background: var(--error-color-light); color: var(--error-color-text, var(--error-color)); }
-.tone-info { background: var(--info-color-light); color: var(--info-color); }
-.tone-purple { background: var(--purple-color-light); color: var(--purple-color); }
+.tone-success { background: var(--success-color-light); color: var(--success-on-tint); }
+.tone-warning { background: var(--warning-color-light); color: var(--warning-on-tint); }
+.tone-error { background: var(--error-color-light); color: var(--error-on-tint); }
+.tone-info { background: var(--info-color-light); color: var(--info-on-tint); }
+.tone-purple { background: var(--purple-color-light); color: var(--purple-on-tint); }
 .tone-neutral { background: var(--hover-bg); color: var(--text-secondary); }
 
 .ic-tile { width: 36px; height: 36px; flex: 0 0 36px; border-radius: var(--radius-md); display: inline-flex; align-items: center; justify-content: center;

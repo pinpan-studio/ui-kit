@@ -92,11 +92,11 @@
 .metric-card { cursor: default; }
 .metric-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .metric-lbl { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
-.metric-ico { color: var(--success-color); }
+.metric-ico { color: var(--success-icon-on-tint); }
 .metric-val { margin: var(--space-2) 0 var(--space-1); font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 700; small { font-size: 12px; color: var(--text-muted); } }
 .metric-trend { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600;
   mat-icon { font-size: 16px; width: 16px; height: 16px; }
-  &.up { color: var(--success-color-text); } &.down { color: var(--error-color-text); } }
+  &.up { color: var(--success-on-tint); } &.down { color: var(--error-on-tint); } }
 .spark { height: 64px; margin-top: var(--space-2); }
 .select-card { display: flex; gap: var(--space-3); align-items: flex-start; cursor: pointer; border-color: var(--primary-color); background: var(--primary-color-light);
   .sel-ico { color: var(--primary-color); } }
@@ -115,11 +115,11 @@
   &:hover { background: var(--hover-bg); transform: translateX(2px); } }
 .timeline-dot { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
-  &.success { background: var(--success-color-light); color: var(--success-color-text, var(--success-color)); }
-  &.warning { background: var(--warning-color-light); color: var(--warning-color-text, var(--warning-color)); }
-  &.error, &.danger { background: var(--error-color-light); color: var(--error-color-text, var(--error-color)); }
-  &.info, &.cyan { background: var(--cyan-color-light); color: var(--cyan-color); }
-  &.purple { background: var(--purple-color-light); color: var(--purple-color); }
+  &.success { background: var(--success-color-light); color: var(--success-on-tint); }
+  &.warning { background: var(--warning-color-light); color: var(--warning-on-tint); }
+  &.error, &.danger { background: var(--error-color-light); color: var(--error-on-tint); }
+  &.info, &.cyan { background: var(--cyan-color-light); color: var(--cyan-on-tint); }
+  &.purple { background: var(--purple-color-light); color: var(--purple-on-tint); }
   &.neutral { background: var(--hover-bg); color: var(--text-secondary); } }
 .timeline-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;
   .timeline-title { font-weight: 600; font-size: 13px; color: var(--text-primary); }
@@ -132,9 +132,9 @@
   .h-dot { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
     mat-icon { font-size: 16px; width: 16px; height: 16px; }
     &.primary { background: var(--primary-color-light); color: var(--primary-color); }
-    &.info { background: var(--info-color-light); color: var(--info-color); }
-    &.warning { background: var(--warning-color-light); color: var(--warning-color-text); }
-    &.success { background: var(--success-color-light); color: var(--success-color-text); }
+    &.info { background: var(--info-color-light); color: var(--info-on-tint); }
+    &.warning { background: var(--warning-color-light); color: var(--warning-on-tint); }
+    &.success { background: var(--success-color-light); color: var(--success-on-tint); }
     &.neutral { background: var(--hover-bg); color: var(--text-secondary); } }
   .h-body { flex: 1; min-width: 0; p { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); } }
   .h-top { display: flex; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; strong { font-size: 13px; } span { font-size: 11px; color: var(--text-muted); } }

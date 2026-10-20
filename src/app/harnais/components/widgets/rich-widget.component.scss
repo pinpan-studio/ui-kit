@@ -80,8 +80,8 @@ dd {
   background: var(--table-header-bg); border-bottom: 1px solid var(--border-color);
   > mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--text-muted); }
   code { font-size: var(--hz-code); font-weight: 600; color: var(--text-primary); }
-  .plus { font-size: var(--hz-meta); font-weight: 700; color: var(--success-color-text, var(--success-color)); }
-  .minus { font-size: var(--hz-meta); font-weight: 700; color: var(--error-color-text, var(--error-color)); }
+  .plus { font-size: var(--hz-meta); font-weight: 700; color: var(--success-on-tint); }
+  .minus { font-size: var(--hz-meta); font-weight: 700; color: var(--error-on-tint); }
 }
 .diff-body { overflow-x: auto; font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: var(--hz-code); line-height: 1.75; }
 .dl {
@@ -89,9 +89,9 @@ dd {
   .n { text-align: right; padding-right: var(--space-2); color: var(--text-muted); user-select: none; opacity: 0.7; }
   .sign { text-align: center; user-select: none; }
   .t { white-space: pre; padding-right: var(--space-4); color: var(--text-primary); }
-  &.add { background: color-mix(in srgb, var(--success-color) 12%, transparent); .sign { color: var(--success-color); } }
+  &.add { background: color-mix(in srgb, var(--success-color) 12%, transparent); .sign { color: var(--success-icon-on-tint); } }
   &.del { background: color-mix(in srgb, var(--error-color) 10%, transparent); .sign { color: var(--error-color); } .t { opacity: 0.85; } }
-  &.hunk { background: var(--info-color-light); .t { color: var(--info-color); } }
+  &.hunk { background: var(--info-color-light); .t { color: var(--info-on-tint); } }
 }
 
 // ─── Sources ───────────────────────────────────────────────────
@@ -191,4 +191,4 @@ dd {
 .p-price { display: block; font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
 .p-note { display: block; font-size: var(--hz-meta); font-weight: 400; color: var(--text-muted); }
 .compare mat-icon { font-size: 18px; width: 18px; height: 18px; vertical-align: middle;
-  &.yes { color: var(--success-color); } &.no { color: var(--text-muted); opacity: 0.5; } }
+  &.yes { color: var(--success-icon-on-tint); } &.no { color: var(--text-muted); opacity: 0.5; } }
