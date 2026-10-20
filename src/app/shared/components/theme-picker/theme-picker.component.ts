@@ -124,7 +124,7 @@ export class ThemeSettingsComponent {
   imports: [OverlayModule, MatButtonModule, MatIconModule, MatTooltipModule, ThemeSettingsComponent],
   template: `
     <button mat-icon-button cdkOverlayOrigin #origin="cdkOverlayOrigin"
-            matTooltip="Apparence : mode et couleur" aria-haspopup="dialog" [attr.aria-expanded]="open()" (click)="open.set(!open())">
+            matTooltip="Apparence : mode et couleur" aria-label="Apparence : mode et couleur" aria-haspopup="dialog" [attr.aria-expanded]="open()" (click)="open.set(!open())">
       <mat-icon>palette</mat-icon>
     </button>
     <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="origin" [cdkConnectedOverlayOpen]="open()"

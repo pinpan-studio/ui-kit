@@ -43,7 +43,7 @@
         <mat-icon>view_sidebar</mat-icon>
       </button>
       <span class="topbar-sep"></span>
-      <button mat-icon-button class="icon-btn" (click)="theme.toggle()" matTooltip="Changer de thème">
+      <button mat-icon-button class="icon-btn" (click)="theme.toggle()" matTooltip="Changer de thème" aria-label="Changer de thème">
         <mat-icon>{{ theme.mode() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
       </button>
       <app-theme-picker />

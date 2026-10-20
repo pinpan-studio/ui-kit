@@ -844,8 +844,10 @@ html {
 // Plein (flat / raised)
 .mat-mdc-unelevated-button,
 .mat-mdc-raised-button {
-  &[color="primary"] { background-color: var(--primary-color) !important; color: #ffffff !important; }
-  &[color="warn"] { background-color: var(--error-color) !important; color: #ffffff !important; }
+  &[color="primary"]:not(:disabled) { background-color: var(--primary-color) !important; color: var(--mat-sys-on-primary) !important; }
+  &[color="warn"]:not(:disabled) { background-color: var(--error-color) !important; color: var(--mat-sys-on-error) !important; }
+  // Tertiaire M3 : rôle --mat-sys-tertiary (color="accent" retomberait sur le primaire).
+  &.btn-tertiary:not(:disabled) { background-color: var(--mat-sys-tertiary) !important; color: var(--mat-sys-on-tertiary) !important; }
 }
 
 // Contour : neutre par défaut, teinté si color est fourni
@@ -854,7 +856,7 @@ html {
   color: var(--text-secondary) !important;
   background: var(--card-bg) !important;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: var(--primary-color) !important;
     color: var(--primary-color) !important;
   }
@@ -871,6 +873,21 @@ html {
 .mat-mdc-button:not(.mat-mdc-icon-button) {
   &[color="primary"] { color: var(--primary-color) !important; }
   &[color="warn"] { color: var(--error-color) !important; }
+}
+
+// Désactivé : état standard M3 (contenu on-surface 38 %, conteneur / contour on-surface 12 %).
+.mat-mdc-unelevated-button:disabled, .mat-mdc-unelevated-button.mat-mdc-button-disabled,
+.mat-mdc-raised-button:disabled, .mat-mdc-raised-button.mat-mdc-button-disabled {
+  background-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent) !important;
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent) !important;
+}
+.mat-mdc-outlined-button:disabled, .mat-mdc-outlined-button.mat-mdc-button-disabled {
+  border-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent) !important;
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent) !important;
+  background: transparent !important;
+}
+.mat-mdc-button:not(.mat-mdc-icon-button):disabled, .mat-mdc-button:not(.mat-mdc-icon-button).mat-mdc-button-disabled {
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent) !important;
 }
 
 .mat-card,
