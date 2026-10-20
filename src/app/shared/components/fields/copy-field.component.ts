@@ -45,7 +45,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       background: var(--primary-color-light); color: var(--primary-color); font: 600 12.5px 'Inter', sans-serif; transition: all 0.15s ease;
       mat-icon { font-size: 16px; width: 16px; height: 16px; } &:hover { background: var(--primary-color); color: #fff; } }
     .copied { border-color: var(--success-color) !important;
-      .cf-copy { background: var(--success-color); color: #fff; } }
+      .cf-copy { background: var(--success-color); color: var(--on-success-color); } }
     @media (max-width: 420px) { .cf-copy span { display: none; } .cf-copy { padding: 0 9px; } }
   `],
 })
