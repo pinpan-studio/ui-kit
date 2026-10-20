@@ -2,10 +2,10 @@
 
 .bn {
   --c: var(--info-color);
-  display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: var(--r-m, 12px);
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-radius: var(--r-m, 12px);
   background: color-mix(in srgb, var(--c) 12%, var(--card-bg)); color: var(--text-primary);
   border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); animation: bn-in 0.25s ease;
-  &.compact { padding: 7px 8px 7px 14px; border-radius: 10px; .bn-text { flex-direction: row; gap: 8px; flex-wrap: wrap; align-items: baseline; } }
+  &.compact { padding: 7px var(--space-2) 7px var(--space-4); border-radius: var(--radius-md); .bn-text { flex-direction: row; gap: var(--space-2); flex-wrap: wrap; align-items: baseline; } }
 }
 @keyframes bn-in { from { opacity: 0; transform: translateY(-6px); } }
 .bn--success { --c: var(--success-color); }
@@ -22,11 +22,11 @@
 .bn-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; font-size: 13px;
   strong { font-weight: 600; font-size: 13.5px; }
   span { color: var(--text-secondary); } }
-.bn-action { flex-shrink: 0; height: 32px; padding: 0 14px; border-radius: 16px; border: none; cursor: pointer; font: 600 12.5px 'Inter', sans-serif;
+.bn-action { flex-shrink: 0; height: 32px; padding: 0 var(--space-4); border-radius: var(--radius-lg); border: none; cursor: pointer; font: 600 12.5px 'Inter', sans-serif;
   background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--text-primary);
   &:hover { filter: brightness(0.95); } }
 .bn-close { flex-shrink: 0; width: 30px; height: 30px; border: none; border-radius: 50%; background: transparent; color: var(--text-secondary); cursor: pointer;
   display: flex; align-items: center; justify-content: center; mat-icon { font-size: 18px; width: 18px; height: 18px; }
   &:hover { background: color-mix(in srgb, currentColor 12%, transparent); } }
 
-@media (max-width: 599.98px) { .bn { flex-wrap: wrap; } .bn-action { margin-left: 36px; } }
+@media (max-width: 599.98px) { .bn { flex-wrap: wrap; } .bn-action { margin-left: var(--space-10); } }

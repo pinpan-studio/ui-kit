@@ -20,8 +20,8 @@
 
 .vp-state {
   position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  text-align: center; padding: 24px; color: #cbd5e1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2);
+  text-align: center; padding: var(--space-6); color: #cbd5e1;
   mat-icon { font-size: 44px; width: 44px; height: 44px; color: #64748b; }
   strong { font-family: 'Outfit', sans-serif; font-size: 16px; color: #fff; }
   span { font-size: 12.5px; max-width: 320px; }
@@ -35,14 +35,14 @@
   width: 72px; height: 72px; border-radius: 50%; border: none; cursor: pointer;
   background: color-mix(in srgb, var(--primary-color) 88%, transparent); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--elevation-4);
   transition: transform 0.15s ease, background 0.15s ease;
   mat-icon { font-size: 42px; width: 42px; height: 42px; }
   &:hover { transform: translate(-50%, -50%) scale(1.06); background: var(--primary-color); }
 }
 
 .vp-title {
-  position: absolute; top: 0; left: 0; right: 0; padding: 14px 18px 32px;
+  position: absolute; top: 0; left: 0; right: 0; padding: var(--space-4) var(--space-5) var(--space-8);
   font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
   background: linear-gradient(rgba(0, 0, 0, 0.6), transparent);
   transition: opacity 0.25s ease; pointer-events: none;
@@ -50,7 +50,7 @@
 
 .vp-controls {
   position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 26px 12px 8px;
+  padding: 26px var(--space-3) var(--space-2);
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
@@ -60,9 +60,9 @@
 }
 
 .vp-progress {
-  position: relative; height: 16px; margin: 0 6px; cursor: pointer; touch-action: none;
-  &::before { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.22); }
-  .vp-buffer, .vp-played { position: absolute; left: 0; top: 6px; height: 4px; border-radius: 4px; }
+  position: relative; height: 16px; margin: 0 var(--space-2); cursor: pointer; touch-action: none;
+  &::before { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 4px; border-radius: var(--radius-xs); background: rgba(255, 255, 255, 0.22); }
+  .vp-buffer, .vp-played { position: absolute; left: 0; top: 6px; height: 4px; border-radius: var(--radius-xs); }
   .vp-buffer { background: rgba(255, 255, 255, 0.4); }
   .vp-played { background: var(--primary-color); }
   .vp-thumb { position: absolute; top: 2px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #fff; transform: scale(0); transition: transform 0.12s ease; }
@@ -70,14 +70,14 @@
     &::before, .vp-buffer, .vp-played { top: 5px; height: 6px; }
     .vp-thumb { transform: scale(1); }
   }
-  .vp-tip { position: absolute; bottom: 20px; transform: translateX(-50%); padding: 3px 7px; border-radius: 6px; background: rgba(15, 23, 42, 0.92); font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  .vp-tip { position: absolute; bottom: 20px; transform: translateX(-50%); padding: 3px 7px; border-radius: var(--radius-sm); background: rgba(15, 23, 42, 0.92); font-size: 11px; font-variant-numeric: tabular-nums; pointer-events: none; }
 }
 
 .vp-row { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
 .spacer { flex: 1; }
 
 .vp-btn {
-  height: 38px; min-width: 38px; padding: 0 6px; border: none; border-radius: 10px; cursor: pointer;
+  height: 38px; min-width: 38px; padding: 0 var(--space-2); border: none; border-radius: var(--radius-md); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
   background: transparent; color: #fff; font: 600 12.5px 'Inter', sans-serif;
   mat-icon { font-size: 24px; width: 24px; height: 24px; }
@@ -89,10 +89,10 @@
 .vp-volume {
   display: flex; align-items: center;
   input { width: 0; opacity: 0; transition: all 0.2s ease; accent-color: #fff; cursor: pointer; }
-  &:hover input, input:focus-visible { width: 76px; opacity: 1; margin-right: 6px; }
+  &:hover input, input:focus-visible { width: 76px; opacity: 1; margin-right: var(--space-2); }
 }
 
-.vp-time { font-size: 12.5px; font-variant-numeric: tabular-nums; color: #e2e8f0; margin-left: 6px; white-space: nowrap; }
+.vp-time { font-size: 12.5px; font-variant-numeric: tabular-nums; color: #e2e8f0; margin-left: var(--space-2); white-space: nowrap; }
 
 @media (max-width: 599.98px) {
   .hide-xs { display: none; }

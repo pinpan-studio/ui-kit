@@ -22,7 +22,7 @@ mat-toolbar.mat-toolbar {
   flex-shrink: 0;
 
   @include mobile {
-    padding: 0 8px !important;
+    padding: 0 var(--space-2) !important;
   }
 }
 
@@ -76,16 +76,16 @@ mat-sidenav.mat-sidenav {
   box-sizing: border-box;
 
   @include lg {
-    padding: 20px !important;
+    padding: var(--space-5) !important;
   }
   @include mobile {
-    padding: 16px !important;
+    padding: var(--space-4) !important;
   }
   @include sm {
-    padding: 12px !important;
+    padding: var(--space-3) !important;
   }
   @include xs {
-    padding: 8px !important;
+    padding: var(--space-2) !important;
   }
 }
 
@@ -94,7 +94,7 @@ mat-sidenav.mat-sidenav {
 .list-header-bar,
 .page-header-bar {
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 
   @include mobile {
     flex-direction: column !important;
@@ -117,7 +117,7 @@ mat-sidenav.mat-sidenav {
     @include mobile {
       width: 100%;
       flex-wrap: wrap;
-      gap: 8px !important;
+      gap: var(--space-2) !important;
     }
     @include sm {
       button {
@@ -137,7 +137,7 @@ mat-sidenav.mat-sidenav {
 [class*='kpi-row'],
 [class*='metrics-row'] {
   flex-wrap: wrap !important;
-  gap: 16px;
+  gap: var(--space-4);
 
   > .mat-mdc-card,
   > mat-card,
@@ -233,7 +233,7 @@ th.mat-mdc-header-cell {
   word-break: break-word;
 
   @include mobile {
-    padding: 10px 8px !important;
+    padding: var(--space-3) var(--space-2) !important;
     font-size: 0.8rem !important;
   }
 }
@@ -265,7 +265,7 @@ mat-form-field {
 .mat-mdc-dialog-container {
   @include mobile {
     max-width: 95vw !important;
-    margin: 8px !important;
+    margin: var(--space-2) !important;
   }
 }
 
@@ -301,7 +301,7 @@ mat-form-field {
 .lower-row {
   @include lg {
     flex-direction: column !important;
-    gap: 20px;
+    gap: var(--space-5);
   }
 }
 
@@ -319,10 +319,10 @@ mat-form-field {
   box-sizing: border-box;
 
   @include mobile {
-    padding: 16px !important;
+    padding: var(--space-4) !important;
   }
   @include sm {
-    padding: 12px !important;
+    padding: var(--space-3) !important;
   }
 }
 
@@ -331,7 +331,7 @@ mat-form-field {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   width: 100%;
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
 }
 
 .kanban-board {
@@ -341,7 +341,7 @@ mat-form-field {
 // ─── 17. Pipeline section ────────────────────────────────
 .pipeline-section {
   @include mobile {
-    padding: 16px !important;
+    padding: var(--space-4) !important;
   }
 }
 
@@ -349,8 +349,8 @@ mat-form-field {
 .cards-grid,
 .card-grid {
   @include mobile {
-    row-gap: 12px !important;
-    column-gap: 12px !important;
+    row-gap: var(--space-3) !important;
+    column-gap: var(--space-3) !important;
   }
 }
 
@@ -366,8 +366,8 @@ mat-form-field {
 // ─── 19. Sidenav mini ────────────────────────────────────
 .side-nav-mini {
   @include mobile {
-    padding-top: 12px;
-    gap: 8px;
+    padding-top: var(--space-3);
+    gap: var(--space-2);
   }
 }
 
@@ -381,7 +381,7 @@ mat-form-field {
 // ─── 20. Expansion panels responsive ────────────────────
 .mat-expansion-panel-header {
   @include mobile {
-    padding: 0 16px !important;
+    padding: 0 var(--space-4) !important;
     height: auto !important;
     min-height: 48px;
   }
@@ -389,7 +389,7 @@ mat-form-field {
 
 .mat-expansion-panel-body {
   @include mobile {
-    padding: 0 16px 12px !important;
+    padding: 0 var(--space-4) var(--space-3) !important;
   }
 }
 
@@ -402,7 +402,7 @@ mat-form-field {
       order: -1;
       width: 100%;
       text-align: center;
-      margin: 4px 0;
+      margin: var(--space-1) 0;
     }
   }
 }
@@ -419,7 +419,7 @@ mat-form-field {
   @include mobile {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 8px;
+    gap: var(--space-2);
   }
 }
 
@@ -449,9 +449,9 @@ app-main,
 // ─── 27. Espacement de section adaptatif ─────────────────
 .section-gap {
   @include mobile {
-    gap: 16px !important;
+    gap: var(--space-4) !important;
   }
   @include sm {
-    gap: 12px !important;
+    gap: var(--space-3) !important;
   }
 }

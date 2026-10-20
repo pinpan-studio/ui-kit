@@ -28,11 +28,11 @@
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-mat-spinner { display: inline-block; margin-right: 8px; vertical-align: middle; }
+mat-spinner { display: inline-block; margin-right: var(--space-2); vertical-align: middle; }
 
 .toolbar-like {
   width: 100%;
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--r-m);
   background: var(--bg);
   .avatar {
@@ -47,9 +47,9 @@ mat-spinner { display: inline-block; margin-right: 8px; vertical-align: middle; 
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   height: 32px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   border-radius: var(--r-full);
   border: 0;
   background: var(--card-bg);
@@ -58,7 +58,7 @@ mat-spinner { display: inline-block; margin-right: 8px; vertical-align: middle; 
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  .chip-count { font-size: 11px; padding: 0 6px; border-radius: 99px; background: var(--hover-bg); }
+  .chip-count { font-size: 11px; padding: 0 var(--space-2); border-radius: 99px; background: var(--hover-bg); }
   &.active { background: var(--primary-color-light); border-color: var(--primary-color); color: var(--primary-color); }
   &.success .chip-count { background: var(--success-color-light); color: var(--success-color-text); }
   &.warning .chip-count { background: var(--warning-color-light); color: var(--warning-color-text); }

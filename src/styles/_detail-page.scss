@@ -71,15 +71,15 @@
 .head-line {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   flex-wrap: wrap;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .page-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -125,8 +125,8 @@
 .kpi-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5);
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: var(--r-l, 16px);
@@ -189,7 +189,7 @@
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: var(--r-l, 16px);
-  padding: 20px;
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
 }
@@ -198,13 +198,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 
   .section-title-box {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3);
     min-width: 0;
 
     .title-icon-box {
@@ -247,7 +247,7 @@
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 14px 20px;
+  gap: var(--space-4) var(--space-5);
 }
 
 .info-field {
@@ -281,29 +281,29 @@
 }
 
 .notes-block {
-  margin-top: 16px;
-  padding-top: 14px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-color, #f1f5f9);
 
   .lbl { font-size: 11px; font-weight: 600; color: var(--text-muted, #94a3b8); }
-  p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary, #475569); white-space: pre-wrap; }
+  p { margin: var(--space-1) 0 0 0; font-size: 13px; color: var(--text-secondary, #475569); white-space: pre-wrap; }
 }
 
 // ─── Mini-liste (lignes compactes) ────────────────────────────────────
 .mini-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .mini-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 12px 14px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
   background: var(--mat-sys-surface-container, #f8fafc);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-color, #f1f5f9);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -321,7 +321,7 @@
   .item-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3);
     min-width: 0;
 
     .row-icon-box {
@@ -373,7 +373,7 @@
   .item-right {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-3);
     flex-shrink: 0;
 
     .amount {
@@ -422,8 +422,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 36px 20px;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-5);
   color: var(--text-muted, #94a3b8);
   text-align: center;
 

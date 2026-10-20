@@ -3,12 +3,12 @@
 :host { display: block; }
 
 .composer {
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 14px 14px 10px 18px;
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-4) var(--space-4) var(--space-3) var(--space-5);
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 22px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 28px rgba(15, 23, 42, 0.06);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--elevation-4);
   cursor: text;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   &:focus-within {
@@ -19,15 +19,15 @@
 
 .field {
   width: 100%; border: 0; outline: 0; resize: none; background: transparent;
-  padding: 4px 0; margin: 0;
+  padding: var(--space-1) 0; margin: 0;
   font: inherit; font-size: var(--hz-read); line-height: 1.6; color: var(--text-primary);
   &::placeholder { color: var(--text-muted); }
 }
 
-.chips { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); padding-bottom: var(--space-1); }
 .chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 4px 4px 10px; border-radius: var(--r-m);
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3); border-radius: var(--r-m);
   background: var(--hover-bg); font-size: var(--hz-meta);
   .kind { font-size: 16px; width: 16px; height: 16px; color: var(--tertiary-color); }
   .name { font-weight: 600; color: var(--text-primary); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -41,7 +41,7 @@
   }
 }
 
-.bar { display: flex; align-items: center; gap: 4px; margin-left: -8px; cursor: default; }
+.bar { display: flex; align-items: center; gap: var(--space-1); margin-left: -8px; cursor: default; }
 .spacer { flex: 1; }
 
 .tool {
@@ -53,8 +53,8 @@
 }
 
 .pill {
-  display: inline-flex; align-items: center; gap: 4px;
-  height: 34px; padding: 0 10px; border-radius: 10px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  height: 34px; padding: 0 var(--space-3); border-radius: var(--radius-md); cursor: pointer;
   border: 1px solid transparent; font: inherit; font-size: var(--hz-meta); font-weight: 600;
   &.on {
     background: var(--primary-color-light); color: var(--primary-color);
@@ -66,7 +66,7 @@
 
 .model-btn {
   display: inline-flex; align-items: center; gap: 2px;
-  height: 34px; padding: 0 6px 0 10px; border: 0; border-radius: 10px; cursor: pointer;
+  height: 34px; padding: 0 var(--space-2) 0 var(--space-3); border: 0; border-radius: var(--radius-md); cursor: pointer;
   background: transparent; font: inherit; font-size: var(--hz-ui); font-weight: 600; color: var(--text-secondary);
   &:hover { background: var(--hover-bg); color: var(--text-primary); }
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
@@ -90,15 +90,15 @@
   // Dimensions, survol, icônes, séparateurs et titres : style commun des menus (styles/_kit-components.scss).
   min-width: 260px !important;
   .menu-toggle {
-    display: flex; align-items: center; gap: var(--kit-menu-gap); padding: 8px 10px;
+    display: flex; align-items: center; gap: var(--kit-menu-gap); padding: var(--space-2) var(--space-3);
     > mat-icon { color: var(--text-secondary); font-size: var(--kit-menu-icon-size); width: var(--kit-menu-icon-size); height: var(--kit-menu-icon-size); }
     .label { flex: 1; display: flex; flex-direction: column; strong { font-size: var(--hz-ui); } small { font-size: var(--hz-meta); color: var(--text-muted); } }
   }
   .model-item { min-height: 52px !important; }
-  .model-line { display: flex; align-items: center; gap: 12px; width: 100%; padding: 4px 0; }
+  .model-line { display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: var(--space-1) 0; }
   .model-text { display: flex; flex-direction: column; flex: 1;
-    strong { font-size: var(--hz-body); display: inline-flex; align-items: center; gap: 6px; }
+    strong { font-size: var(--hz-body); display: inline-flex; align-items: center; gap: var(--space-2); }
     small { font-size: var(--hz-meta); color: var(--text-muted); } }
-  .badge { font-size: var(--hz-micro); font-weight: 700; padding: 1px 6px; border-radius: 6px; background: var(--tertiary-color-light); color: var(--tertiary-color); }
+  .badge { font-size: var(--hz-micro); font-weight: 700; padding: 1px var(--space-2); border-radius: var(--radius-sm); background: var(--tertiary-color-light); color: var(--tertiary-color); }
   .check { color: var(--primary-color); margin: 0 !important; }
 }

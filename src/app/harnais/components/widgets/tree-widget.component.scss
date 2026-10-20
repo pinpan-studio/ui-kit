@@ -1,9 +1,9 @@
 :host { display: block; }
 
-.toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.toolbar { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ghost {
-  display: inline-flex; align-items: center; gap: 4px;
-  height: 28px; padding: 0 10px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  height: 28px; padding: 0 var(--space-3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer;
   background: transparent; font: inherit; font-size: var(--hz-meta); font-weight: 600; color: var(--text-secondary);
   mat-icon { font-size: 15px; width: 15px; height: 15px; }
   &:hover { background: var(--hover-bg); color: var(--text-primary); }
@@ -14,7 +14,7 @@
   background: transparent;
   --mat-tree-node-min-height: 34px;
   --mat-tree-node-text-size: var(--hz-body);
-  mat-tree-node { gap: 6px; border-radius: 8px; padding-right: 8px; &:hover { background: var(--hover-bg); } }
+  mat-tree-node { gap: var(--space-2); border-radius: var(--radius-sm); padding-right: var(--space-2); &:hover { background: var(--hover-bg); } }
 }
 .spacer { width: 26px; flex-shrink: 0; }
 .twist {
@@ -25,7 +25,7 @@
 }
 .ic { font-size: 18px; width: 18px; height: 18px; color: #f59e0b; flex-shrink: 0; &.leaf { color: var(--text-muted); } }
 .label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); &.strong { font-weight: 600; } }
-.meta { margin-left: auto; padding-left: 8px; font-size: var(--hz-meta); color: var(--text-muted); white-space: nowrap; }
+.meta { margin-left: auto; padding-left: var(--space-2); font-size: var(--hz-meta); color: var(--text-muted); white-space: nowrap; }
 mat-checkbox { --mat-checkbox-state-layer-size: 30px; margin: 0 -4px; }
 :host ::ng-deep .m3-badge { font-size: 9.5px; padding: 2px 7px; }
 
@@ -34,7 +34,7 @@ mat-checkbox { --mat-checkbox-state-layer-size: 30px; margin: 0 -4px; }
   .ic { color: var(--primary-color); &.leaf { color: var(--text-muted); } }
 }
 
-.foot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: 6px; border-top: 1px solid var(--border-color);
-  button { font-size: var(--hz-ui); mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 6px; } } }
-.sent { display: inline-flex; align-items: center; gap: 6px; font-size: var(--hz-meta); font-weight: 600; color: var(--success-color-text, var(--success-color));
+.foot { display: flex; justify-content: flex-end; padding-top: var(--space-3); margin-top: var(--space-2); border-top: 1px solid var(--border-color);
+  button { font-size: var(--hz-ui); mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: var(--space-2); } } }
+.sent { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--hz-meta); font-weight: 600; color: var(--success-color-text, var(--success-color));
   mat-icon { font-size: 16px; width: 16px; height: 16px; } }

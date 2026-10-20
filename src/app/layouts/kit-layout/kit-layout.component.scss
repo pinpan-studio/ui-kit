@@ -25,7 +25,7 @@
 .sidenav-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   padding: var(--space-m) var(--space-l);
   border-bottom: 0;
 
@@ -37,12 +37,12 @@
 }
 
 .nav-search {
-  margin: 12px 16px 0;
+  margin: var(--space-3) var(--space-4) 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   height: 38px;
-  padding: 0 10px;
+  padding: 0 var(--space-3);
   border-radius: var(--r-m);
   border: 0;
   background: var(--mat-sys-surface-container-high, var(--hover-bg));
@@ -55,40 +55,40 @@
 .sidenav-menu-wrapper {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: var(--space-4);
   &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
 }
 
 .menu-section {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-1);
 
   .section-header {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 10px 14px;
+    padding: var(--space-2) var(--space-3);
     border: 0;
     background: transparent;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     color: var(--text-secondary);
     font: inherit;
     text-align: left;
     &.clickable { cursor: pointer; &:hover { background: var(--hover-bg); } }
-    .section-icon { font-size: 18px; width: 18px; height: 18px; margin-right: 12px; }
+    .section-icon { font-size: 18px; width: 18px; height: 18px; margin-right: var(--space-3); }
     .section-title { font-size: 13px; font-weight: 600; letter-spacing: 0.01em; }
   }
 
-  .section-items { padding-left: 16px; margin-top: 4px; display: flex; flex-direction: column; gap: 2px; }
+  .section-items { padding-left: var(--space-4); margin-top: var(--space-1); display: flex; flex-direction: column; gap: 2px; }
 
   .menu-item {
     display: flex;
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    padding: 8px 12px;
+    padding: var(--space-2) var(--space-3);
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: transparent;
     font: inherit;
     text-align: left;
@@ -97,21 +97,21 @@
     color: var(--text-muted);
     transition: all 0.2s ease;
 
-    .item-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 12px; flex-shrink: 0; }
+    .item-icon { font-size: 16px; width: 16px; height: 16px; margin-right: var(--space-3); flex-shrink: 0; }
     .item-label { font-size: 12.5px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .count { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--hover-bg); color: var(--text-secondary); margin-left: 6px; }
+    .count { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--hover-bg); color: var(--text-secondary); margin-left: var(--space-2); }
 
     &:hover { background-color: var(--hover-bg); color: var(--text-primary); }
     &.active { background-color: var(--primary-color-light) !important; color: var(--primary-color) !important; font-weight: 600; }
-    &.top { padding: 10px 14px; .item-label { font-size: 13px; font-weight: 600; } }
+    &.top { padding: var(--space-3) var(--space-4); .item-label { font-size: 13px; font-weight: 600; } }
   }
 
-  .sub-items { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 6px 18px; padding-left: 10px; border-left: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); }
-  .menu-item.sub { padding: 6px 10px; .item-label { font-size: 12px; } }
-  .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.5; margin-right: 10px; flex-shrink: 0; }
+  .sub-items { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 var(--space-2) var(--space-5); padding-left: var(--space-3); border-left: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent); }
+  .menu-item.sub { padding: var(--space-2) var(--space-3); .item-label { font-size: 12px; } }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.5; margin-right: var(--space-3); flex-shrink: 0; }
 }
 
-.chevron { font-size: 18px; width: 18px; height: 18px; transition: transform 0.2s ease; &.open { transform: rotate(180deg); } &.small { margin-left: 4px; } }
+.chevron { font-size: 18px; width: 18px; height: 18px; transition: transform 0.2s ease; &.open { transform: rotate(180deg); } &.small { margin-left: var(--space-1); } }
 .spacer { flex: 1; }
 
 .kit-main { display: flex; flex-direction: column; }
@@ -126,13 +126,13 @@
   background: var(--bg);
   border-bottom: 0;
   .toolbar-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; }
-  .app-link { border-radius: var(--radius-button); mat-icon { margin-right: 4px; } }
-  .palette-btn { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 8px 0 12px; border-radius: 19px; border: 0;
+  .app-link { border-radius: var(--radius-button); mat-icon { margin-right: var(--space-1); } }
+  .palette-btn { display: flex; align-items: center; gap: var(--space-2); height: 38px; padding: 0 var(--space-2) 0 var(--space-3); border-radius: 19px; border: 0;
     background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--text-muted); font: 13px 'Inter', sans-serif; cursor: pointer; min-width: 220px;
     mat-icon { font-size: 19px; width: 19px; height: 19px; }
     .pb-label { flex: 1; text-align: left; }
     &:hover { background: var(--mat-sys-surface-container-highest, var(--hover-bg)); color: var(--text-secondary); } }
-  @include mobile { padding: 0 var(--space-s); .palette-btn { min-width: 0; padding: 0 9px; .pb-label, .pb-kbd { display: none; } } .app-link span { display: none; } .app-link { min-width: 40px; padding: 0 8px; mat-icon { margin: 0; } } }
+  @include mobile { padding: 0 var(--space-s); .palette-btn { min-width: 0; padding: 0 9px; .pb-label, .pb-kbd { display: none; } } .app-link span { display: none; } .app-link { min-width: 40px; padding: 0 var(--space-2); mat-icon { margin: 0; } } }
 }
 
 .kit-content { flex: 1; overflow: auto; }

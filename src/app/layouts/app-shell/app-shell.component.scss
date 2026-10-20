@@ -70,7 +70,7 @@ $rail-width: 76px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   padding: 0 var(--space-s);
 }
 

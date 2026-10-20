@@ -16,15 +16,15 @@
 .controls { display: flex; flex-direction: column; gap: var(--space-m); min-width: 0; }
 
 .panel {
-  display: flex; flex-direction: column; gap: 12px;
-  padding: 20px;
+  display: flex; flex-direction: column; gap: var(--space-3);
+  padding: var(--space-5);
   border-radius: var(--mat-sys-corner-large, 16px);
   background: var(--mat-sys-surface-container);
   color: var(--mat-sys-on-surface);
 }
 
 .panel-title {
-  margin: 0; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  margin: 0; display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap;
   font: var(--mat-sys-title-small);
 }
 
@@ -34,7 +34,7 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 .full { width: 100%; mat-button-toggle { flex: 1; } }
 
 // ─── Couleur source ───────────────────────────────────────────
-.source-row { display: flex; align-items: center; gap: 8px; .grow { flex: 1; min-width: 0; } }
+.source-row { display: flex; align-items: center; gap: var(--space-2); .grow { flex: 1; min-width: 0; } }
 .sub-label { font: var(--mat-sys-label-medium); color: var(--mat-sys-on-surface-variant); }
 
 .color-well {
@@ -48,16 +48,16 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 }
 
 .hex-input {
-  flex: 1; min-width: 0; height: 40px; box-sizing: border-box; padding: 0 12px;
+  flex: 1; min-width: 0; height: 40px; box-sizing: border-box; padding: 0 var(--space-3);
   border: 0; border-radius: var(--mat-sys-corner-extra-small, 4px);
   background: transparent; color: var(--mat-sys-on-surface);
   font: 500 14px/1 'JetBrains Mono', ui-monospace, monospace; text-transform: uppercase;
 
   &:focus { outline: 2px solid var(--mat-sys-primary); outline-offset: -1px; border-color: transparent; }
-  &.small { flex: 0 0 96px; height: 36px; font-size: 12.5px; padding: 0 8px; }
+  &.small { flex: 0 0 96px; height: 36px; font-size: 12.5px; padding: 0 var(--space-2); }
 }
 
-.quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 6px; }
+.quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: var(--space-2); }
 
 .quick-dot {
   aspect-ratio: 1; min-width: 28px; border: 0; border-radius: 50%; cursor: pointer; padding: 0;
@@ -73,10 +73,10 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 .mono-btn { align-self: flex-start; }
 
 .role-row {
-  display: flex; flex-direction: column; gap: 8px; padding: 6px 0; & + & { padding-top: 12px; }
+  display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) 0; & + & { padding-top: var(--space-3); }
   &:not(.on) app-color-picker { opacity: 0.7; }
 }
-.role-head { display: flex; align-items: center; gap: 12px; }
+.role-head { display: flex; align-items: center; gap: var(--space-3); }
 
 .role-text {
   flex: 1; min-width: 0; display: flex; flex-direction: column;
@@ -84,7 +84,7 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
   span { font: var(--mat-sys-body-small); color: var(--mat-sys-on-surface-variant); }
 }
 
-.actions .action-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions .action-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 
 // ─── Aperçus (maquettes) ──────────────────────────────────────
 .previews {
@@ -95,10 +95,10 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 }
 
 .device-wrap {
-  margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  margin: 0; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0;
 
   figcaption {
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: var(--space-2);
     font: var(--mat-sys-label-large); color: var(--mat-sys-on-surface-variant);
     mat-icon { font-size: 18px; width: 18px; height: 18px; }
   }
@@ -116,7 +116,7 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 }
 
 .pv-appbar {
-  display: flex; align-items: center; gap: 16px; padding: 14px 16px; flex: none;
+  display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-4); flex: none;
   background: var(--mat-sys-surface);
   .pv-title { flex: 1; font: 500 20px/1.2 Outfit, Inter, sans-serif; }
   .pv-muted { color: var(--mat-sys-on-surface-variant); }
@@ -130,15 +130,15 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 
 .pv-body {
   flex: 1; overflow-y: auto; overscroll-behavior: contain;
-  display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 24px;
+  display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-1) var(--space-4) var(--space-6);
   background: var(--background-default);
 }
 
 // Maquette étroite : grille KPI sur 2 colonnes, carte sans largeur minimale.
-.pv-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; margin: 0 !important;
-  .kpi-card { min-width: 0; padding: 12px !important; gap: 10px !important; }
+.pv-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: var(--space-2) !important; margin: 0 !important;
+  .kpi-card { min-width: 0; padding: var(--space-3) !important; gap: var(--space-3) !important; }
   .kpi-value { font-size: 18px !important; }
-  .kpi-label { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .kpi-label { display: flex; align-items: center; gap: var(--space-1); flex-wrap: wrap; }
 }
 .device .m3-search-bar-unified {
   margin: 0;
@@ -147,22 +147,22 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 }
 .device .entity-card { min-width: 0; }
 
-.pv-form { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.pv-form { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); }
 .pv-form-title { margin: 0; font: 600 16px/1.3 Outfit, Inter, sans-serif; }
-.pv-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
-.pv-checks, .pv-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.pv-badges { gap: 6px; }
-.pv-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.pv-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); align-items: start; }
+.pv-checks, .pv-badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); }
+.pv-badges { gap: var(--space-2); }
+.pv-actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
 
 // ─── Nuances ──────────────────────────────────────────────────
-.strips { display: flex; flex-direction: column; gap: 10px; }
+.strips { display: flex; flex-direction: column; gap: var(--space-3); }
 
-.strip { display: grid; grid-template-columns: 220px 1fr; gap: 12px; align-items: center;
+.strip { display: grid; grid-template-columns: 220px 1fr; gap: var(--space-3); align-items: center;
   @media (max-width: 767.98px) { grid-template-columns: 1fr; }
 }
 
 .strip-label {
-  display: flex; align-items: center; gap: 8px; min-width: 0;
+  display: flex; align-items: center; gap: var(--space-2); min-width: 0;
   .key { flex: none; width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
   b { font: var(--mat-sys-label-large); }
   code { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
@@ -170,12 +170,12 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 
 .strip-tones {
   display: grid; grid-template-columns: repeat(18, minmax(30px, 1fr));
-  border-radius: 12px; overflow: hidden; overflow-x: auto;
+  border-radius: var(--radius-md); overflow: hidden; overflow-x: auto;
   box-shadow: inset 0 0 0 1px var(--mat-sys-outline-variant);
 }
 
 .tone {
-  height: 52px; border: 0; padding: 0 0 6px; cursor: pointer; display: flex; align-items: flex-end; justify-content: center;
+  height: 52px; border: 0; padding: 0 0 var(--space-2); cursor: pointer; display: flex; align-items: flex-end; justify-content: center;
   font: 600 11px/1 Inter, sans-serif;
   &:hover, &:focus-visible { outline: 2px solid var(--mat-sys-primary); outline-offset: -2px; position: relative; z-index: 1; }
 }
@@ -183,26 +183,26 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
 // ─── Rôles ────────────────────────────────────────────────────
 .roles-mode { width: fit-content; margin-bottom: var(--space-m); }
 
-.role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-2); }
 
 .role-card {
-  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-  min-height: 84px; padding: 12px; border: 0; border-radius: var(--r-m); cursor: pointer; text-align: left;
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2);
+  min-height: 84px; padding: var(--space-3); border: 0; border-radius: var(--r-m); cursor: pointer; text-align: left;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 14%, transparent);
   b { font: var(--mat-sys-label-large); padding-right: 52px; }
   code { margin-top: auto; font-size: 10.5px; opacity: 0.85; }
 }
 
 .ratio {
-  position: absolute; top: 10px; right: 10px; padding: 2px 6px; border-radius: 6px;
+  position: absolute; top: 10px; right: 10px; padding: 2px var(--space-2); border-radius: var(--radius-sm);
   font: 600 11px/1.3 Inter, sans-serif; background: color-mix(in srgb, currentColor 14%, transparent);
   &.low { text-decoration: underline wavy; }
 }
 
-.extra-roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--space-m); }
+.extra-roles { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-m); }
 .extra {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; cursor: pointer;
-  border: 0; border-radius: 20px; background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--mat-sys-on-surface);
+  display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2); cursor: pointer;
+  border: 0; border-radius: var(--radius-xl); background: var(--mat-sys-surface-container-high, var(--hover-bg)); color: var(--mat-sys-on-surface);
   span { width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
   code { font-size: 11.5px; }
   .muted { color: var(--mat-sys-on-surface-variant); }
