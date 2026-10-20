@@ -215,3 +215,7 @@ mat-icon.inline { font-size: 16px; width: 16px; height: 16px; vertical-align: -3
     --mat-standard-button-toggle-divider-color: transparent; --mat-standard-button-toggle-background-color: transparent;
     .mat-button-toggle + .mat-button-toggle { border-left: 0 !important; } }
 }
+
+// Contraste : la carte d'aperçu garde un fond d'icône clair (#dbe6f3) dans les deux modes,
+// donc l'icône bleue reste en nuance 700 (#1d4ed8) même en sombre, au lieu de #60a5fa.
+.entity-card .card-icon-box.icon-blue, :host-context(.dark) .entity-card .card-icon-box.icon-blue { color: #1d4ed8 !important; mat-icon { color: #1d4ed8 !important; } }

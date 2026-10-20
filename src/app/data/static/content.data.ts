@@ -7,7 +7,7 @@ export const PEOPLE: CommentAuthor[] = [
   { name: 'Aya Koné', color: '#8b5cf6', role: 'Opérations' },
   { name: 'Marc Yao', color: '#10b981', role: 'Développeur' },
   { name: 'Grace Kouamé', color: '#f59e0b', role: 'Designer' },
-  { name: 'Ibrahim Sanogo', color: '#ef4444', role: 'Produit' },
+  { name: 'Ibrahim Sanogo', color: '#dc2626', role: 'Produit' },
   { name: 'Nadia Touré', color: '#ec4899', role: 'Rédaction' },
 ];
 export const ME = PEOPLE[0];
@@ -55,7 +55,7 @@ export const ARTICLES: Article[] = [
     category: 'UX', tags: ['formulaires', 'validation'], author: { name: 'Nadia Touré', role: 'Rédaction', color: '#ec4899' }, date: '2026-10-09', minutes: 6, hue: 280, icon: 'dynamic_form',
     blocks: short('Un formulaire long n’est pas un mauvais formulaire : c’est un formulaire mal découpé.', 'Une étape, une intention') },
   { slug: 'mobile-money-paiement', title: 'Intégrer le Mobile Money dans un tunnel de paiement', dek: 'Orange Money, MTN MoMo, Wave : concevoir un parcours clair quand la confirmation arrive par SMS.',
-    category: 'Produit', tags: ['paiement', 'mobile'], author: { name: 'Ibrahim Sanogo', role: 'Produit', color: '#ef4444' }, date: '2026-10-02', minutes: 5, hue: 30, icon: 'phone_iphone',
+    category: 'Produit', tags: ['paiement', 'mobile'], author: { name: 'Ibrahim Sanogo', role: 'Produit', color: '#dc2626' }, date: '2026-10-02', minutes: 5, hue: 30, icon: 'phone_iphone',
     blocks: short('Le paiement mobile est la norme : le tunnel doit l’être aussi.', 'Attendre la confirmation') },
   { slug: 'mode-sombre-sans-regret', title: 'Le mode sombre, sans regret', dek: 'Contrastes, élévation, images : les pièges du thème sombre et comment les éviter.',
     category: 'Design', tags: ['thème', 'accessibilité'], author: { name: 'Marc Yao', role: 'Développeur', color: '#10b981' }, date: '2026-09-25', minutes: 4, hue: 230, icon: 'dark_mode',
