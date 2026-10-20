@@ -7,8 +7,8 @@
 .btn-success {
   --mdc-filled-button-container-color: var(--success-color);
   --mat-button-filled-container-color: var(--success-color);
-  --mdc-filled-button-label-text-color: #fff;
-  --mat-button-filled-label-text-color: #fff;
+  --mdc-filled-button-label-text-color: var(--on-success-color);
+  --mat-button-filled-label-text-color: var(--on-success-color);
 }
 
 // Tailles : mêmes jetons pour toutes les variantes (forme et arrondi inchangés).

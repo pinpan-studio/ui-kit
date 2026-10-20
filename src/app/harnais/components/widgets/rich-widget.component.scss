@@ -41,7 +41,7 @@ dd {
   font-size: 11px; font-weight: 700;
   mat-icon { font-size: 16px; width: 16px; height: 16px; }
 }
-.done .dot { background: var(--success-color); border-color: var(--success-color); color: #fff; }
+.done .dot { background: var(--success-color); border-color: var(--success-color); color: var(--on-success-color); }
 .current .dot { background: var(--primary-color); border-color: var(--primary-color); color: #fff; box-shadow: 0 0 0 4px var(--primary-color-light); }
 .error .dot { background: var(--error-color); border-color: var(--error-color); color: #fff; }
 .st-text { display: flex; flex-direction: column; gap: 2px; }

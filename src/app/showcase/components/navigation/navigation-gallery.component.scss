@@ -153,7 +153,7 @@
   .dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
     background: var(--hover-bg); color: var(--text-muted); border: 0; mat-icon { font-size: 16px; width: 16px; height: 16px; } }
   .lbl { font-size: 12px; font-weight: 600; color: var(--text-muted); }
-  .step.done .dot { background: var(--success-color); border-color: var(--success-color); color: #fff; }
+  .step.done .dot { background: var(--success-color); border-color: var(--success-color); color: var(--on-success-color); }
   .step.done .lbl { color: var(--text-secondary); }
   .step.current .dot { background: var(--primary-color); border-color: var(--primary-color); color: #fff; box-shadow: 0 0 0 4px var(--primary-color-light); }
   .step.current .lbl { color: var(--primary-color); }
